@@ -706,6 +706,7 @@
     // ลิงก์ Google Apps Script URL สำหรับเชื่อม Google Sheet ของคุณที่ต้องการบันทึกข้อมูลส่งตรงทันที
     // ==========================================
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPjAqjcLw-pbffFhNHvh8YWOgsdZEbBY8HDHmPQVfIXgo-RSAUCWAy5vbyYJ6R82arjg/exec"; 
+    const DRIVE_IMAGE_FOLDER_ID = "1HGNfy4ocFhPN8iAffzW-GsD5e6ymHO75";
 
     // รายชื่อผู้ตรวจที่เข้าใช้ระบบได้โดยไม่ต้องกรอกรหัสผ่าน
     const SUPERVISORS = [
@@ -734,6 +735,7 @@
     let currentPhotoTarget = null;
     let selectedBeforePhoto = null;
     let selectedAfterPhoto = null;
+    let lastSheetError = "";
     // compat alias
     Object.defineProperty(window, 'selectedBase64Photo', {
       get() { return currentPhotoTarget === 'after' ? selectedAfterPhoto : selectedBeforePhoto; },
@@ -815,6 +817,45 @@
     }
 
     // --- GOOGLE SHEETS SYNC SYSTEM ---
+    function readLocalJobs() {
+      try {
+        const stored = localStorage.getItem("safety_jobs_data_v3");
+        return stored ? JSON.parse(stored) : [];
+      } catch (error) {
+        console.error("Failed to read local jobs:", error);
+        return [];
+      }
+    }
+
+    function mergeJobs(remoteJobs, localJobs) {
+      const merged = new Map();
+
+      (localJobs || []).forEach(job => {
+        if (job && job.id) merged.set(job.id, job);
+      });
+
+      (remoteJobs || []).forEach(job => {
+        if (job && job.id) {
+          const localJob = merged.get(job.id);
+          merged.set(job.id, {
+            ...(localJob || {}),
+            ...job,
+            photoBefore: job.photoBefore || localJob?.photoBefore || "",
+            photoAfter: job.photoAfter || localJob?.photoAfter || ""
+          });
+        }
+      });
+
+      return Array.from(merged.values());
+    }
+
+    function getNextJobId() {
+      const maxNumber = jobs.reduce((max, job) => {
+        const match = String(job.id || "").match(/^SF-(\d+)$/);
+        return match ? Math.max(max, Number(match[1])) : max;
+      }, 0);
+      return `SF-${String(maxNumber + 1).padStart(3, '0')}`;
+    }
 
     // ดึงข้อมูลทั้งหมดจาก Google Sheets หรือ Local
     async function loadAllJobsData() {
@@ -823,7 +864,7 @@
           const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs`);
           const data = await response.json();
           if (Array.isArray(data)) {
-            jobs = data;
+            jobs = mergeJobs(data, readLocalJobs());
             saveToLocalStore(); // ซิงก์เก็บสำรองไว้ในเครื่องด้วย
             updateCloudStatus(true);
             return;
@@ -866,6 +907,7 @@
           method: "POST",
           body: JSON.stringify({
             action: actionType,
+            imageFolderId: DRIVE_IMAGE_FOLDER_ID,
             data: jobPayload
           }),
           headers: {
@@ -873,9 +915,11 @@
           }
         });
         const result = await response.json();
+        lastSheetError = result.message || "";
         return result.status === "success";
       } catch (error) {
         console.error("Error connecting to sheet script:", error);
+        lastSheetError = error.message || String(error);
         return false;
       }
     }
@@ -1623,7 +1667,7 @@
       const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} น.`;
 
       const newJob = {
-        id: `SF-${String(jobs.length + 1).padStart(3, '0')}`,
+        id: getNextJobId(),
         area: area,
         reporter: currentUser.name,
         assignee: assignee,
@@ -1651,7 +1695,7 @@
       if (isSynced && GOOGLE_SCRIPT_URL) {
         showToast("ซิงก์คลาวด์สำเร็จ", "ข้อมูลถูกบันทึกใน Google Sheets เรียบร้อย", "fa-cloud-arrow-up", "bg-safety-green");
       } else {
-        showToast("บันทึกในเครื่องแล้ว", "จัดเก็บในเครื่องรอซิงก์ภายหลัง", "fa-floppy-disk", "bg-slate-700");
+        showToast("บันทึกในเครื่องแล้ว", lastSheetError ? `ยังไม่ขึ้น Sheet: ${lastSheetError}` : "จัดเก็บในเครื่องรอซิงก์ภายหลัง", "fa-floppy-disk", "bg-slate-700");
       }
     }
 
@@ -1700,7 +1744,7 @@
       if (isSynced && GOOGLE_SCRIPT_URL) {
         showToast("ปิดงานสำเร็จ", "อัปเดตสถานะขึ้น Google Sheet สำเร็จแล้ว", "fa-check-double", "bg-safety-green");
       } else {
-        showToast("สำเร็จแบบออฟไลน์", "เก็บประวัติในเครื่องไว้แล้ว", "fa-floppy-disk", "bg-slate-700");
+        showToast("สำเร็จแบบออฟไลน์", lastSheetError ? `ยังไม่ขึ้น Sheet: ${lastSheetError}` : "เก็บประวัติในเครื่องไว้แล้ว", "fa-floppy-disk", "bg-slate-700");
       }
     }
 
