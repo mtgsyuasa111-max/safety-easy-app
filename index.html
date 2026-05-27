@@ -663,7 +663,13 @@
     let currentUser = null;
     let activeJobForResolve = null;
     let currentPhotoTarget = null;
-    let selectedBase64Photo = null;
+    let selectedBeforePhoto = null;
+    let selectedAfterPhoto = null;
+    // compat alias
+    Object.defineProperty(window, 'selectedBase64Photo', {
+      get() { return currentPhotoTarget === 'after' ? selectedAfterPhoto : selectedBeforePhoto; },
+      set(v) { if (currentPhotoTarget === 'after') selectedAfterPhoto = v; else selectedBeforePhoto = v; }
+    });
 
     // รูปแบบจำลองเบื้องต้น
     const MOCK_PHOTOS_BEFORE = [
@@ -1114,15 +1120,27 @@
       document.getElementById("qr-camera-container").classList.add("hidden");
     }
 
-    // --- PHOTO SIMULATION HOOKS ---
+    // --- PHOTO HOOKS (เปิดกล้อง/แกลเลอรี่จริง + fallback simulation) ---
     function triggerBeforeCamera() {
       currentPhotoTarget = 'before';
-      openCameraSimulationModal();
+      const input = document.getElementById("before-photo-input");
+      if (input) {
+        input.value = "";
+        input.click();
+      } else {
+        openCameraSimulationModal();
+      }
     }
 
     function triggerAfterCamera() {
       currentPhotoTarget = 'after';
-      openCameraSimulationModal();
+      const input = document.getElementById("after-photo-input");
+      if (input) {
+        input.value = "";
+        input.click();
+      } else {
+        openCameraSimulationModal();
+      }
     }
 
     function openCameraSimulationModal() {
@@ -1158,15 +1176,15 @@
     }
 
     function selectSimulatedPhoto(base64Data) {
-      selectedBase64Photo = base64Data;
-      
       if (currentPhotoTarget === 'before') {
+        selectedBeforePhoto = base64Data;
         const preview = document.getElementById("before-preview");
         const placeholder = document.getElementById("before-placeholder");
         preview.src = base64Data;
         preview.classList.remove("hidden");
         placeholder.classList.add("hidden");
       } else {
+        selectedAfterPhoto = base64Data;
         const preview = document.getElementById("after-preview");
         const placeholder = document.getElementById("after-placeholder");
         preview.src = base64Data;
@@ -1185,13 +1203,7 @@
           preview.src = e.target.result;
           preview.classList.remove("hidden");
           placeholder.classList.add("hidden");
-          selectedBase64Photo = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    function previewAfterPhoto(input) {
+          selectedBeforePhoto = e.target.result;(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -1200,13 +1212,7 @@
           preview.src = e.target.result;
           preview.classList.remove("hidden");
           placeholder.classList.add("hidden");
-          selectedBase64Photo = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    // --- FORM MODALS ---
+          selectedAfterPhoto = e.target.result;
     function openNewAuditModal() {
       document.getElementById("modal-audit").classList.remove("hidden");
       autoSelectResponsiblePerson();
@@ -1214,10 +1220,8 @@
       document.getElementById("audit-suggestion").value = "";
       document.getElementById("before-preview").classList.add("hidden");
       document.getElementById("before-placeholder").classList.remove("hidden");
-      selectedBase64Photo = null;
-    }
-
-    function closeNewAuditModal() {
+      selectedBeforePhoto = null;
+      selectedAfterPhoto = null; {
       stopQRScanner();
       document.getElementById("modal-audit").classList.add("hidden");
     }
@@ -1235,12 +1239,10 @@
       document.getElementById("res-after-notes").value = "";
       document.getElementById("after-preview").classList.add("hidden");
       document.getElementById("after-placeholder").classList.remove("hidden");
-      selectedBase64Photo = null;
+      selectedAfterPhoto = null;
+      currentPhotoTarget = 'after';
 
       document.getElementById("modal-resolve").classList.remove("hidden");
-    }
-
-    function closeResolveModal() {
       document.getElementById("modal-resolve").classList.add("hidden");
       activeJobForResolve = null;
     }
@@ -1256,7 +1258,7 @@
         showToast("ขาดข้อมูล", "กรุณาระบุหัวข้อข้อบกพร่องและคำแนะนำ", "fa-exclamation-triangle", "bg-safety-red");
         return;
       }
-      if (!selectedBase64Photo) {
+      if (!selectedBeforePhoto) {
         showToast("ต้องการรูปถ่าย", "กรุณาแนบรูปถ่าย (Before) ด้วยครับ", "fa-camera", "bg-safety-red");
         return;
       }
@@ -1277,7 +1279,7 @@
         issue: issue,
         suggestion: suggestion,
         status: "pending",
-        photoBefore: selectedBase64Photo,
+        photoBefore: selectedBeforePhoto,
         photoAfter: "",
         createdAt: dateStr,
         resolvedAt: "",
@@ -1306,7 +1308,7 @@
       if (!activeJobForResolve) return;
       const notes = document.getElementById("res-after-notes").value.trim();
 
-      if (!selectedBase64Photo) {
+      if (!selectedAfterPhoto) {
         showToast("ต้องการรูปถ่าย", "กรุณาแนบรูปถ่ายการแก้ไข (After) ด้วยครับ", "fa-camera", "bg-safety-red");
         return;
       }
@@ -1322,7 +1324,7 @@
       const updatedData = {
         id: activeJobForResolve.id,
         status: "resolved",
-        photoAfter: selectedBase64Photo,
+        photoAfter: selectedAfterPhoto,
         resolvedAt: dateStr,
         notes: notes || "จัดการแก้ไขเรียบร้อย"
       };
@@ -1332,7 +1334,7 @@
       const idx = jobs.findIndex(j => j.id === activeJobForResolve.id);
       if (idx !== -1) {
         jobs[idx].status = "resolved";
-        jobs[idx].photoAfter = selectedBase64Photo;
+        jobs[idx].photoAfter = selectedAfterPhoto;
         jobs[idx].resolvedAt = dateStr;
         jobs[idx].notes = notes || "จัดการแก้ไขเรียบร้อย";
       }
