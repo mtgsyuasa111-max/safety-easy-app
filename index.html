@@ -1270,9 +1270,54 @@
       return `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='200' viewBox='0 0 320 200'><rect width='320' height='200' rx='16' fill='%23f1f5f9'/><path d='M142 74h36l8 12h22a12 12 0 0 1 12 12v48a12 12 0 0 1-12 12h-96a12 12 0 0 1-12-12V98a12 12 0 0 1 12-12h22z' fill='%23cbd5e1'/><circle cx='160' cy='124' r='22' fill='%23e2e8f0'/><text x='160' y='182' font-size='16' fill='%2364758b' font-family='Arial' text-anchor='middle'>${encodeURIComponent(label)}</text></svg>`;
     }
 
+    function escapeHtml(value = "") {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function extractDriveFileId(value = "") {
+      const text = String(value).trim();
+      const patterns = [
+        /\/file\/d\/([a-zA-Z0-9_-]{20,})/,
+        /[?&]id=([a-zA-Z0-9_-]{20,})/,
+        /\/d\/([a-zA-Z0-9_-]{20,})/,
+        /^([a-zA-Z0-9_-]{25,})$/
+      ];
+
+      for (const pattern of patterns) {
+        const match = text.match(pattern);
+        if (match) return match[1];
+      }
+      return "";
+    }
+
+    function normalizePhotoSource(src) {
+      if (!src) return "";
+      let value = String(src).trim();
+
+      const imageFormulaMatch = value.match(/^=IMAGE\(["'](.+?)["']\)/i);
+      if (imageFormulaMatch) value = imageFormulaMatch[1];
+
+      if (value.startsWith("data:image/")) return value;
+      if (/^[A-Za-z0-9+/=\s]{500,}$/.test(value)) {
+        return `data:image/jpeg;base64,${value.replace(/\s/g, "")}`;
+      }
+
+      const driveFileId = extractDriveFileId(value);
+      if (driveFileId) {
+        return `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w1200`;
+      }
+
+      if (/^https?:\/\//i.test(value)) return value;
+      return "";
+    }
+
     function renderSafeImage(src, alt, className) {
-      const imageSrc = src || getImageFallbackSvg("ไม่มีรูป");
-      return `<img src="${imageSrc}" alt="${alt}" class="${className}" loading="lazy" onerror="this.onerror=null;this.src='${getImageFallbackSvg("เปิดรูปไม่ได้")}';">`;
+      const imageSrc = normalizePhotoSource(src) || getImageFallbackSvg("ไม่มีรูป");
+      return `<img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(alt)}" title="แตะเพื่อดูรูปใหญ่" class="${className}" loading="lazy" onerror="this.onerror=null;this.src='${getImageFallbackSvg("เปิดรูปไม่ได้")}';">`;
     }
 
     function formatBytes(bytes) {
@@ -1286,7 +1331,7 @@
       return Math.ceil((dataUrl.length - dataUrl.indexOf(",") - 1) * 0.75);
     }
 
-    function compressImageFile(file, maxSize = 1280, quality = 0.72) {
+    function compressImageFile(file, maxSize = 720, quality = 0.58) {
       return new Promise((resolve, reject) => {
         const img = new Image();
         const objectUrl = URL.createObjectURL(file);
@@ -1405,7 +1450,7 @@
         showToast("กำลังบีบอัดรูป", `ไฟล์เดิม ${formatBytes(file.size)} กำลังปรับให้เหมาะกับเว็บ`, "fa-compress", "bg-slate-700");
         const compressedData = await compressImageFile(file);
         applyPreviewPhoto(target, compressedData);
-        showToast("บีบอัดรูปแล้ว", `เหลือประมาณ ${formatBytes(dataUrlBytes(compressedData))} พร้อมแสดงบนเว็บ`, "fa-image", "bg-safety-green");
+        showToast("บีบอัดรูปแล้ว", `เหลือประมาณ ${formatBytes(dataUrlBytes(compressedData))} พร้อมบันทึก`, "fa-image", "bg-safety-green");
       } catch (error) {
         console.error(error);
         const reader = new FileReader();
@@ -1422,7 +1467,7 @@
       if (!job) return;
       const imageData = photoType === 'after' ? job.photoAfter : job.photoBefore;
       document.getElementById("image-viewer-title").innerText = `${job.id} • ${job.area} • ${photoType === 'after' ? 'After' : 'Before'}`;
-      document.getElementById("image-viewer-img").src = imageData || getImageFallbackSvg("ไม่มีรูป");
+      document.getElementById("image-viewer-img").src = normalizePhotoSource(imageData) || getImageFallbackSvg("ไม่มีรูป");
       document.getElementById("image-viewer-modal").classList.remove("hidden");
     }
 
@@ -1456,7 +1501,7 @@
       document.getElementById("res-reporter").innerText = `ผู้ส่งงาน: ${job.reporter}`;
       document.getElementById("res-issue").innerText = job.issue;
       document.getElementById("res-suggestion").innerText = job.suggestion;
-      document.getElementById("res-before-img").src = job.photoBefore;
+      document.getElementById("res-before-img").src = normalizePhotoSource(job.photoBefore) || getImageFallbackSvg("ไม่มีรูป");
       document.getElementById("res-after-notes").value = "";
       document.getElementById("after-preview").classList.add("hidden");
       document.getElementById("after-placeholder").classList.remove("hidden");
