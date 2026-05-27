@@ -91,7 +91,7 @@
                 <i class="fa-solid fa-user-tie text-xl"></i>
               </div>
               <div class="text-left">
-                <div class="font-bold">หัวหน้างาน (Supervisor)</div>
+                <div class="font-bold">ผู้ตรวจ (Inspector)</div>
                 <div class="text-xs text-slate-400">เข้าตรวจ ตรวจประเมิน เปิดใบสั่งซ่อม</div>
               </div>
             </div>
@@ -118,7 +118,7 @@
         </div>
       </div>
 
-      <!-- 1.1 SUPERVISOR PIN SCREEN -->
+      <!-- 1.1 INSPECTOR SELECT SCREEN -->
       <div id="screen-supervisor-pin" class="p-6 hidden flex flex-col h-full justify-between">
         <div>
           <button onclick="showLoginScreen()" class="mb-6 flex items-center text-slate-600 font-semibold text-sm">
@@ -126,23 +126,18 @@
           </button>
           <div class="text-center my-6">
             <i class="fa-solid fa-user-lock text-4xl text-safety-yellow mb-3"></i>
-            <h2 class="text-2xl font-bold">เข้าสู่ระบบหัวหน้างาน</h2>
-            <p class="text-sm text-slate-500 mt-1">กรุณาเลือกชื่อของคุณและใส่รหัส PIN 4 หลัก</p>
+            <h2 class="text-2xl font-bold">เข้าสู่ระบบผู้ตรวจ</h2>
+            <p class="text-sm text-slate-500 mt-1">กรุณาเลือกชื่อผู้ตรวจเพื่อเข้าสู่ระบบ</p>
           </div>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-xs font-bold text-slate-500 mb-2">เลือกรายชื่อหัวหน้า</label>
+              <label class="block text-xs font-bold text-slate-500 mb-2">เลือกรายชื่อผู้ตรวจ</label>
               <select id="supervisor-select" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:border-safety-green">
-                <option value="หัวหน้าปราโมทย์ ไพรวรรณ์">ปราโมทย์ ไพรวรรณ์ (PIN: 1111)</option>
-                <option value="หัวหน้าสกล กิจเจริญ">หัวหน้าสกล กิจเจริญ (PIN: 2222)</option>
-                <option value="หัวหน้าบัณฑิต นิลอ่อน">หัวหน้าบัณฑิต นิลอ่อน (PIN: 3333)</option
+                <option value="ปราโมทย์ ไพรวรรณ์">ปราโมทย์ ไพรวรรณ์</option>
+                <option value="สกล กิจเจริญ">สกล กิจเจริญ</option>
+                <option value="บัณฑิต นิลอ่อน">บัณฑิต นิลอ่อน</option>
               </select>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-500 mb-2">รหัสผ่าน PIN (4 หลัก)</label>
-              <input type="password" id="supervisor-pin" maxlength="4" placeholder="••••" class="w-full p-4 bg-white border border-slate-200 rounded-xl text-center text-2xl tracking-widest text-slate-700 focus:outline-none focus:border-safety-green" inputmode="numeric">
             </div>
           </div>
         </div>
@@ -168,17 +163,16 @@
             <div>
               <label class="block text-xs font-bold text-slate-500 mb-2">เลือกชื่อผู้รับผิดชอบงาน</label>
               <select id="subordinate-select" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:border-safety-green">
-                <option value="นายวิทยา">นายวิทยา (พื้นที่ D)</option>
-                <option value="นายอุดมชัย">นายอุดมชัย (พื้นที่ B)</option>
-                <option value="นายสุทิน">นายสุทิน (พื้นที่ C)</option>
-                <option value="นายสมชาย">นายสมชาย (พื้นที่ A)</option>
-                <option value="นางสาวภัททิยา ">นางสาวภัททิยา  (พื้นที่ H)</option>
-                <option value="นายสนธยา">นายสนธยา (พื้นที่ F)</option>
-                <option value="นายพิพัฒน์พล">นายพิพัฒน์พล (พื้นที่ J)</option>
-                <option value="นายณัฐพงษ์">นายณัฐพงษ์ (พื้นที่ K)</option>
-                <option value="นายศิริชัย">นายศิริชัย (พื้นที่ G)</option>
-                <option value="นายวันชนะ ">นายวันชนะ  (พื้นที่ I)</option>
-                <option value="นายวันชนะ">นาวันชนะ (พื้นที่เต๊น)</option>
+                <option value="วิทยา แพงศรี">วิทยา แพงศรี (พื้นที่ D)</option>
+                <option value="ศิริชัย แสงวงค์">ศิริชัย แสงวงค์ (พื้นที่ G)</option>
+                <option value="สมยศ วงค์สีกิไช">สมยศ วงค์สีกิไช (พื้นที่ F)</option>
+                <option value="อุดมชัย ทศรักษา">อุดมชัย ทศรักษา (พื้นที่ B)</option>
+                <option value="สุทิน รอดเก็บ">สุทิน รอดเก็บ (พื้นที่ C)</option>
+                <option value="ภิพัทยา แพทพัฒน์">ภิพัทยา แพทพัฒน์ (พื้นที่ H)</option>
+                <option value="พิพัฒน์พล ทองสังข์">พิพัฒน์พล ทองสังข์ (พื้นที่ J)</option>
+                <option value="สมรักษ์ วงหา">สมรักษ์ วงหา (พื้นที่ A)</option>
+                <option value="ณัฐพงษ์ ยะล้อม">ณัฐพงษ์ ยะล้อม (พื้นที่ K)</option>
+                <option value="วันชนะ แพงศรี">วันชนะ แพงศรี (พื้นที่ I)</option>
               </select>
             </div>
           </div>
@@ -195,8 +189,8 @@
           <div class="flex justify-between items-center">
             <div>
               <span class="text-xs text-emerald-200 block">ยินดีต้อนรับผู้ใช้งาน</span>
-              <span class="text-lg font-bold" id="sp-profile-name">หัวหน้าปราโมทย์</span>
-              <span class="inline-block ml-2 px-2 py-0.5 bg-yellow-400 text-slate-900 rounded-full text-[10px] font-black uppercase">หัวหน้างาน</span>
+              <span class="text-lg font-bold" id="sp-profile-name">ปราโมทย์ ไพรวรรณ์</span>
+              <span class="inline-block ml-2 px-2 py-0.5 bg-yellow-400 text-slate-900 rounded-full text-[10px] font-black uppercase">ผู้ตรวจ</span>
             </div>
             <button onclick="logout()" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20">
               <i class="fa-solid fa-right-from-bracket"></i>
@@ -261,7 +255,7 @@
           <div class="flex justify-between items-center">
             <div>
               <span class="text-xs text-slate-400 block">ผู้รับผิดชอบความปลอดภัย</span>
-              <span class="text-lg font-bold" id="sb-profile-name">นายวิทยา</span>
+              <span class="text-lg font-bold" id="sb-profile-name">วิทยา แพงศรี</span>
               <span class="inline-block ml-2 px-2 py-0.5 bg-safety-green text-white rounded-full text-[10px] font-bold">OPERATOR</span>
             </div>
             <button onclick="logout()" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20">
@@ -275,7 +269,7 @@
               <i class="fa-solid fa-map-location-dot text-2xl text-safety-green"></i>
               <div>
                 <span class="text-xs text-slate-400 block">พื้นที่รับผิดชอบหลัก</span>
-                <span class="font-bold text-sm" id="sb-profile-area">พื้นที่ A</span>
+                <span class="font-bold text-sm" id="sb-profile-area">พื้นที่ D</span>
               </div>
             </div>
             <div class="text-right">
@@ -347,23 +341,22 @@
                 <div>
                   <label class="block text-[10px] text-slate-400 font-bold">พื้นที่</label>
                   <select id="audit-area" onchange="autoSelectResponsiblePerson()" class="w-full mt-1 p-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none">
-                    <option value="พื้นที่ A">พื้นที่ A (คลังสินค้า)</option>
-                    <option value="พื้นที่ B">พื้นที่ B (ไลน์ผลิต 1)</option>
-                    <option value="พื้นที่ C">พื้นที่ C (ไลน์ผลิต 2)</option>
-                    <option value="พื้นที่ D">พื้นที่ D (จุดโหลดสินค้า)</option>
-                    <option value="พื้นที่ E">พื้นที่ E (โรงอาหาร)</option>
-                    <option value="คลังวัตถุดิบ">คลังวัตถุดิบ</option>
-                    <option value="ห้องชาร์จแบตฯ">ห้องชาร์จแบตเตอรี่</option>
-                    <option value="ลานจอดรถ">ลานจอดรถ</option>
-                    <option value="ฝ่ายประกอบ">ฝ่ายประกอบ</option>
-                    <option value="สำนักงาน">สำนักงาน</option>
-                    <option value="พื้นที่รอบอาคาร">พื้นที่รอบอาคาร</option>
+                    <option value="พื้นที่ D">พื้นที่ D</option>
+                    <option value="พื้นที่ G">พื้นที่ G</option>
+                    <option value="พื้นที่ F">พื้นที่ F</option>
+                    <option value="พื้นที่ B">พื้นที่ B</option>
+                    <option value="พื้นที่ C">พื้นที่ C</option>
+                    <option value="พื้นที่ H">พื้นที่ H</option>
+                    <option value="พื้นที่ J">พื้นที่ J</option>
+                    <option value="พื้นที่ A">พื้นที่ A</option>
+                    <option value="พื้นที่ K">พื้นที่ K</option>
+                    <option value="พื้นที่ I">พื้นที่ I</option>
                   </select>
                 </div>
 
                 <div>
                   <label class="block text-[10px] text-slate-400 font-bold">ผู้ดูแลความปลอดภัย (อัตโนมัติ)</label>
-                  <input type="text" id="audit-assignee" class="w-full mt-1 p-2 bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 focus:outline-none" readonly value="นายวิทยา">
+                  <input type="text" id="audit-assignee" class="w-full mt-1 p-2 bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 focus:outline-none" readonly value="วิทยา แพงศรี">
                 </div>
               </div>
             </div>
@@ -431,8 +424,8 @@
 
           <div class="p-4 bg-slate-50 rounded-2xl mb-4 space-y-3">
             <div class="flex justify-between text-xs">
-              <span class="font-bold text-slate-500" id="res-area">พื้นที่ A</span>
-              <span class="text-slate-400" id="res-reporter">ผู้เปิดงาน: หัวหน้าสมชาย</span>
+              <span class="font-bold text-slate-500" id="res-area">พื้นที่ D</span>
+              <span class="text-slate-400" id="res-reporter">ผู้เปิดงาน: ปราโมทย์ ไพรวรรณ์</span>
             </div>
             <div>
               <span class="text-xs text-slate-400 block">จุดที่มีปัญหา:</span>
@@ -635,26 +628,25 @@
     // ==========================================
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPjAqjcLw-pbffFhNHvh8YWOgsdZEbBY8HDHmPQVfIXgo-RSAUCWAy5vbyYJ6R82arjg/exec"; 
 
-    // รายชื่อผู้เข้าใช้ระบบความปลอดภัยและ PIN
-    const SUPERVISORS_PIN = {
-      "หัวหน้าปราโมทย์": "1111",
-      "หัวหน้าสกล": "2222",
-      "หัวหน้าบัณฑิต": "3333",
-    };
-    
+    // รายชื่อผู้ตรวจที่เข้าใช้ระบบได้โดยไม่ต้องกรอกรหัสผ่าน
+    const SUPERVISORS = [
+      "ปราโมทย์ ไพรวรรณ์",
+      "สกล กิจเจริญ",
+      "บัณฑิต นิลอ่อน"
+    ];
+
     // แผนที่จับคู่พื้นที่ - ผู้รับผิดชอบ
     const AREA_REPRESENTATIVES = {
-      "พื้นที่ A": "นายวิทยา",
-      "พื้นที่ B": "นายสมศักดิ์",
-      "พื้นที่ C": "นายมานะ",
-      "พื้นที่ D": "นางสาวสุดา",
-      "พื้นที่ E": "นายชัยชนะ",
-      "คลังวัตถุดิบ": "นายธีรภัทร์",
-      "ห้องชาร์จแบตฯ": "นายอนันต์",
-      "ลานจอดรถ": "นายณัฐพงษ์",
-      "ฝ่ายประกอบ": "นายวีรยุทธ",
-      "สำนักงาน": "นายเกียรติศักดิ์",
-      "พื้นที่รอบอาคาร": "นายสุรชัย"
+      "พื้นที่ D": "วิทยา แพงศรี",
+      "พื้นที่ G": "ศิริชัย แสงวงค์",
+      "พื้นที่ F": "สมยศ วงค์สีกิไช",
+      "พื้นที่ B": "อุดมชัย ทศรักษา",
+      "พื้นที่ C": "สุทิน รอดเก็บ",
+      "พื้นที่ H": "ภิพัทยา แพทพัฒน์",
+      "พื้นที่ J": "พิพัฒน์พล ทองสังข์",
+      "พื้นที่ A": "สมรักษ์ วงหา",
+      "พื้นที่ K": "ณัฐพงษ์ ยะล้อม",
+      "พื้นที่ I": "วันชนะ แพงศรี"
     };
 
     let jobs = [];
@@ -696,9 +688,9 @@
     const DEFAULT_SEED_JOBS = [
       {
         id: "SF-001",
-        area: "พื้นที่ A",
-        reporter: "หัวหน้าสมชาย",
-        assignee: "นายวิทยา",
+        area: "พื้นที่ D",
+        reporter: "ปราโมทย์ ไพรวรรณ์",
+        assignee: "วิทยา แพงศรี",
         issue: "ถังดับเพลิงชำรุดเกจตกต่ำกว่ามาตรฐานสีเขียว",
         suggestion: "กรุณาแจ้งจัดซื้อเปลี่ยนทดแทนถังใบใหม่ทันที",
         status: "pending",
@@ -863,26 +855,24 @@
     // --- LOGIN SYSTEM ---
     async function loginSupervisor() {
       const selectVal = document.getElementById("supervisor-select").value;
-      const pinVal = document.getElementById("supervisor-pin").value;
 
-      if (SUPERVISORS_PIN[selectVal] === pinVal) {
+      if (SUPERVISORS.includes(selectVal)) {
         currentUser = {
           name: selectVal,
           role: 'supervisor'
         };
-        document.getElementById("supervisor-pin").value = ""; 
         await loadAllJobsData(); 
         showSupervisorHome();
         showToast("สำเร็จ", `ยินดีต้อนรับ ${selectVal}`, "fa-circle-check", "bg-safety-green");
       } else {
-        showToast("รหัสผิดพลาด", "รหัสผ่าน PIN ไม่ถูกต้องกรุณาลองใหม่", "fa-circle-xmark", "bg-safety-red");
+        showToast("ไม่พบรายชื่อ", "กรุณาเลือกรายชื่อผู้ตรวจอีกครั้ง", "fa-circle-xmark", "bg-safety-red");
       }
     }
 
     async function loginSubordinate() {
       const selectedName = document.getElementById("subordinate-select").value;
       
-      let assignedArea = "พื้นที่ A";
+      let assignedArea = "พื้นที่ D";
       for (const [area, rep] of Object.entries(AREA_REPRESENTATIVES)) {
         if (rep === selectedName) {
           assignedArea = area;
@@ -1089,7 +1079,8 @@
             
             setTimeout(() => {
               if (video.srcObject) {
-                const randomArea = Object.keys(AREA_REPRESENTATIVES)[Math.floor(Math.random() * 5)];
+                const areasKeys = Object.keys(AREA_REPRESENTATIVES);
+                const randomArea = areasKeys[Math.floor(Math.random() * areasKeys.length)];
                 document.getElementById("audit-area").value = randomArea;
                 autoSelectResponsiblePerson();
                 stopQRScanner();
@@ -1432,7 +1423,7 @@
         return;
       }
 
-      let textData = "ID\tพื้นที่\tหัวหน้าผู้รายงาน\tผู้ดูแลรับผิดชอบ\tปัญหาหลัก\tวิธีแก้ไข\tสถานะ\tเวลาแจ้ง\tเวลาแก้ไข\n";
+      let textData = "ID\tพื้นที่\tผู้ตรวจผู้รายงาน\tผู้ดูแลรับผิดชอบ\tปัญหาหลัก\tวิธีแก้ไข\tสถานะ\tเวลาแจ้ง\tเวลาแก้ไข\n";
       
       jobs.forEach(job => {
         textData += `${job.id}\t${job.area}\t${job.reporter}\t${job.assignee}\t${job.issue}\t${job.suggestion}\t${job.status === 'pending' ? 'รอแก้ไข' : 'เสร็จสิ้น'}\t${job.createdAt}\t${job.resolvedAt || '-'}\n`;
@@ -1462,7 +1453,7 @@
 
     function downloadCSV() {
       let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-      csvContent += "ID,พื้นที่,หัวหน้าผู้สั่ง,ลูกน้องผู้รับผิดชอบ,จุดที่พบปัญหา,คำแนะนำ,สถานะ,เวลาบันทึก,เวลาแก้ไข,รายละเอียดหลังแก้ไข\n";
+      csvContent += "ID,พื้นที่,ผู้ตรวจผู้สั่ง,ผู้รับผิดชอบ,จุดที่พบปัญหา,คำแนะนำ,สถานะ,เวลาบันทึก,เวลาแก้ไข,รายละเอียดหลังแก้ไข\n";
 
       jobs.forEach(job => {
         csvContent += [
