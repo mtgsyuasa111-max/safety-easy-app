@@ -489,7 +489,12 @@
             <div>
               <span class="text-xs text-slate-400 block mb-1">ภาพปัญหาก่อนหน้านี้ (Before):</span>
               <div class="w-full h-32 bg-slate-200 rounded-xl overflow-hidden relative">
-                <img id="res-before-img" class="w-full h-full object-cover" onerror="this.onerror=null;this.src=getImageFallbackSvg('เปิดรูปไม่ได้');">
+                <img id="res-before-img" class="w-full h-full object-cover hidden">
+                <div id="res-before-fallback" class="hidden w-full h-full bg-slate-100 text-slate-500 flex flex-col items-center justify-center text-center px-3">
+                  <i class="fa-solid fa-image text-xl text-slate-400 mb-1"></i>
+                  <span class="text-[10px] font-bold">เปิดรูป Before ไม่ได้</span>
+                  <span class="text-[9px]">ต้องเก็บรูปเป็นไฟล์ Drive</span>
+                </div>
               </div>
             </div>
           </div>
@@ -618,7 +623,12 @@
           </button>
         </div>
         <div class="bg-slate-900 border border-white/10 rounded-2xl overflow-hidden">
-          <img id="image-viewer-img" src="" class="w-full max-h-[70vh] object-contain bg-black" onerror="this.onerror=null;this.src=getImageFallbackSvg('เปิดรูปไม่ได้');">
+          <img id="image-viewer-img" src="" class="w-full max-h-[70vh] object-contain bg-black hidden">
+          <div id="image-viewer-fallback" class="hidden min-h-64 bg-slate-100 text-slate-500 flex flex-col items-center justify-center text-center p-6">
+            <i class="fa-solid fa-image text-4xl text-slate-400 mb-3"></i>
+            <div class="font-bold text-sm">เปิดรูปไม่ได้</div>
+            <div class="text-xs mt-1 leading-relaxed">รูปนี้อาจถูก Google Sheets ตัดข้อมูล หรือยังไม่ได้เก็บเป็นไฟล์ใน Drive</div>
+          </div>
         </div>
         <p class="text-[10px] text-slate-300 text-center mt-3">แตะปุ่มปิดเพื่อกลับไปหน้ารายการ</p>
       </div>
@@ -1315,9 +1325,40 @@
       return "";
     }
 
+    function describePhotoProblem(src) {
+      if (!src) return "ไม่มีข้อมูลรูป";
+      const value = String(src).trim();
+      if (value.startsWith("data:image/") && !value.includes(",")) return "ข้อมูล base64 ไม่ครบ";
+      if (value.startsWith("data:image/") && value.length < 200) return "ข้อมูลรูปสั้นเกินไป";
+      if (value.length > 200 && !normalizePhotoSource(value)) return "ข้อมูลรูปไม่ใช่ URL/Drive id/base64 ที่อ่านได้";
+      return "รูปอาจยังไม่ได้แชร์จาก Drive หรือข้อมูลถูกตัดใน Sheet";
+    }
+
+    function getPhotoFallbackHtml(label = "เปิดรูปไม่ได้", className = "w-full h-full", detail = "ข้อมูลรูปเสีย/ไม่ใช่ลิงก์รูป") {
+      const cleanedClass = className
+        .replace(/\bobject-cover\b/g, "")
+        .replace(/\bobject-contain\b/g, "");
+      return `
+        <div class="${cleanedClass} bg-slate-100 border border-dashed border-slate-300 text-slate-500 flex flex-col items-center justify-center text-center px-2">
+          <i class="fa-solid fa-image text-xl text-slate-400 mb-1"></i>
+          <span class="text-[10px] font-bold leading-tight">${escapeHtml(label)}</span>
+          <span class="text-[9px] leading-tight mt-0.5">${escapeHtml(detail)}</span>
+        </div>
+      `;
+    }
+
     function renderSafeImage(src, alt, className) {
-      const imageSrc = normalizePhotoSource(src) || getImageFallbackSvg("ไม่มีรูป");
-      return `<img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(alt)}" title="แตะเพื่อดูรูปใหญ่" class="${className}" loading="lazy" onerror="this.onerror=null;this.src='${getImageFallbackSvg("เปิดรูปไม่ได้")}';">`;
+      const imageSrc = normalizePhotoSource(src);
+      if (!imageSrc) return getPhotoFallbackHtml("ไม่มีรูป", className, describePhotoProblem(src));
+
+      return `
+        <span class="block relative w-full h-full">
+          <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(alt)}" title="แตะเพื่อดูรูปใหญ่" class="${className}" loading="lazy" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden');">
+          <span class="hidden absolute inset-0">
+            ${getPhotoFallbackHtml("เปิดรูปไม่ได้", "w-full h-full rounded-lg", describePhotoProblem(src))}
+          </span>
+        </span>
+      `;
     }
 
     function formatBytes(bytes) {
@@ -1466,14 +1507,37 @@
       const job = jobs.find(j => j.id === jobId);
       if (!job) return;
       const imageData = photoType === 'after' ? job.photoAfter : job.photoBefore;
+      const imageSrc = normalizePhotoSource(imageData);
+      const viewerImg = document.getElementById("image-viewer-img");
+      const viewerFallback = document.getElementById("image-viewer-fallback");
+
       document.getElementById("image-viewer-title").innerText = `${job.id} • ${job.area} • ${photoType === 'after' ? 'After' : 'Before'}`;
-      document.getElementById("image-viewer-img").src = normalizePhotoSource(imageData) || getImageFallbackSvg("ไม่มีรูป");
+      viewerImg.onload = () => {
+        viewerImg.classList.remove("hidden");
+        viewerFallback.classList.add("hidden");
+      };
+      viewerImg.onerror = () => {
+        viewerImg.classList.add("hidden");
+        viewerFallback.classList.remove("hidden");
+      };
+
+      if (imageSrc) {
+        viewerFallback.classList.add("hidden");
+        viewerImg.src = imageSrc;
+      } else {
+        viewerImg.removeAttribute("src");
+        viewerImg.classList.add("hidden");
+        viewerFallback.classList.remove("hidden");
+      }
       document.getElementById("image-viewer-modal").classList.remove("hidden");
     }
 
     function closeImageViewer() {
       document.getElementById("image-viewer-modal").classList.add("hidden");
-      document.getElementById("image-viewer-img").src = "";
+      const viewerImg = document.getElementById("image-viewer-img");
+      viewerImg.removeAttribute("src");
+      viewerImg.classList.add("hidden");
+      document.getElementById("image-viewer-fallback").classList.add("hidden");
     }
 
     function openNewAuditModal() {
@@ -1501,7 +1565,25 @@
       document.getElementById("res-reporter").innerText = `ผู้ส่งงาน: ${job.reporter}`;
       document.getElementById("res-issue").innerText = job.issue;
       document.getElementById("res-suggestion").innerText = job.suggestion;
-      document.getElementById("res-before-img").src = normalizePhotoSource(job.photoBefore) || getImageFallbackSvg("ไม่มีรูป");
+      const resBeforeImg = document.getElementById("res-before-img");
+      const resBeforeFallback = document.getElementById("res-before-fallback");
+      const beforeSrc = normalizePhotoSource(job.photoBefore);
+      resBeforeImg.onload = () => {
+        resBeforeImg.classList.remove("hidden");
+        resBeforeFallback.classList.add("hidden");
+      };
+      resBeforeImg.onerror = () => {
+        resBeforeImg.classList.add("hidden");
+        resBeforeFallback.classList.remove("hidden");
+      };
+      if (beforeSrc) {
+        resBeforeFallback.classList.add("hidden");
+        resBeforeImg.src = beforeSrc;
+      } else {
+        resBeforeImg.removeAttribute("src");
+        resBeforeImg.classList.add("hidden");
+        resBeforeFallback.classList.remove("hidden");
+      }
       document.getElementById("res-after-notes").value = "";
       document.getElementById("after-preview").classList.add("hidden");
       document.getElementById("after-placeholder").classList.remove("hidden");
