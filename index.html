@@ -850,11 +850,18 @@
     }
 
     function getNextJobId() {
-      const maxNumber = jobs.reduce((max, job) => {
-        const match = String(job.id || "").match(/^SF-(\d+)$/);
-        return match ? Math.max(max, Number(match[1])) : max;
-      }, 0);
-      return `SF-${String(maxNumber + 1).padStart(3, '0')}`;
+      const now = new Date();
+      const datePart = [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, '0'),
+        String(now.getDate()).padStart(2, '0')
+      ].join("");
+      const timePart = [
+        String(now.getHours()).padStart(2, '0'),
+        String(now.getMinutes()).padStart(2, '0'),
+        String(now.getSeconds()).padStart(2, '0')
+      ].join("");
+      return `SF-${datePart}-${timePart}`;
     }
 
     // ดึงข้อมูลทั้งหมดจาก Google Sheets หรือ Local
@@ -914,9 +921,24 @@
             "Content-Type": "text/plain;charset=utf-8"
           }
         });
-        const result = await response.json();
+        const responseText = await response.text();
+        let result = {};
+
+        try {
+          result = JSON.parse(responseText);
+        } catch (parseError) {
+          result = {
+            status: "error",
+            message: responseText ? responseText.slice(0, 180) : `HTTP ${response.status}`
+          };
+        }
+
         lastSheetError = result.message || "";
-        return result.status === "success";
+        if (result.status !== "success") {
+          console.error("Sheet script returned error:", result);
+          return false;
+        }
+        return true;
       } catch (error) {
         console.error("Error connecting to sheet script:", error);
         lastSheetError = error.message || String(error);
@@ -1696,6 +1718,9 @@
         showToast("ซิงก์คลาวด์สำเร็จ", "ข้อมูลถูกบันทึกใน Google Sheets เรียบร้อย", "fa-cloud-arrow-up", "bg-safety-green");
       } else {
         showToast("บันทึกในเครื่องแล้ว", lastSheetError ? `ยังไม่ขึ้น Sheet: ${lastSheetError}` : "จัดเก็บในเครื่องรอซิงก์ภายหลัง", "fa-floppy-disk", "bg-slate-700");
+        if (lastSheetError) {
+          showCustomAlert("บันทึกเข้า Sheet ไม่สำเร็จ", `งานถูกเก็บในเครื่องแล้ว แต่ Google Sheet ตอบกลับว่า:\n${lastSheetError}\n\nให้ตรวจ Apps Script: Deploy เป็น New version, Execute as Me, และอนุญาตสิทธิ์ Drive`, "warning");
+        }
       }
     }
 
@@ -1745,6 +1770,9 @@
         showToast("ปิดงานสำเร็จ", "อัปเดตสถานะขึ้น Google Sheet สำเร็จแล้ว", "fa-check-double", "bg-safety-green");
       } else {
         showToast("สำเร็จแบบออฟไลน์", lastSheetError ? `ยังไม่ขึ้น Sheet: ${lastSheetError}` : "เก็บประวัติในเครื่องไว้แล้ว", "fa-floppy-disk", "bg-slate-700");
+        if (lastSheetError) {
+          showCustomAlert("อัปเดต Sheet ไม่สำเร็จ", `งานถูกอัปเดตในเครื่องแล้ว แต่ Google Sheet ตอบกลับว่า:\n${lastSheetError}\n\nให้ตรวจ Apps Script: Deploy เป็น New version, Execute as Me, และอนุญาตสิทธิ์ Drive`, "warning");
+        }
       }
     }
 
