@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Safety Easy - แอปตรวจงานความปลอดภัย</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind Config for Custom Colors -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            safety: {
+              green: '#10b981',
+              darkgreen: '#065f46',
+              yellow: '#f59e0b',
+              red: '#ef4444',
+              bg: '#f3f4f6'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* ซ่อน scrollbar */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  </style>
+</head>
+<body class="bg-slate-900 flex justify-center items-center min-h-screen text-slate-800">
+
+  <!-- Main Mobile Container Frame -->
+  <div class="w-full max-w-md bg-gray-50 h-[92vh] sm:h-[85vh] md:h-[900px] rounded-3xl shadow-2xl overflow-hidden flex flex-col relative border border-slate-700">
+    
+    <!-- Status Bar (Decorational Mobile look) -->
+    <div class="bg-safety-darkgreen text-white px-6 pt-3 pb-2 flex justify-between items-center text-xs font-semibold">
+      <div><i class="fa-solid fa-shield-halved mr-1 text-safety-yellow"></i> SAFETY EASY</div>
+      <div class="flex items-center space-x-2">
+        <span id="cloud-sync-status">
+          <i class="fa-solid fa-cloud text-slate-400"></i> Local Mode
+        </span>
+        <span id="live-time">00:00 น.</span>
+      </div>
+    </div>
+
+    <!-- MAIN APP SCREEN WRAPPER -->
+    <div class="flex-1 overflow-y-auto no-scrollbar pb-16 relative">
+      
+      <!-- 1. SPLASH / ROLE SELECTION SCREEN -->
+      <div id="screen-login" class="p-6 flex flex-col justify-between h-full">
+        <div class="text-center mt-12">
+          <div class="w-24 h-24 bg-gradient-to-tr from-safety-green to-emerald-400 rounded-3xl mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/20 mb-6">
+            <i class="fa-solid fa-helmet-safety text-white text-5xl"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-slate-800 tracking-tight">SAFETY <span class="text-safety-green">EASY</span></h1>
+          <p class="text-sm text-slate-500 mt-2">ระบบตรวจความปลอดภัยและการรายงานผล Real-time</p>
+          <div id="config-badge" class="mt-3 inline-block bg-slate-100 text-slate-600 text-[10px] font-semibold px-2.5 py-1 rounded-full border border-slate-200">
+            โหมดบันทึกในเครื่อง (ยังไม่เชื่อมต่อ Google Sheet)
+          </div>
+        </div>
+
+        <div class="space-y-4 my-8">
+          <p class="text-center text-xs font-semibold text-slate-400 uppercase tracking-wider">เลือกประเภทผู้ใช้งาน</p>
+          
+          <!-- Supervisor Login Button -->
+          <button onclick="showSupervisorLogin()" class="w-full bg-slate-800 hover:bg-slate-700 text-white p-4 rounded-2xl flex items-center justify-between shadow-md transition duration-200">
+            <div class="flex items-center space-x-4">
+              <div class="w-12 h-12 bg-safety-yellow/20 rounded-xl flex items-center justify-center text-safety-yellow">
+                <i class="fa-solid fa-user-tie text-xl"></i>
+              </div>
+              <div class="text-left">
+                <div class="font-bold">หัวหน้างาน (Supervisor)</div>
+                <div class="text-xs text-slate-400">เข้าตรวจ ตรวจประเมิน เปิดใบสั่งซ่อม</div>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-400"></i>
+          </button>
+
+          <!-- Subordinate Login Button -->
+          <button onclick="showSubordinateLogin()" class="w-full bg-white hover:bg-slate-100 text-slate-800 p-4 rounded-2xl flex items-center justify-between border border-slate-200 shadow-sm transition duration-200">
+            <div class="flex items-center space-x-4">
+              <div class="w-12 h-12 bg-safety-green/10 rounded-xl flex items-center justify-center text-safety-green">
+                <i class="fa-solid fa-user-gear text-xl"></i>
+              </div>
+              <div class="text-left">
+                <div class="font-bold text-slate-800">ลูกน้อง/ผู้รับผิดชอบ (Operator)</div>
+                <div class="text-xs text-slate-500">รายงานตัว, ดูงานมอบหมาย, อัปเดต After</div>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-400"></i>
+          </button>
+        </div>
+
+        <div class="text-center text-xs text-slate-400">
+          v3.2.0 • พร้อมใช้งานบน GitHub Pages
+        </div>
+      </div>
+
+      <!-- 1.1 SUPERVISOR PIN SCREEN -->
+      <div id="screen-supervisor-pin" class="p-6 hidden flex flex-col h-full justify-between">
+        <div>
+          <button onclick="showLoginScreen()" class="mb-6 flex items-center text-slate-600 font-semibold text-sm">
+            <i class="fa-solid fa-arrow-left mr-2"></i> ย้อนกลับ
+          </button>
+          <div class="text-center my-6">
+            <i class="fa-solid fa-user-lock text-4xl text-safety-yellow mb-3"></i>
+            <h2 class="text-2xl font-bold">เข้าสู่ระบบหัวหน้างาน</h2>
+            <p class="text-sm text-slate-500 mt-1">กรุณาเลือกชื่อของคุณและใส่รหัส PIN 4 หลัก</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-2">เลือกรายชื่อหัวหน้า</label>
+              <select id="supervisor-select" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:border-safety-green">
+                <option value="หัวหน้าสมชาย">หัวหน้าสมชาย (PIN: 1111)</option>
+                <option value="หัวหน้าสมหญิง">หัวหน้าสมหญิง (PIN: 2222)</option>
+                <option value="หัวหน้าวิชัย">หัวหน้าวิชัย (PIN: 3333)</option>
+                <option value="หัวหน้าปรีชา">หัวหน้าปรีชา (PIN: 4444)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-2">รหัสผ่าน PIN (4 หลัก)</label>
+              <input type="password" id="supervisor-pin" maxlength="4" placeholder="••••" class="w-full p-4 bg-white border border-slate-200 rounded-xl text-center text-2xl tracking-widest text-slate-700 focus:outline-none focus:border-safety-green" inputmode="numeric">
+            </div>
+          </div>
+        </div>
+
+        <button onclick="loginSupervisor()" class="w-full bg-slate-900 text-white p-4 rounded-xl font-bold shadow-lg shadow-slate-900/10 hover:bg-slate-800 transition">
+          <i class="fa-solid fa-right-to-bracket mr-2"></i> ยืนยันเข้าสู่ระบบ
+        </button>
+      </div>
+
+      <!-- 1.2 SUBORDINATE SELECT SCREEN -->
+      <div id="screen-subordinate-select" class="p-6 hidden flex flex-col h-full justify-between">
+        <div>
+          <button onclick="showLoginScreen()" class="mb-6 flex items-center text-slate-600 font-semibold text-sm">
+            <i class="fa-solid fa-arrow-left mr-2"></i> ย้อนกลับ
+          </button>
+          <div class="text-center my-6">
+            <i class="fa-solid fa-users text-4xl text-safety-green mb-3"></i>
+            <h2 class="text-2xl font-bold">เข้าสู่ระบบผู้รับผิดชอบ</h2>
+            <p class="text-sm text-slate-500 mt-1">เลือกชื่อของคุณเพื่อตรวจสอบงานที่ค้าง</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-2">เลือกชื่อผู้รับผิดชอบงาน</label>
+              <select id="subordinate-select" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:border-safety-green">
+                <option value="นายวิทยา">นายวิทยา (พื้นที่ A)</option>
+                <option value="นายสมศักดิ์">นายสมศักดิ์ (พื้นที่ B)</option>
+                <option value="นายมานะ">นายมานะ (พื้นที่ C)</option>
+                <option value="นางสาวสุดา">นางสาวสุดา (พื้นที่ D)</option>
+                <option value="นายชัยชนะ">นายชัยชนะ (พื้นที่ E)</option>
+                <option value="นายธีรภัทร์">นายธีรภัทร์ (คลังวัตถุดิบ)</option>
+                <option value="นายอนันต์">นายอนันต์ (ห้องชาร์จแบตฯ)</option>
+                <option value="นายณัฐพงษ์">นายณัฐพงษ์ (ลานจอดรถ)</option>
+                <option value="นายวีรยุทธ">นายวีรยุทธ (ฝ่ายประกอบ)</option>
+                <option value="นายเกียรติศักดิ์">นายเกียรติศักดิ์ (สำนักงาน)</option>
+                <option value="นายสุรชัย">นายสุรชัย (พื้นที่รอบอาคาร)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="loginSubordinate()" class="w-full bg-safety-green text-white p-4 rounded-xl font-bold shadow-lg shadow-safety-green/20 hover:bg-emerald-600 transition">
+          <i class="fa-solid fa-right-to-bracket mr-2"></i> ลงชื่อเข้าใช้งาน
+        </button>
+      </div>
+
+      <!-- 2. SUPERVISOR DASHBOARD & AUDIT FORM -->
+      <div id="screen-supervisor-home" class="hidden">
+        <div class="bg-gradient-to-r from-safety-darkgreen to-emerald-700 text-white p-6 rounded-b-[2.5rem] shadow-lg">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="text-xs text-emerald-200 block">ยินดีต้อนรับผู้ใช้งาน</span>
+              <span class="text-lg font-bold" id="sp-profile-name">หัวหน้าสมชาย</span>
+              <span class="inline-block ml-2 px-2 py-0.5 bg-yellow-400 text-slate-900 rounded-full text-[10px] font-black uppercase">หัวหน้างาน</span>
+            </div>
+            <button onclick="logout()" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+
+          <!-- สถิติต่างๆ -->
+          <div class="grid grid-cols-3 gap-3 mt-6">
+            <div class="bg-white/10 p-3 rounded-2xl text-center">
+              <span class="block text-2xl font-black" id="stat-total">0</span>
+              <span class="text-[10px] text-emerald-200">งานทั้งหมด</span>
+            </div>
+            <div class="bg-white/10 p-3 rounded-2xl text-center border border-red-400/30">
+              <span class="block text-2xl font-black text-red-300" id="stat-pending">0</span>
+              <span class="text-[10px] text-emerald-200">รอแก้ไข</span>
+            </div>
+            <div class="bg-white/10 p-3 rounded-2xl text-center border border-emerald-400/30">
+              <span class="block text-2xl font-black text-emerald-300" id="stat-done">0</span>
+              <span class="text-[10px] text-emerald-200">เสร็จสิ้น</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- เครื่องมือและประวัติ -->
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-lg text-slate-800">เครื่องมือตรวจความปลอดภัย</h3>
+          </div>
+
+          <button onclick="openNewAuditModal()" class="w-full bg-gradient-to-r from-emerald-500 to-safety-green text-white p-5 rounded-2xl flex items-center justify-between shadow-lg shadow-emerald-500/20 mb-8 transition hover:opacity-95">
+            <div class="flex items-center space-x-4">
+              <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-circle-plus text-2xl"></i>
+              </div>
+              <div class="text-left">
+                <div class="font-bold text-lg">เริ่มตรวจ Safety ใหม่</div>
+                <div class="text-xs text-emerald-100">ถ่ายรูป สแกน และระบุปัญหา</div>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-emerald-100 text-xl"></i>
+          </button>
+
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-md text-slate-800">รายการตรวจความปลอดภัยล่าสุด</h3>
+            <button onclick="toggleMockSheet()" class="text-xs text-safety-green font-bold flex items-center">
+              <i class="fa-solid fa-table-list mr-1"></i> ดูตารางแผ่นงาน
+            </button>
+          </div>
+
+          <div id="sp-jobs-list" class="space-y-4">
+            <div class="text-center py-8 text-slate-400 text-sm">
+              <i class="fa-solid fa-spinner fa-spin text-3xl mb-2 block text-safety-green"></i>
+              กำลังโหลดข้อมูลความปลอดภัย...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. SUBORDINATE DASHBOARD -->
+      <div id="screen-subordinate-home" class="hidden">
+        <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white p-6 rounded-b-[2.5rem] shadow-lg">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="text-xs text-slate-400 block">ผู้รับผิดชอบความปลอดภัย</span>
+              <span class="text-lg font-bold" id="sb-profile-name">นายวิทยา</span>
+              <span class="inline-block ml-2 px-2 py-0.5 bg-safety-green text-white rounded-full text-[10px] font-bold">OPERATOR</span>
+            </div>
+            <button onclick="logout()" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+
+          <!-- สรุปงานค้างของผู้ใช้ -->
+          <div class="mt-4 bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <i class="fa-solid fa-map-location-dot text-2xl text-safety-green"></i>
+              <div>
+                <span class="text-xs text-slate-400 block">พื้นที่รับผิดชอบหลัก</span>
+                <span class="font-bold text-sm" id="sb-profile-area">พื้นที่ A</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400 block">งานค้างของคุณ</span>
+              <span class="text-xl font-black text-safety-yellow" id="sb-pending-count">0 งาน</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6">
+          <h3 class="font-bold text-lg mb-4 text-slate-800"><i class="fa-solid fa-list-check text-safety-green mr-2"></i>รายการตรวจแก้ของคุณ</h3>
+
+          <div id="sb-jobs-list" class="space-y-4">
+            <div class="text-center py-8 text-slate-400 text-sm">
+              <i class="fa-solid fa-spinner fa-spin text-3xl mb-2 block text-safety-green"></i>
+              กำลังโหลดรายการงานของคุณ...
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =============================================
+         MODALS & FLOATING OVERLAYS 
+         ============================================= -->
+
+    <!-- NEW SAFETY AUDIT MODAL -->
+    <div id="modal-audit" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-end hidden z-50">
+      <div class="bg-white rounded-t-[2.5rem] p-6 max-h-[92%] overflow-y-auto no-scrollbar flex flex-col justify-between shadow-2xl">
+        
+        <div>
+          <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-safety-green/20 text-safety-green rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-plus"></i>
+              </div>
+              <h3 class="text-xl font-bold text-slate-800">รายงาน Safety ประจำจุด</h3>
+            </div>
+            <button onclick="closeNewAuditModal()" class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center hover:bg-slate-200">
+              <i class="fa-solid fa-xmark text-slate-500"></i>
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            
+            <!-- QR CODE / Area Selection Panel -->
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <label class="block text-xs font-bold text-slate-500 mb-2">ระบุพื้นที่ปฏิบัติการ</label>
+              
+              <div class="grid grid-cols-2 gap-3 mb-3">
+                <button onclick="triggerQRScan()" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2">
+                  <i class="fa-solid fa-qrcode text-lg text-safety-yellow"></i>
+                  <span>สแกน QR Code</span>
+                </button>
+                <button onclick="autoDetectArea()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 p-3 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1">
+                  <i class="fa-solid fa-wand-magic-sparkles text-safety-green"></i>
+                  <span>จำลองสแกนด่วน</span>
+                </button>
+              </div>
+
+              <div id="qr-camera-container" class="hidden my-3 p-2 bg-black rounded-xl overflow-hidden relative">
+                <video id="qr-video" class="w-full h-40 object-cover bg-black rounded-lg"></video>
+                <div class="absolute inset-0 border-2 border-dashed border-safety-yellow m-6 pointer-events-none rounded-lg opacity-60"></div>
+                <div class="text-center text-[10px] text-white mt-1">กำลังหากล้องสแกน... <span onclick="stopQRScanner()" class="underline text-red-300 ml-2 cursor-pointer">ยกเลิก</span></div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 mt-1">
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold">พื้นที่</label>
+                  <select id="audit-area" onchange="autoSelectResponsiblePerson()" class="w-full mt-1 p-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none">
+                    <option value="พื้นที่ A">พื้นที่ A (คลังสินค้า)</option>
+                    <option value="พื้นที่ B">พื้นที่ B (ไลน์ผลิต 1)</option>
+                    <option value="พื้นที่ C">พื้นที่ C (ไลน์ผลิต 2)</option>
+                    <option value="พื้นที่ D">พื้นที่ D (จุดโหลดสินค้า)</option>
+                    <option value="พื้นที่ E">พื้นที่ E (โรงอาหาร)</option>
+                    <option value="คลังวัตถุดิบ">คลังวัตถุดิบ</option>
+                    <option value="ห้องชาร์จแบตฯ">ห้องชาร์จแบตเตอรี่</option>
+                    <option value="ลานจอดรถ">ลานจอดรถ</option>
+                    <option value="ฝ่ายประกอบ">ฝ่ายประกอบ</option>
+                    <option value="สำนักงาน">สำนักงาน</option>
+                    <option value="พื้นที่รอบอาคาร">พื้นที่รอบอาคาร</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold">ผู้ดูแลความปลอดภัย (อัตโนมัติ)</label>
+                  <input type="text" id="audit-assignee" class="w-full mt-1 p-2 bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 focus:outline-none" readonly value="นายวิทยา">
+                </div>
+              </div>
+            </div>
+
+            <!-- PHOTO BEFORE -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-2">ถ่ายภาพจุดที่พบปัญหา (Before)</label>
+              
+              <div class="flex items-center space-x-4">
+                <div class="w-24 h-24 bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden" onclick="triggerBeforeCamera()">
+                  <img id="before-preview" class="absolute inset-0 w-full h-full object-cover hidden">
+                  <div id="before-placeholder" class="text-center text-slate-400">
+                    <i class="fa-solid fa-camera text-xl"></i>
+                    <span class="block text-[9px] mt-1">กดถ่ายรูป</span>
+                  </div>
+                </div>
+                
+                <div class="flex-1 text-xs text-slate-500">
+                  <p class="font-bold text-slate-700">ภาพก่อนแก้ไข (Before)</p>
+                  <p class="mt-1">กดที่กล่องซ้ายมือ เพื่อถ่ายรูปปัญหาจริงด้วยกล้องมือถือของคุณ</p>
+                  <input type="file" id="before-photo-input" accept="image/*" capture="environment" class="hidden" onchange="previewBeforePhoto(this)">
+                </div>
+              </div>
+            </div>
+
+            <!-- Problem details -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-1">หัวข้อ/จุดที่มีปัญหา</label>
+              <input type="text" id="audit-issue" placeholder="เช่น ทางเดินถูกปิดกั้น, ถังดับเพลิงชำรุด..." class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-safety-green">
+            </div>
+
+            <!-- Suggestions -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-1">คำแนะนำ / วิธีการแก้ไข</label>
+              <textarea id="audit-suggestion" rows="3" placeholder="โปรดระบุแนวทางแก้ไข เช่น ให้เคลื่อนย้ายวัตถุกีดขวางออกภายใน 2 ชั่วโมง" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-safety-green"></textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <button onclick="saveNewAudit()" id="btn-save-audit" class="w-full mt-6 bg-safety-green text-white p-4 rounded-2xl font-bold shadow-lg shadow-safety-green/20 hover:bg-emerald-600 transition flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span id="txt-btn-save">บันทึกข้อมูลและส่งเข้าระบบ</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- RESOLVE SAFETY WORK MODAL (FOR SUBORDINATE) -->
+    <div id="modal-resolve" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-end hidden z-50">
+      <div class="bg-white rounded-t-[2.5rem] p-6 max-h-[92%] overflow-y-auto no-scrollbar flex flex-col justify-between shadow-2xl">
+        
+        <div>
+          <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-safety-yellow/20 text-safety-yellow rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-wrench"></i>
+              </div>
+              <h3 class="text-xl font-bold text-slate-800">จัดการแก้ไขหน้างาน</h3>
+            </div>
+            <button onclick="closeResolveModal()" class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center hover:bg-slate-200">
+              <i class="fa-solid fa-xmark text-slate-500"></i>
+            </button>
+          </div>
+
+          <div class="p-4 bg-slate-50 rounded-2xl mb-4 space-y-3">
+            <div class="flex justify-between text-xs">
+              <span class="font-bold text-slate-500" id="res-area">พื้นที่ A</span>
+              <span class="text-slate-400" id="res-reporter">ผู้เปิดงาน: หัวหน้าสมชาย</span>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 block">จุดที่มีปัญหา:</span>
+              <p class="font-bold text-slate-700" id="res-issue">ทางหนีไฟมีกล่องซ้อนวางเกะกะ</p>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 block">คำแนะนำแก้ไข:</span>
+              <p class="text-xs bg-safety-yellow/10 text-amber-800 p-2.5 rounded-lg border border-safety-yellow/20 font-semibold" id="res-suggestion">
+                ให้ขยับออกทันที ห้ามนำวัตถุใดๆ มาขวางทางระบายควัน
+              </p>
+            </div>
+
+            <div>
+              <span class="text-xs text-slate-400 block mb-1">ภาพปัญหาก่อนหน้านี้ (Before):</span>
+              <div class="w-full h-32 bg-slate-200 rounded-xl overflow-hidden relative">
+                <img id="res-before-img" class="w-full h-full object-cover">
+              </div>
+            </div>
+          </div>
+
+          <!-- AFTER PHOTO UPLOAD & RESOLUTION DETAILS -->
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-2">ถ่ายภาพยืนยันการแก้ไขเสร็จสิ้น (After Photo)</label>
+              
+              <div class="flex items-center space-x-4">
+                <div class="w-24 h-24 bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden" onclick="triggerAfterCamera()">
+                  <img id="after-preview" class="absolute inset-0 w-full h-full object-cover hidden">
+                  <div id="after-placeholder" class="text-center text-slate-400">
+                    <i class="fa-solid fa-camera text-xl"></i>
+                    <span class="block text-[9px] mt-1">ถ่ายรูปแก้ไข</span>
+                  </div>
+                </div>
+                
+                <div class="flex-1 text-xs text-slate-500">
+                  <p class="font-bold text-slate-700 text-safety-green">ภาพหลังแก้ไข (After)</p>
+                  <p class="mt-1">ถ่ายภาพจุดที่แก้ไขเสร็จสิ้นแล้วเพื่อเป็นหลักฐาน</p>
+                  <input type="file" id="after-photo-input" accept="image/*" capture="environment" class="hidden" onchange="previewAfterPhoto(this)">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-500 mb-1">หมายเหตุ / วิธีการแก้ไขที่คุณทำ</label>
+              <textarea id="res-after-notes" rows="2" placeholder="เช่น เคลื่อนย้ายสิ่งกีดขวางไปไว้ในสโตร์เรียบร้อย..." class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-safety-green"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="saveResolveJob()" id="btn-save-resolve" class="w-full mt-6 bg-safety-green text-white p-4 rounded-2xl font-bold shadow-lg shadow-safety-green/20 hover:bg-emerald-600 transition flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-check-double"></i>
+          <span id="txt-btn-resolve">ปิดใบงานนี้เรียบร้อย (Close Job)</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- GOOGLE SHEET / SUMMARY DIALOG -->
+    <div id="modal-sheets" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+      <div class="bg-white rounded-3xl p-6 w-full max-w-sm flex flex-col justify-between shadow-2xl h-[85%]">
+        
+        <div class="flex flex-col h-full overflow-hidden">
+          <div class="flex justify-between items-center mb-3">
+            <div class="flex items-center space-x-2 text-emerald-600">
+              <i class="fa-solid fa-file-excel text-2xl"></i>
+              <h3 class="font-bold text-sm">แผ่นงานความปลอดภัย</h3>
+            </div>
+            <button onclick="toggleMockSheet()" class="text-slate-400 hover:text-slate-600 text-lg">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          
+          <p class="text-[10px] text-slate-500 mb-3 leading-tight">กรณีเบราว์เซอร์ล็อกสิทธิ์การดาวน์โหลด: แนะนำให้ใช้ปุ่ม **คัดลอกตาราง** ไปเปิดในแอป Line หรือคลิกปุ่มเชื่อมเพื่อเปิดเบราว์เซอร์จริงด้านล่างครับ</p>
+          
+          <!-- ตารางพรีวิวแบบย่อ -->
+          <div class="border border-slate-200 rounded-xl overflow-auto flex-1 text-[10px] no-scrollbar mb-4">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
+                  <th class="p-2 border-r border-slate-200 text-left whitespace-nowrap">ID</th>
+                  <th class="p-2 border-r border-slate-200 text-left whitespace-nowrap">พื้นที่</th>
+                  <th class="p-2 border-r border-slate-200 text-left whitespace-nowrap">ปัญหา</th>
+                  <th class="p-2 border-r border-slate-200 text-left whitespace-nowrap">สถานะ</th>
+                </tr>
+              </thead>
+              <tbody id="sheet-table-body" class="divide-y divide-slate-100">
+                <!-- ข้อมูลตารางจะถูกเติมจาก js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ชุดคำสั่งส่งออกที่ทำงานได้ชัวร์ 100% ปลอดภัยจากข้อจำกัด Sandbox -->
+          <div class="space-y-2">
+            <!-- คัดลอกตารางไปวางได้ทันที -->
+            <button onclick="copyTableToClipboard()" class="w-full bg-slate-900 text-white py-3.5 rounded-xl font-bold text-xs hover:bg-slate-800 transition flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-copy text-yellow-400"></i>
+              <span>คัดลอกตาราง (ไปกดวางใน LINE หรือ Excel ได้เลย)</span>
+            </button>
+            
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="openDirectSheetLink()" class="bg-emerald-100 text-emerald-800 py-3 rounded-xl font-bold text-[10px] hover:bg-emerald-200 transition flex items-center justify-center space-x-1">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <span>เปิดดูตารางดิบออนไลน์</span>
+              </button>
+              
+              <button onclick="downloadCSV()" class="bg-slate-100 text-slate-700 py-3 rounded-xl font-bold text-[10px] hover:bg-slate-200 transition flex items-center justify-center space-x-1">
+                <i class="fa-solid fa-download"></i>
+                <span>พยายามโหลด CSV</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CUSTOM POPUP MODAL (REPLACES BROWSER ALERT) -->
+    <div id="custom-alert-modal" class="absolute inset-0 bg-slate-900/65 backdrop-blur-xs flex items-center justify-center hidden z-[100] p-6">
+      <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl flex flex-col space-y-4">
+        <div class="flex items-center space-x-3">
+          <div id="alert-icon-bg" class="w-10 h-10 bg-safety-green/20 text-safety-green rounded-xl flex items-center justify-center text-lg">
+            <i id="alert-icon" class="fa-solid fa-info"></i>
+          </div>
+          <h3 id="alert-title" class="font-bold text-lg text-slate-800">แจ้งเตือนระบบ</h3>
+        </div>
+        <div id="alert-body" class="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
+          รายละเอียดประกาศข้อมูลความปลอดภัย...
+        </div>
+        <button onclick="closeCustomAlert()" class="w-full bg-slate-900 text-white p-3.5 rounded-xl font-bold text-xs hover:bg-slate-800 transition">
+          ตกลง / ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="absolute top-12 left-6 right-6 bg-slate-900 text-white p-4 rounded-2xl flex items-center space-x-3 shadow-xl transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-lg" id="toast-icon-wrapper">
+        <i id="toast-icon" class="fa-solid fa-bell"></i>
+      </div>
+      <div class="flex-1">
+        <div class="font-bold text-xs" id="toast-title">ระบบแจ้งเตือน</div>
+        <div class="text-[11px] text-slate-300 mt-0.5" id="toast-msg">มีข้อมูลอัปเดตใหม่เรียบร้อย</div>
+      </div>
+    </div>
+
+    <!-- MOCK CAMERAS (FOR SIMULATING DIRECT CAMERA WORK IN BROWSER) -->
+    <div id="camera-simulation-modal" class="absolute inset-0 bg-black flex flex-col justify-between hidden z-[60] p-6 text-white">
+      <div class="flex justify-between items-center">
+        <span class="text-sm font-bold tracking-widest"><i class="fa-solid fa-compact-disc text-red-500 animate-pulse mr-2"></i>กล้องตรวจสอบความปลอดภัย</span>
+        <button onclick="closeCameraSimulation()" class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+          <i class="fa-solid fa-xmark text-white"></i>
+        </button>
+      </div>
+
+      <div class="w-full aspect-[4/3] border-4 border-white/30 rounded-2xl bg-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
+        <i class="fa-solid fa-image text-5xl text-slate-600 mb-2"></i>
+        <span class="text-xs text-slate-500" id="cam-role-indicator">ภาพประกอบตรวจงาน</span>
+        
+        <div class="absolute bottom-4 left-4 bg-black/60 px-3 py-1 rounded-full text-[10px] text-yellow-300">
+          ISO 200 • GRID ACTIVE
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs text-slate-400 mb-2 text-center">สามารถเลือกภาพตัวอย่างด่วนเพื่อจำลองทดสอบระบบ</label>
+        <div class="grid grid-cols-2 gap-2" id="simulated-photos-options">
+          <!-- ตารางรูปจำลอง -->
+        </div>
+      </div>
+
+      <div class="flex justify-center items-center py-4">
+        <button id="shutter-button" class="w-16 h-16 rounded-full border-4 border-white bg-slate-200 hover:bg-white active:scale-95 transition"></button>
+      </div>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <div class="absolute bottom-0 inset-x-0 bg-white border-t border-slate-200 h-16 flex justify-around items-center px-4 safe-bottom text-slate-400 z-40">
+      <button onclick="goToHome()" id="nav-home" class="flex flex-col items-center space-y-1 text-safety-green">
+        <i class="fa-solid fa-house-chimney text-lg"></i>
+        <span class="text-[10px] font-semibold">หน้าหลัก</span>
+      </button>
+      
+      <button onclick="toggleMockSheet()" id="nav-sheets" class="flex flex-col items-center space-y-1 hover:text-slate-600">
+        <i class="fa-solid fa-file-invoice text-lg"></i>
+        <span class="text-[10px] font-semibold">แผ่นงานชีต</span>
+      </button>
+      
+      <button onclick="showQuickAbout()" id="nav-info" class="flex flex-col items-center space-y-1 hover:text-slate-600">
+        <i class="fa-solid fa-circle-info text-lg"></i>
+        <span class="text-[10px] font-semibold">ข้อมูล</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- JavaScript logic -->
+  <script>
+    // ==========================================
+    // ลิงก์ Google Apps Script URL สำหรับเชื่อม Google Sheet ของคุณที่ต้องการบันทึกข้อมูลส่งตรงทันที
+    // ==========================================
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPjAqjcLw-pbffFhNHvh8YWOgsdZEbBY8HDHmPQVfIXgo-RSAUCWAy5vbyYJ6R82arjg/exec"; 
+
+    // รายชื่อผู้เข้าใช้ระบบความปลอดภัยและ PIN
+    const SUPERVISORS_PIN = {
+      "หัวหน้าสมชาย": "1111",
+      "หัวหน้าสมหญิง": "2222",
+      "หัวหน้าวิชัย": "3333",
+      "หัวหน้าปรีชา": "4444"
+    };
+
+    // แผนที่จับคู่พื้นที่ - ผู้รับผิดชอบ
+    const AREA_REPRESENTATIVES = {
+      "พื้นที่ A": "นายวิทยา",
+      "พื้นที่ B": "นายสมศักดิ์",
+      "พื้นที่ C": "นายมานะ",
+      "พื้นที่ D": "นางสาวสุดา",
+      "พื้นที่ E": "นายชัยชนะ",
+      "คลังวัตถุดิบ": "นายธีรภัทร์",
+      "ห้องชาร์จแบตฯ": "นายอนันต์",
+      "ลานจอดรถ": "นายณัฐพงษ์",
+      "ฝ่ายประกอบ": "นายวีรยุทธ",
+      "สำนักงาน": "นายเกียรติศักดิ์",
+      "พื้นที่รอบอาคาร": "นายสุรชัย"
+    };
+
+    let jobs = [];
+    let currentUser = null;
+    let activeJobForResolve = null;
+    let currentPhotoTarget = null;
+    let selectedBase64Photo = null;
+
+    // รูปแบบจำลองเบื้องต้น
+    const MOCK_PHOTOS_BEFORE = [
+      {
+        title: "ทางเดินอุดตันด้วยเศษกล่อง",
+        data: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ef4444'/><text x='50%' y='50%' font-size='8' fill='white' dominant-baseline='middle' text-anchor='middle'>[ทางหนีไฟปิดกั้น]</text></svg>"
+      },
+      {
+        title: "สายไฟเครื่องจักรเสื่อมสภาพ",
+        data: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f59e0b'/><text x='50%' y='50%' font-size='8' fill='white' dominant-baseline='middle' text-anchor='middle'>[สายไฟเปลือยอันตราย]</text></svg>"
+      }
+    ];
+
+    const MOCK_PHOTOS_AFTER = [
+      {
+        title: "เคลียร์สิ่งกีดขวางแล้ว",
+        data: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310b981'/><text x='50%' y='50%' font-size='8' fill='white' dominant-baseline='middle' text-anchor='middle'>[ย้ายสิ่งกีดขวางแล้ว]</text></svg>"
+      },
+      {
+        title: "ซ่อมแซมหุ้มสายท่อเสร็จสิ้น",
+        data: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310b981'/><text x='50%' y='50%' font-size='8' fill='white' dominant-baseline='middle' text-anchor='middle'>[ร้อยท่อป้องกันเรียบร้อย]</text></svg>"
+      }
+    ];
+
+    // ข้อมูลเริ่มต้นสำหรับสาธิต
+    const DEFAULT_SEED_JOBS = [
+      {
+        id: "SF-001",
+        area: "พื้นที่ A",
+        reporter: "หัวหน้าสมชาย",
+        assignee: "นายวิทยา",
+        issue: "ถังดับเพลิงชำรุดเกจตกต่ำกว่ามาตรฐานสีเขียว",
+        suggestion: "กรุณาแจ้งจัดซื้อเปลี่ยนทดแทนถังใบใหม่ทันที",
+        status: "pending",
+        photoBefore: MOCK_PHOTOS_BEFORE[0].data,
+        photoAfter: null,
+        createdAt: "2026-05-27 08:30 น.",
+        resolvedAt: null,
+        notes: ""
+      }
+    ];
+
+    // --- CUSTOM POPUP NOTIFICATION MODAL SYSTEM ---
+    function showCustomAlert(title, text, type = "info") {
+      const modal = document.getElementById("custom-alert-modal");
+      const titleEl = document.getElementById("alert-title");
+      const bodyEl = document.getElementById("alert-body");
+      const iconEl = document.getElementById("alert-icon");
+      const iconBg = document.getElementById("alert-icon-bg");
+
+      titleEl.innerText = title;
+      bodyEl.innerText = text;
+
+      // จัดสไตล์ตามประเภท
+      if (type === "success") {
+        iconEl.className = "fa-solid fa-circle-check text-emerald-600";
+        iconBg.className = "w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-lg";
+      } else if (type === "warning") {
+        iconEl.className = "fa-solid fa-triangle-exclamation text-amber-600";
+        iconBg.className = "w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-lg";
+      } else if (type === "danger") {
+        iconEl.className = "fa-solid fa-circle-xmark text-red-600";
+        iconBg.className = "w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center text-lg";
+      } else {
+        iconEl.className = "fa-solid fa-circle-info text-blue-600";
+        iconBg.className = "w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-lg";
+      }
+
+      modal.classList.remove("hidden");
+    }
+
+    function closeCustomAlert() {
+      document.getElementById("custom-alert-modal").classList.add("hidden");
+    }
+
+    // --- GOOGLE SHEETS SYNC SYSTEM ---
+
+    // ดึงข้อมูลทั้งหมดจาก Google Sheets หรือ Local
+    async function loadAllJobsData() {
+      if (GOOGLE_SCRIPT_URL) {
+        try {
+          const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs`);
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            jobs = data;
+            saveToLocalStore(); // ซิงก์เก็บสำรองไว้ในเครื่องด้วย
+            updateCloudStatus(true);
+            return;
+          }
+        } catch (error) {
+          console.error("Failed to fetch from Google Sheet:", error);
+          showToast("เชื่อมต่อชีตออนไลน์ไม่ได้", "กำลังเรียกใช้ฐานข้อมูลสำรองภายในมือถือแทน", "fa-wifi", "bg-safety-red");
+        }
+      }
+      loadFromLocalStore();
+      updateCloudStatus(false);
+    }
+
+    // ฟังก์ชันอัปเดตสถานะ Cloud บนหน้าแอป
+    function updateCloudStatus(isConnected) {
+      const statusEl = document.getElementById("cloud-sync-status");
+      const badgeEl = document.getElementById("config-badge");
+      if (isConnected) {
+        statusEl.innerHTML = `<i class="fa-solid fa-cloud-arrow-up text-emerald-400"></i> Sheets Connected`;
+        if (badgeEl) {
+          badgeEl.className = "mt-3 inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-200";
+          badgeEl.innerText = "เชื่อมโยงข้อมูล Google Sheets จริงแบบ Real-time";
+        }
+      } else {
+        statusEl.innerHTML = `<i class="fa-solid fa-cloud text-slate-400"></i> Local Mode`;
+        if (badgeEl) {
+          badgeEl.className = "mt-3 inline-block bg-slate-100 text-slate-600 text-[10px] font-semibold px-2.5 py-1 rounded-full border border-slate-200";
+          badgeEl.innerText = "โหมดบันทึกในเครื่อง (ยังไม่เชื่อมต่อ Google Sheet)";
+        }
+      }
+    }
+
+    // ฟังก์ชันส่งไปบันทึกบน Google Sheet
+    async function sendToGoogleSheet(actionType, jobPayload) {
+      if (!GOOGLE_SCRIPT_URL) return true;
+
+      try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          redirect: "follow",
+          method: "POST",
+          body: JSON.stringify({
+            action: actionType,
+            data: jobPayload
+          }),
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          }
+        });
+        const result = await response.json();
+        return result.status === "success";
+      } catch (error) {
+        console.error("Error connecting to sheet script:", error);
+        return false;
+      }
+    }
+
+    // บันทึกสำรองในหน่วยความจำเครื่อง
+    function saveToLocalStore() {
+      localStorage.setItem("safety_jobs_data_v3", JSON.stringify(jobs));
+    }
+
+    function loadFromLocalStore() {
+      const stored = localStorage.getItem("safety_jobs_data_v3");
+      if (stored) {
+        jobs = JSON.parse(stored);
+      } else {
+        jobs = DEFAULT_SEED_JOBS;
+        saveToLocalStore();
+      }
+    }
+
+    // --- TIMER REFRESH ---
+    function updateClock() {
+      const now = new Date();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      document.getElementById("live-time").innerText = `${hours}:${minutes} น.`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- NAVIGATION LOGIC ---
+    function hideAllScreens() {
+      document.getElementById("screen-login").classList.add("hidden");
+      document.getElementById("screen-supervisor-pin").classList.add("hidden");
+      document.getElementById("screen-subordinate-select").classList.add("hidden");
+      document.getElementById("screen-supervisor-home").classList.add("hidden");
+      document.getElementById("screen-subordinate-home").classList.add("hidden");
+    }
+
+    function showLoginScreen() {
+      hideAllScreens();
+      currentUser = null;
+      document.getElementById("screen-login").classList.remove("hidden");
+      updateNavHighlight('none');
+    }
+
+    function showSupervisorLogin() {
+      hideAllScreens();
+      document.getElementById("screen-supervisor-pin").classList.remove("hidden");
+    }
+
+    function showSubordinateLogin() {
+      hideAllScreens();
+      document.getElementById("screen-subordinate-select").classList.remove("hidden");
+    }
+
+    // --- LOGIN SYSTEM ---
+    async function loginSupervisor() {
+      const selectVal = document.getElementById("supervisor-select").value;
+      const pinVal = document.getElementById("supervisor-pin").value;
+
+      if (SUPERVISORS_PIN[selectVal] === pinVal) {
+        currentUser = {
+          name: selectVal,
+          role: 'supervisor'
+        };
+        document.getElementById("supervisor-pin").value = ""; 
+        await loadAllJobsData(); 
+        showSupervisorHome();
+        showToast("สำเร็จ", `ยินดีต้อนรับ ${selectVal}`, "fa-circle-check", "bg-safety-green");
+      } else {
+        showToast("รหัสผิดพลาด", "รหัสผ่าน PIN ไม่ถูกต้องกรุณาลองใหม่", "fa-circle-xmark", "bg-safety-red");
+      }
+    }
+
+    async function loginSubordinate() {
+      const selectedName = document.getElementById("subordinate-select").value;
+      
+      let assignedArea = "พื้นที่ A";
+      for (const [area, rep] of Object.entries(AREA_REPRESENTATIVES)) {
+        if (rep === selectedName) {
+          assignedArea = area;
+          break;
+        }
+      }
+
+      currentUser = {
+        name: selectedName,
+        role: 'subordinate',
+        area: assignedArea
+      };
+
+      await loadAllJobsData(); 
+      showSubordinateHome();
+      showToast("ลงชื่อสำเร็จ", `คุณ ${selectedName} ได้เข้าระบบตรวจงานแล้ว`, "fa-circle-check", "bg-safety-green");
+    }
+
+    function logout() {
+      showLoginScreen();
+      showToast("ออกจากระบบ", "กลับไปที่หน้าหลักเรียบร้อย", "fa-circle-info", "bg-slate-700");
+    }
+
+    // --- DASHBOARD RENDERERS ---
+    function showSupervisorHome() {
+      hideAllScreens();
+      document.getElementById("screen-supervisor-home").classList.remove("hidden");
+      document.getElementById("sp-profile-name").innerText = currentUser.name;
+      updateNavHighlight('home');
+      renderSupervisorJobs();
+    }
+
+    // เปิดหน้าแดชบอร์ดลูกน้อง
+    function showSubordinateHome() {
+      hideAllScreens();
+      document.getElementById("screen-subordinate-home").classList.remove("hidden");
+      document.getElementById("sb-profile-name").innerText = currentUser.name;
+      document.getElementById("sb-profile-area").innerText = currentUser.area;
+      updateNavHighlight('home');
+      renderSubordinateJobs();
+    }
+
+    function renderSupervisorJobs() {
+      const totalCount = jobs.length;
+      const pendingCount = jobs.filter(j => j.status === 'pending').length;
+      const resolvedCount = jobs.filter(j => j.status === 'resolved').length;
+
+      document.getElementById("stat-total").innerText = totalCount;
+      document.getElementById("stat-pending").innerText = pendingCount;
+      document.getElementById("stat-done").innerText = resolvedCount;
+
+      const listContainer = document.getElementById("sp-jobs-list");
+      listContainer.innerHTML = "";
+
+      if (jobs.length === 0) {
+        listContainer.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">ไม่มีงานตรวจความปลอดภัยล่าสุด</div>`;
+        return;
+      }
+
+      const sortedJobs = [...jobs].reverse();
+
+      sortedJobs.forEach(job => {
+        const isPending = job.status === 'pending';
+        const statusBadge = isPending 
+          ? `<span class="bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1 rounded-full text-[10px] font-bold">รอการแก้ไข</span>`
+          : `<span class="bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full text-[10px] font-bold">แก้ไขเสร็จสิ้น</span>`;
+
+        const jobCard = document.createElement("div");
+        jobCard.className = "bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3";
+        jobCard.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="inline-block bg-slate-100 text-slate-800 text-[10px] font-bold px-2.5 py-1 rounded-lg mr-1.5">${job.area}</span>
+              <span class="text-[10px] text-slate-400 font-semibold">${job.createdAt}</span>
+            </div>
+            ${statusBadge}
+          </div>
+          
+          <div class="flex space-x-3 items-center">
+            <div class="w-14 h-14 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+              <img src="${job.photoBefore || 'https://via.placeholder.com/150'}" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-bold text-slate-800 truncate">${job.issue}</h4>
+              <p class="text-xs text-slate-500 line-clamp-2 mt-0.5"><b class="text-slate-600">คำแนะนำ:</b> ${job.suggestion}</p>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center text-xs text-slate-500 pt-2 border-t border-slate-100">
+            <div><i class="fa-solid fa-circle-user mr-1 text-slate-400"></i>ผู้แก้: <b>${job.assignee}</b></div>
+            <div class="text-[10px] text-slate-400">ผู้รายงาน: ${job.reporter}</div>
+          </div>
+        `;
+        listContainer.appendChild(jobCard);
+      });
+    }
+
+    function renderSubordinateJobs() {
+      const personalJobs = jobs.filter(j => j.assignee === currentUser.name);
+      const pendingJobs = personalJobs.filter(j => j.status === 'pending');
+
+      document.getElementById("sb-pending-count").innerText = `${pendingJobs.length} งาน`;
+
+      const listContainer = document.getElementById("sb-jobs-list");
+      listContainer.innerHTML = "";
+
+      if (personalJobs.length === 0) {
+        listContainer.innerHTML = `
+          <div class="text-center py-12 text-slate-400 text-sm">
+            <i class="fa-solid fa-circle-check text-5xl mb-3 text-safety-green/40 block"></i>
+            ไม่มีรายงานปัญหาค้างของระวางพื้นที่รับผิดชอบนี้
+          </div>`;
+        return;
+      }
+
+      const sortedPersonal = [...personalJobs].sort((a, b) => {
+        if (a.status === 'pending' && b.status !== 'pending') return -1;
+        if (a.status !== 'pending' && b.status === 'pending') return 1;
+        return 0;
+      });
+
+      sortedPersonal.forEach(job => {
+        const isPending = job.status === 'pending';
+        let footerBtn = "";
+
+        if (isPending) {
+          footerBtn = `
+            <button onclick="openResolveModal('${job.id}')" class="w-full mt-3 bg-safety-green hover:bg-emerald-600 text-white py-2.5 rounded-xl font-bold text-xs flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-camera"></i>
+              <span>ส่งภาพ After & ปิดงาน</span>
+            </button>
+          `;
+        } else {
+          footerBtn = `
+            <div class="mt-3 bg-emerald-50 text-emerald-800 border border-emerald-100 p-2.5 rounded-xl text-xs flex justify-between items-center">
+              <span><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> ตรวจแก้สำเร็จเมื่อ ${job.resolvedAt}</span>
+              <button onclick="viewJobAfterDetails('${job.id}')" class="text-[10px] font-bold text-emerald-600 underline">ดูรายละเอียด</button>
+            </div>
+          `;
+        }
+
+        const card = document.createElement("div");
+        card.className = `p-4 rounded-2xl shadow-sm border ${isPending ? 'bg-white border-amber-200' : 'bg-white border-slate-100'} space-y-3`;
+        card.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span class="text-xs bg-slate-100 px-2 py-0.5 rounded-lg font-bold">${job.area}</span>
+            <span class="text-[10px] text-slate-400 font-semibold">ผู้เปิดงาน: ${job.reporter} (${job.createdAt})</span>
+          </div>
+
+          <div class="space-y-1">
+            <h4 class="text-sm font-bold text-slate-800">${job.issue}</h4>
+            <div class="bg-amber-50/70 p-2.5 rounded-xl border border-amber-100">
+              <span class="text-[10px] text-amber-800 font-bold uppercase block">คำแนะนำแก้ไข:</span>
+              <p class="text-xs text-amber-900 mt-0.5">${job.suggestion}</p>
+            </div>
+          </div>
+
+          <div class="flex space-x-2 pt-1">
+            <div class="flex-1">
+              <span class="text-[9px] text-slate-400 block mb-0.5">ภาพปัญหา (Before)</span>
+              <img src="${job.photoBefore}" class="w-full h-24 object-cover rounded-lg border border-slate-200">
+            </div>
+            ${!isPending ? `
+              <div class="flex-1">
+                <span class="text-[9px] text-slate-400 block mb-0.5">ภาพหลังแก้ไข (After)</span>
+                <img src="${job.photoAfter}" class="w-full h-24 object-cover rounded-lg border border-slate-200">
+              </div>
+            ` : ''}
+          </div>
+
+          ${footerBtn}
+        `;
+        listContainer.appendChild(card);
+      });
+    }
+
+    // --- QR SCANNER SIMULATION ---
+    function autoDetectArea() {
+      const areasKeys = Object.keys(AREA_REPRESENTATIVES);
+      const randomArea = areasKeys[Math.floor(Math.random() * areasKeys.length)];
+      
+      showToast("สแกนสำเร็จ", `พบป้ายพื้นที่: ${randomArea}`, "fa-qrcode", "bg-safety-green");
+      document.getElementById("audit-area").value = randomArea;
+      autoSelectResponsiblePerson();
+    }
+
+    function autoSelectResponsiblePerson() {
+      const areaVal = document.getElementById("audit-area").value;
+      const staffName = AREA_REPRESENTATIVES[areaVal] || "ไม่ระบุ";
+      document.getElementById("audit-assignee").value = staffName;
+    }
+
+    function triggerQRScan() {
+      const cameraContainer = document.getElementById("qr-camera-container");
+      const video = document.getElementById("qr-video");
+      cameraContainer.classList.remove("hidden");
+      
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+          .then(function(stream) {
+            video.srcObject = stream;
+            video.setAttribute("playsinline", true);
+            video.play();
+            
+            setTimeout(() => {
+              if (video.srcObject) {
+                const randomArea = Object.keys(AREA_REPRESENTATIVES)[Math.floor(Math.random() * 5)];
+                document.getElementById("audit-area").value = randomArea;
+                autoSelectResponsiblePerson();
+                stopQRScanner();
+                showToast("ตรวจพบรหัส QR", `พื้นที่: ${randomArea}`, "fa-barcode", "bg-safety-green");
+              }
+            }, 2000);
+          })
+          .catch(function(err) {
+            showToast("สแกนด่วนแทน", "ไม่พบกล้องหลังสแกน หรือไม่เปิดรับสิทธิ์", "fa-video-slash", "bg-safety-red");
+            cameraContainer.classList.add("hidden");
+          });
+      } else {
+        showToast("ไม่รองรับกล้อง", "ระบบไม่สนับสนุนเว็บสแกน", "fa-exclamation", "bg-safety-red");
+        cameraContainer.classList.add("hidden");
+      }
+    }
+
+    function stopQRScanner() {
+      const video = document.getElementById("qr-video");
+      if (video.srcObject) {
+        const stream = video.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
+      }
+      document.getElementById("qr-camera-container").classList.add("hidden");
+    }
+
+    // --- PHOTO SIMULATION HOOKS ---
+    function triggerBeforeCamera() {
+      currentPhotoTarget = 'before';
+      openCameraSimulationModal();
+    }
+
+    function triggerAfterCamera() {
+      currentPhotoTarget = 'after';
+      openCameraSimulationModal();
+    }
+
+    function openCameraSimulationModal() {
+      const modal = document.getElementById("camera-simulation-modal");
+      modal.classList.remove("hidden");
+
+      const optionsContainer = document.getElementById("simulated-photos-options");
+      optionsContainer.innerHTML = "";
+
+      const targetPhotos = currentPhotoTarget === 'before' ? MOCK_PHOTOS_BEFORE : MOCK_PHOTOS_AFTER;
+      document.getElementById("cam-role-indicator").innerText = currentPhotoTarget === 'before' ? "ถ่ายภาพความบกพร่อง (Before)" : "ภาพผลการแก้ไขเสร็จสิ้น (After)";
+
+      targetPhotos.forEach((photo, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "p-2 bg-slate-800 hover:bg-slate-700 text-xs text-white rounded-lg flex flex-col items-center justify-center space-y-1";
+        btn.onclick = () => selectSimulatedPhoto(photo.data);
+        btn.innerHTML = `
+          <div class="w-8 h-8 rounded overflow-hidden">
+            <img src="${photo.data}" class="w-full h-full object-cover">
+          </div>
+          <span class="truncate w-full block text-[8px] text-slate-300">${photo.title}</span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+
+      document.getElementById("shutter-button").onclick = () => {
+        selectSimulatedPhoto(targetPhotos[0].data);
+      };
+    }
+
+    function closeCameraSimulation() {
+      document.getElementById("camera-simulation-modal").classList.add("hidden");
+    }
+
+    function selectSimulatedPhoto(base64Data) {
+      selectedBase64Photo = base64Data;
+      
+      if (currentPhotoTarget === 'before') {
+        const preview = document.getElementById("before-preview");
+        const placeholder = document.getElementById("before-placeholder");
+        preview.src = base64Data;
+        preview.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+      } else {
+        const preview = document.getElementById("after-preview");
+        const placeholder = document.getElementById("after-placeholder");
+        preview.src = base64Data;
+        preview.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+      }
+      closeCameraSimulation();
+    }
+
+    function previewBeforePhoto(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById("before-preview");
+          const placeholder = document.getElementById("before-placeholder");
+          preview.src = e.target.result;
+          preview.classList.remove("hidden");
+          placeholder.classList.add("hidden");
+          selectedBase64Photo = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function previewAfterPhoto(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById("after-preview");
+          const placeholder = document.getElementById("after-placeholder");
+          preview.src = e.target.result;
+          preview.classList.remove("hidden");
+          placeholder.classList.add("hidden");
+          selectedBase64Photo = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // --- FORM MODALS ---
+    function openNewAuditModal() {
+      document.getElementById("modal-audit").classList.remove("hidden");
+      autoSelectResponsiblePerson();
+      document.getElementById("audit-issue").value = "";
+      document.getElementById("audit-suggestion").value = "";
+      document.getElementById("before-preview").classList.add("hidden");
+      document.getElementById("before-placeholder").classList.remove("hidden");
+      selectedBase64Photo = null;
+    }
+
+    function closeNewAuditModal() {
+      stopQRScanner();
+      document.getElementById("modal-audit").classList.add("hidden");
+    }
+
+    function openResolveModal(jobId) {
+      const job = jobs.find(j => j.id === jobId);
+      if (!job) return;
+
+      activeJobForResolve = job;
+      document.getElementById("res-area").innerText = job.area;
+      document.getElementById("res-reporter").innerText = `ผู้ส่งงาน: ${job.reporter}`;
+      document.getElementById("res-issue").innerText = job.issue;
+      document.getElementById("res-suggestion").innerText = job.suggestion;
+      document.getElementById("res-before-img").src = job.photoBefore;
+      document.getElementById("res-after-notes").value = "";
+      document.getElementById("after-preview").classList.add("hidden");
+      document.getElementById("after-placeholder").classList.remove("hidden");
+      selectedBase64Photo = null;
+
+      document.getElementById("modal-resolve").classList.remove("hidden");
+    }
+
+    function closeResolveModal() {
+      document.getElementById("modal-resolve").classList.add("hidden");
+      activeJobForResolve = null;
+    }
+
+    // --- SAVE AND SUBMIT LOGIC ---
+    async function saveNewAudit() {
+      const area = document.getElementById("audit-area").value;
+      const assignee = document.getElementById("audit-assignee").value;
+      const issue = document.getElementById("audit-issue").value.trim();
+      const suggestion = document.getElementById("audit-suggestion").value.trim();
+      
+      if (!issue || !suggestion) {
+        showToast("ขาดข้อมูล", "กรุณาระบุหัวข้อข้อบกพร่องและคำแนะนำ", "fa-exclamation-triangle", "bg-safety-red");
+        return;
+      }
+      if (!selectedBase64Photo) {
+        showToast("ต้องการรูปถ่าย", "กรุณาแนบรูปถ่าย (Before) ด้วยครับ", "fa-camera", "bg-safety-red");
+        return;
+      }
+
+      const btn = document.getElementById("btn-save-audit");
+      const txt = document.getElementById("txt-btn-save");
+      btn.disabled = true;
+      txt.innerText = "กำลังอัปโหลดขึ้น Google Sheets...";
+
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} น.`;
+
+      const newJob = {
+        id: `SF-${String(jobs.length + 1).padStart(3, '0')}`,
+        area: area,
+        reporter: currentUser.name,
+        assignee: assignee,
+        issue: issue,
+        suggestion: suggestion,
+        status: "pending",
+        photoBefore: selectedBase64Photo,
+        photoAfter: "",
+        createdAt: dateStr,
+        resolvedAt: "",
+        notes: ""
+      };
+
+      const isSynced = await sendToGoogleSheet("create", newJob);
+      
+      jobs.push(newJob);
+      saveToLocalStore();
+
+      btn.disabled = false;
+      txt.innerText = "บันทึกข้อมูลและส่งเข้าระบบ";
+
+      closeNewAuditModal();
+      showSupervisorHome();
+
+      if (isSynced && GOOGLE_SCRIPT_URL) {
+        showToast("ซิงก์คลาวด์สำเร็จ", "ข้อมูลถูกบันทึกใน Google Sheets เรียบร้อย", "fa-cloud-arrow-up", "bg-safety-green");
+      } else {
+        showToast("บันทึกในเครื่องแล้ว", "จัดเก็บในเครื่องรอซิงก์ภายหลัง", "fa-floppy-disk", "bg-slate-700");
+      }
+    }
+
+    async function saveResolveJob() {
+      if (!activeJobForResolve) return;
+      const notes = document.getElementById("res-after-notes").value.trim();
+
+      if (!selectedBase64Photo) {
+        showToast("ต้องการรูปถ่าย", "กรุณาแนบรูปถ่ายการแก้ไข (After) ด้วยครับ", "fa-camera", "bg-safety-red");
+        return;
+      }
+
+      const btn = document.getElementById("btn-save-resolve");
+      const txt = document.getElementById("txt-btn-resolve");
+      btn.disabled = true;
+      txt.innerText = "กำลังซิงก์สถานะกับ Google Sheet...";
+
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} น.`;
+
+      const updatedData = {
+        id: activeJobForResolve.id,
+        status: "resolved",
+        photoAfter: selectedBase64Photo,
+        resolvedAt: dateStr,
+        notes: notes || "จัดการแก้ไขเรียบร้อย"
+      };
+
+      const isSynced = await sendToGoogleSheet("update", updatedData);
+
+      const idx = jobs.findIndex(j => j.id === activeJobForResolve.id);
+      if (idx !== -1) {
+        jobs[idx].status = "resolved";
+        jobs[idx].photoAfter = selectedBase64Photo;
+        jobs[idx].resolvedAt = dateStr;
+        jobs[idx].notes = notes || "จัดการแก้ไขเรียบร้อย";
+      }
+
+      saveToLocalStore();
+      btn.disabled = false;
+      txt.innerText = "ปิดใบงานนี้เรียบร้อย (Close Job)";
+
+      closeResolveModal();
+      showSubordinateHome();
+
+      if (isSynced && GOOGLE_SCRIPT_URL) {
+        showToast("ปิดงานสำเร็จ", "อัปเดตสถานะขึ้น Google Sheet สำเร็จแล้ว", "fa-check-double", "bg-safety-green");
+      } else {
+        showToast("สำเร็จแบบออฟไลน์", "เก็บประวัติในเครื่องไว้แล้ว", "fa-floppy-disk", "bg-slate-700");
+      }
+    }
+
+    function viewJobAfterDetails(jobId) {
+      const job = jobs.find(j => j.id === jobId);
+      if (!job) return;
+      
+      const detailsText = `• พื้นที่เกิดเหตุ: ${job.area}\n` +
+                          `• ปัญหาความปลอดภัย: ${job.issue}\n` +
+                          `• วิธีการแก้ไขที่ระบุ: ${job.notes}\n` +
+                          `• สถานะใบงาน: เสร็จสิ้นสมบูรณ์\n` +
+                          `• เวลาปิดใบงาน: ${job.resolvedAt}`;
+                          
+      showCustomAlert(`ใบงานตรวจแก้งาน [${job.id}]`, detailsText, "success");
+    }
+
+    // --- MOCK TABLE RENDERING ---
+    function toggleMockSheet() {
+      const modal = document.getElementById("modal-sheets");
+      if (modal.classList.contains("hidden")) {
+        modal.classList.remove("hidden");
+        renderMockSheetData();
+      } else {
+        modal.classList.add("hidden");
+      }
+    }
+
+    function renderMockSheetData() {
+      const tbody = document.getElementById("sheet-table-body");
+      tbody.innerHTML = "";
+
+      if (jobs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center">ไม่มีข้อมูลในแผ่นงาน</td></tr>`;
+        return;
+      }
+
+      jobs.forEach(job => {
+        const isPending = job.status === 'pending';
+        const row = document.createElement("tr");
+        row.className = "hover:bg-slate-50 border-b border-slate-100";
+        row.innerHTML = `
+          <td class="p-2.5 font-bold text-slate-700 border-r border-slate-100">${job.id}</td>
+          <td class="p-2.5 border-r border-slate-100">${job.area}</td>
+          <td class="p-2.5 border-r border-slate-100 truncate max-w-[100px]">${job.issue}</td>
+          <td class="p-2.5 font-bold ${isPending ? 'text-amber-500' : 'text-emerald-500'}">${isPending ? 'รอตรวจแก้' : 'เรียบร้อย'}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // เปิดแผ่นงานโดยตรงผ่านหน้าเบราว์เซอร์จริงเพื่อหลีกเลี่ยง iframe sandbox
+    function openDirectSheetLink() {
+      if (GOOGLE_SCRIPT_URL) {
+        showCustomAlert("ข้อมูลตรวจสอบ", "โปรแกรมกำลังนำคุณไปยังฐานข้อมูล Google Sheet กรุณาเตรียมสิทธิ์เข้าถึงเบราว์เซอร์ภายนอก", "info");
+        window.open(GOOGLE_SCRIPT_URL.replace("/exec", ""), "_blank");
+      } else {
+        showToast("ไม่ได้เชื่อมต่อ", "กรุณาตั้งค่า Google Script URL", "fa-exclamation", "bg-safety-red");
+      }
+    }
+
+    // คัดลอกตารางความปลอดภัยในรูปแบบ CSV ไปยังคลิปบอร์ดเพื่อให้ผู้ใช้นำไปใช้ในแอปอื่นได้ง่ายที่สุด
+    function copyTableToClipboard() {
+      if (jobs.length === 0) {
+        showToast("ไม่สำเร็จ", "ไม่มีข้อมูลสำหรับคัดลอก", "fa-xmark", "bg-safety-red");
+        return;
+      }
+
+      let textData = "ID\tพื้นที่\tหัวหน้าผู้รายงาน\tผู้ดูแลรับผิดชอบ\tปัญหาหลัก\tวิธีแก้ไข\tสถานะ\tเวลาแจ้ง\tเวลาแก้ไข\n";
+      
+      jobs.forEach(job => {
+        textData += `${job.id}\t${job.area}\t${job.reporter}\t${job.assignee}\t${job.issue}\t${job.suggestion}\t${job.status === 'pending' ? 'รอแก้ไข' : 'เสร็จสิ้น'}\t${job.createdAt}\t${job.resolvedAt || '-'}\n`;
+      });
+
+      // จัดการคัดลอกผ่านระบบ ExecCommand เพื่อซัพพอร์ตเบราว์เซอร์ในแอป LINE/Facebook
+      const tempTextArea = document.createElement("textarea");
+      tempTextArea.value = textData;
+      tempTextArea.style.position = "absolute";
+      tempTextArea.style.left = "-9999px";
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showToast("คัดลอกลงคลิปบอร์ดสำเร็จ!", "คุณสามารถนำข้อมูลนี้ไปกด วาง ในแอป LINE, Notes หรือ Excel เพื่อส่งต่อได้ทันที", "fa-circle-check", "bg-safety-green");
+          showCustomAlert("คัดลอกข้อมูลเสร็จสิ้น!", "ข้อมูลตารางทั้งหมดถูกคัดลอกลงมือถือแล้ว\nกรุณาเปิดแอปปลายทาง (เช่น LINE หรือ Excel) แล้วกด วาง (Paste) ได้เลยครับ!", "success");
+        } else {
+          showToast("คัดลอกไม่สำเร็จ", "เบราว์เซอร์ของคุณปฏิเสธการสิทธิ์เข้าถึงคลิปบอร์ด", "fa-exclamation", "bg-safety-red");
+        }
+      } catch (err) {
+        showToast("เกิดข้อผิดพลาด", "ไม่สามารถเรียกใช้งานคลิปบอร์ดได้", "fa-exclamation-triangle", "bg-safety-red");
+      }
+      document.body.removeChild(tempTextArea);
+    }
+
+    function downloadCSV() {
+      let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+      csvContent += "ID,พื้นที่,หัวหน้าผู้สั่ง,ลูกน้องผู้รับผิดชอบ,จุดที่พบปัญหา,คำแนะนำ,สถานะ,เวลาบันทึก,เวลาแก้ไข,รายละเอียดหลังแก้ไข\n";
+
+      jobs.forEach(job => {
+        csvContent += [
+          job.id,
+          job.area,
+          job.reporter,
+          job.assignee,
+          `"${job.issue.replace(/"/g, '""')}"`,
+          `"${job.suggestion.replace(/"/g, '""')}"`,
+          job.status === 'pending' ? "รอแก้ไข" : "เสร็จสิ้น",
+          job.createdAt,
+          job.resolvedAt || "-",
+          `"${job.notes.replace(/"/g, '""')}"`
+        ].join(",") + "\n";
+      });
+
+      try {
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `safety_report_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast("พยายามดาวน์โหลดสำเร็จ", "หากไฟล์ไม่ปรากฏ กรุณาใช้ระบบ 'คัดลอกตาราง' แทนเพื่อหลีกเลี่ยงระบบความปลอดภัยของเบราว์เซอร์", "fa-check", "bg-slate-700");
+      } catch (e) {
+        showToast("ล้มเหลว", "ระบบ Sandbox บล็อกสิทธิ์การสั่งโหลด กรุณาใช้ระบบ 'คัดลอกตาราง'", "fa-times", "bg-safety-red");
+      }
+    }
+
+    function goToHome() {
+      if (currentUser) {
+        if (currentUser.role === 'supervisor') {
+          showSupervisorHome();
+        } else {
+          showSubordinateHome();
+        }
+      } else {
+        showLoginScreen();
+      }
+    }
+
+    function showQuickAbout() {
+      const aboutText = `ระบบจัดการและตรวจสอบงาน Safety ประจำไซต์งานแบบครบวงจร (เวอร์ชัน 3.2.0)\n\n` +
+                        `• ความจุผู้ใช้งาน: รองรับทีมงาน 15 คนอย่างอิสระ\n` +
+                        `• การเชื่อมโยง: ระบบส่งตรงอัปเดตไป Google Sheets จริง\n` +
+                        `• ปัญหาดาวน์โหลด: แก้ไขโดยใช้ระบบคัดลอกข้อมูลไปวางในโปรแกรมอื่นแทน\n` +
+                        `• ฟีเจอร์: รองรับทั้งระบบจำลองพิกัดและกล้องมือถือจริง`;
+      showCustomAlert("เกี่ยวกับระบบ SAFETY EASY", aboutText, "info");
+    }
+
+    function updateNavHighlight(activeNav) {
+      const navHome = document.getElementById("nav-home");
+      const navSheets = document.getElementById("nav-sheets");
+      const navInfo = document.getElementById("nav-info");
+
+      [navHome, navSheets, navInfo].forEach(nav => {
+        nav.classList.remove("text-safety-green");
+        nav.classList.add("text-slate-400");
+      });
+
+      if (activeNav === 'home') {
+        navHome.classList.add("text-safety-green");
+        navHome.classList.remove("text-slate-400");
+      }
+    }
+
+    function showToast(title, msg, iconClass = "fa-bell", bgClass = "bg-slate-900") {
+      const toast = document.getElementById("toast");
+      document.getElementById("toast-title").innerText = title;
+      document.getElementById("toast-msg").innerText = msg;
+      document.getElementById("toast-icon").className = `fa-solid ${iconClass}`;
+      document.getElementById("toast-icon-wrapper").className = `w-8 h-8 rounded-full flex items-center justify-center text-lg ${bgClass} text-white`;
+
+      toast.classList.remove("-translate-y-20", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      setTimeout(() => {
+        toast.classList.add("-translate-y-20", "opacity-0");
+        toast.classList.remove("translate-y-0", "opacity-100");
+      }, 3500);
+    }
+
+    window.onload = async function() {
+      await loadAllJobsData();
+      showLoginScreen();
+    };
+  </script>
+</body>
+</html>
