@@ -209,12 +209,12 @@
               <select id="subordinate-select" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:border-safety-green">
                 <option value="วิทยา แพงศรี">วิทยา แพงศรี (พื้นที่ D)</option>
                 <option value="ศิริชัย แสงวงค์">ศิริชัย แสงวงค์ (พื้นที่ G)</option>
-                <option value="สมยศ วงค์สีกิไช">สมยศ วงค์สีกิไช (พื้นที่ F)</option>
+                <option value="สนธยา วงค์สีทธิไช">สนธยา วงค์สีทธิไช (พื้นที่ F)</option>
                 <option value="อุดมชัย ทศรักษา">อุดมชัย ทศรักษา (พื้นที่ B)</option>
-                <option value="สุทิน รอดเก็บ">สุทิน รอดเก็บ (พื้นที่ C)</option>
-                <option value="ภิพัทยา แพทพัฒน์">ภิพัทยา แพทพัฒน์ (พื้นที่ H)</option>
-                <option value="พิพัฒน์พล ทองสังข์">พิพัฒน์พล ทองสังข์ (พื้นที่ J)</option>
-                <option value="สมรักษ์ วงหา">สมรักษ์ วงหา (พื้นที่ A)</option>
+                <option value="สุทิน รอดยิ้ม">สุทิน รอดยิ้ม (พื้นที่ C)</option>
+                <option value="ภิพัทยา แพทพีพัฒน์">ภิพัทยา แพทพีพัฒน์ (พื้นที่ H)</option>
+                <option value="พิพัฒน์พล ทอยสังข์">พิพัฒน์พล ทอยสังข์ (พื้นที่ J)</option>
+                <option value="สมชาย วงษา">สมชาย วงษา (พื้นที่ A)</option>
                 <option value="ณัฐพงษ์ ยะล้อม">ณัฐพงษ์ ยะล้อม (พื้นที่ K)</option>
                 <option value="วันชนะ แพงศรี">วันชนะ แพงศรี (พื้นที่ I)</option>
               </select>
@@ -831,15 +831,17 @@
     const AREA_REPRESENTATIVES = {
       "พื้นที่ D": "วิทยา แพงศรี",
       "พื้นที่ G": "ศิริชัย แสงวงค์",
-      "พื้นที่ F": "สมยศ วงค์สีกิไช",
+      "พื้นที่ F": "สนธยา วงค์สีทธิไช",
       "พื้นที่ B": "อุดมชัย ทศรักษา",
-      "พื้นที่ C": "สุทิน รอดเก็บ",
-      "พื้นที่ H": "ภิพัทยา แพทพัฒน์",
-      "พื้นที่ J": "พิพัฒน์พล ทองสังข์",
-      "พื้นที่ A": "สมรักษ์ วงหา",
+      "พื้นที่ C": "สุทิน รอดยิ้ม",
+      "พื้นที่ H": "ภิพัทยา แพทพีพัฒน์",
+      "พื้นที่ J": "พิพัฒน์พล ทอยสังข์",
+      "พื้นที่ A": "สมชาย วงษา",
       "พื้นที่ K": "ณัฐพงษ์ ยะล้อม",
       "พื้นที่ I": "วันชนะ แพงศรี"
     };
+
+    const ADMIN_USERS = ["อุดมชัย ทศรักษา"];
 
     let jobs = [];
     let currentUser = null;
@@ -992,6 +994,10 @@
       return taskType === "5s" ? "bg-amber-100 text-amber-800 border-amber-200" : "bg-emerald-100 text-emerald-800 border-emerald-200";
     }
 
+    function isCurrentUserAdmin() {
+      return !!currentUser && ADMIN_USERS.includes(currentUser.name);
+    }
+
     function updateWorkChip(ids, activeId) {
       ids.forEach(id => {
         const el = document.getElementById(id);
@@ -1122,6 +1128,38 @@
       }
     }
 
+    async function deleteJob(jobId) {
+      if (!isCurrentUserAdmin()) {
+        showToast("ไม่มีสิทธิ์ลบ", "เฉพาะ Admin เท่านั้นที่ลบงานได้", "fa-lock", "bg-safety-red");
+        return;
+      }
+
+      const job = jobs.find(j => j.id === jobId);
+      if (!job) return;
+
+      const confirmed = confirm(`ยืนยันลบงาน ${job.id} (${job.area})?\nงานนี้จะถูกลบจากรายการในเครื่องทันที`);
+      if (!confirmed) return;
+
+      const isSynced = await sendToGoogleSheet("delete", { id: jobId });
+      jobs = jobs.filter(j => j.id !== jobId);
+      saveToLocalStore();
+
+      if (currentUser.role === "subordinate") {
+        renderSubordinateJobs();
+      } else {
+        renderSupervisorJobs();
+      }
+      if (!document.getElementById("screen-dashboard").classList.contains("hidden")) {
+        renderWebDashboard();
+      }
+
+      if (isSynced) {
+        showToast("ลบงานแล้ว", "ลบจาก Google Sheet สำเร็จ", "fa-trash-can", "bg-safety-green");
+      } else {
+        showToast("ลบในเครื่องแล้ว", lastSheetError ? `Sheet ยังไม่ลบ: ${lastSheetError}` : "Apps Script ยังไม่รองรับ delete", "fa-trash-can", "bg-slate-700");
+      }
+    }
+
     // บันทึกสำรองในหน่วยความจำเครื่อง
     function saveToLocalStore() {
       try {
@@ -1210,7 +1248,8 @@
       currentUser = {
         name: selectedName,
         role: 'subordinate',
-        area: assignedArea
+        area: assignedArea,
+        isAdmin: ADMIN_USERS.includes(selectedName)
       };
 
       await loadAllJobsData(); 
@@ -1239,6 +1278,8 @@
       document.getElementById("screen-subordinate-home").classList.remove("hidden");
       document.getElementById("sb-profile-name").innerText = currentUser.name;
       document.getElementById("sb-profile-area").innerText = currentUser.area;
+      const roleBadge = document.querySelector("#screen-subordinate-home .bg-safety-green.text-white.rounded-full");
+      if (roleBadge) roleBadge.innerText = isCurrentUserAdmin() ? "ADMIN" : "OPERATOR";
       setEmployeeWorkFilter(currentEmployeeWorkFilter);
       updateNavHighlight('home');
       renderSubordinateJobs();
@@ -1364,6 +1405,12 @@
           : `<span class="bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full text-[10px] font-bold">แก้ไขเสร็จสิ้น</span>`;
 
         const jobCard = document.createElement("div");
+        const adminDeleteBtn = isCurrentUserAdmin() ? `
+          <button onclick="deleteJob('${job.id}')" class="mt-2 w-full bg-red-50 text-red-600 border border-red-100 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1">
+            <i class="fa-solid fa-trash-can"></i>
+            ลบงานนี้
+          </button>
+        ` : "";
         jobCard.className = "bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3";
         jobCard.innerHTML = `
           <div class="flex justify-between items-start">
@@ -1391,6 +1438,7 @@
             <div><i class="fa-solid fa-circle-user mr-1 text-slate-400"></i>ผู้แก้: <b>${job.assignee}</b></div>
             <div class="text-[10px] text-slate-400">ผู้รายงาน: ${job.reporter}</div>
           </div>
+          ${adminDeleteBtn}
         `;
         listContainer.appendChild(jobCard);
       });
@@ -1439,6 +1487,15 @@
               <span><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> ตรวจแก้สำเร็จเมื่อ ${job.resolvedAt}</span>
               <button onclick="viewJobAfterDetails('${job.id}')" class="text-[10px] font-bold text-emerald-600 underline">ดูรายละเอียด</button>
             </div>
+          `;
+        }
+
+        if (isCurrentUserAdmin()) {
+          footerBtn += `
+            <button onclick="deleteJob('${job.id}')" class="w-full mt-2 bg-red-50 text-red-600 border border-red-100 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-trash-can"></i>
+              <span>ลบงานนี้ (Admin)</span>
+            </button>
           `;
         }
 
