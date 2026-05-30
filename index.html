@@ -636,6 +636,17 @@
               </button>
             </div>
 
+            <!-- Force Sync Panel for Admin -->
+            <div class="glass-card p-4 rounded-2xl border border-white/5 space-y-2.5">
+              <div class="text-[10px] text-slate-400 leading-relaxed font-bold">
+                <i class="fa-solid fa-triangle-exclamation text-safety-yellow mr-1 animate-pulse"></i> หากมีงานที่เซฟไว้ในตัวเครื่องและไม่ขึ้นใน Google Sheets ของคอมพิวเตอร์ คุณสามารถสั่งบังคับซิงก์ส่งข้อมูลทั้งหมดขึ้น Sheets ได้ด้วยตนเองที่นี่:
+              </div>
+              <button id="admin-force-sync-btn" onclick="syncOfflineJobsToSheets()" class="w-full bg-gradient-to-r from-emerald-500 to-safety-green text-white py-3 rounded-xl font-extrabold text-xs shadow-glow-green hover:opacity-95 transition flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>ซิงก์ส่งข้อมูลในเครื่องไป Google Sheets</span>
+              </button>
+            </div>
+
             <div id="admin-jobs-list" class="space-y-3">
               <!-- Master view of jobs -->
             </div>
@@ -2237,6 +2248,50 @@
       localStorage.setItem("safety_audit_logs_v3", JSON.stringify(auditLogs));
       renderAuditLogsList();
       showToast("เคลียร์ Log แล้ว", "ล้างบันทึกความปลอดภัยเรียบร้อย", "fa-trash-can", "bg-slate-700");
+    }
+
+    async function syncOfflineJobsToSheets() {
+      if (!GOOGLE_SCRIPT_URL) {
+        showToast("ซิงก์ไม่ได้", "กรุณาตั้งค่า GOOGLE_SCRIPT_URL ก่อน", "fa-exclamation-triangle", "bg-safety-red");
+        return;
+      }
+      
+      const btn = document.getElementById("admin-force-sync-btn");
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังซิงก์...`;
+      }
+      
+      showToast("กำลังเริ่มการซิงก์", "ระบบกำลังตรวจสอบและอัปโหลดข้อมูลงานทั้งหมดขึ้น Google Sheets...", "fa-cloud", "bg-slate-700");
+      
+      let successCount = 0;
+      let failCount = 0;
+      
+      for (const job of jobs) {
+        try {
+          const isSynced = await sendToGoogleSheet("create", job);
+          if (isSynced) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch (e) {
+          failCount++;
+        }
+      }
+      
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> ซิงก์ส่งข้อมูลในเครื่องไป Google Sheets`;
+      }
+      
+      if (failCount === 0) {
+        showToast("ซิงก์คลาวด์เสร็จสิ้น", `ซิงก์งานทั้งหมดจำนวน ${successCount} เคสเรียบร้อยแล้ว`, "fa-cloud-arrow-up", "bg-safety-green shadow-glow-green");
+        showCustomAlert("ซิงก์ข้อมูลคลาวด์สำเร็จ", `ระบบอัปโหลดใบงานทั้งหมดจำนวน ${successCount} รายการ ขึ้นสู่ Google Sheets ของคุณอุดมชัยเสร็จสมบูรณ์แล้วครับ!`, "success");
+      } else {
+        showToast("ซิงก์บางรายการไม่ได้", `สำเร็จ ${successCount} เคส ล้มเหลว ${failCount} เคส: ${lastSheetError}`, "fa-triangle-exclamation", "bg-safety-yellow shadow-glow-amber");
+        showCustomAlert("ซิงก์ข้อมูลเสร็จสิ้นบางส่วน", `การเชื่อมต่อ Google Sheets ติดขัดเล็กน้อย:\n• อัปโหลดสำเร็จ: ${successCount} รายการ\n• ล้มเหลว: ${failCount} รายการ\n\nข้อผิดพลาดจาก Sheets:\n"${lastSheetError || 'ไม่สามารถติดต่อ Web App ได้'}"\n\nกรุณาตรวจสอบการ Deploy ของ Apps Script เป็นเวอร์ชันใหม่และกำหนดให้ 'Anyone' เข้าถึงได้ครับ`, "warning");
+      }
     }
 
     // ==========================================
