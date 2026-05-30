@@ -177,29 +177,29 @@
         <div class="space-y-4 my-8">
           <p class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest text-center">กรุณาเลือกประเภทผู้ใช้งาน</p>
           
-          <!-- Role Button: Supervisor & Admin -->
+          <!-- Role Button: Supervisor -->
           <button onclick="selectRole('supervisor')" class="w-full glass-card hover:bg-slate-800/90 text-white p-5 rounded-2xl flex items-center justify-between border border-white/10 shadow-lg group transition duration-300">
             <div class="flex items-center space-x-4">
               <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center text-white group-hover:scale-105 transition-transform shadow-glow-amber">
                 <i class="fa-solid fa-user-tie text-xl"></i>
               </div>
               <div class="text-left">
-                <div class="font-bold text-slate-200">หัวหน้า / ผู้ตรวจ / Admin</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">เปิดงานประเมิน จัดการระบบ ตรวจอนุมัติงาน</div>
+                <div class="font-bold text-slate-200">หัวหน้า / ผู้ตรวจ</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">เปิดงานประเมิน หรือตรวจอนุมัติงานความปลอดภัย</div>
               </div>
             </div>
             <i class="fa-solid fa-chevron-right text-slate-500 group-hover:translate-x-1 transition-transform"></i>
           </button>
 
-          <!-- Role Button: Employee/Operator -->
+          <!-- Role Button: Employee/Operator & Admin -->
           <button onclick="selectRole('subordinate')" class="w-full glass-card hover:bg-slate-800/90 text-white p-5 rounded-2xl flex items-center justify-between border border-white/10 shadow-lg group transition duration-300">
             <div class="flex items-center space-x-4">
               <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center text-white group-hover:scale-105 transition-transform shadow-glow-green">
                 <i class="fa-solid fa-user-gear text-xl"></i>
               </div>
               <div class="text-left">
-                <div class="font-bold text-slate-200">พนักงาน / ผู้รับผิดชอบ</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">ดูงานที่ได้รับมอบหมาย ส่งรูป After เพื่อแก้เคส</div>
+                <div class="font-bold text-slate-200">พนักงาน / ผู้รับผิดชอบ / Admin</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">ดูงานแก้ไข ส่งรูป After หรือเข้าจัดการระบบสำหรับ Admin</div>
               </div>
             </div>
             <i class="fa-solid fa-chevron-right text-slate-500 group-hover:translate-x-1 transition-transform"></i>
@@ -411,6 +411,22 @@
         </div>
 
         <div class="p-6 space-y-6">
+          <!-- Button "เริ่มตรวจ" for Admin only -->
+          <div id="sb-admin-start-audit-container" class="hidden mb-4">
+            <button onclick="openNewAuditModal()" class="w-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-safety-green text-white p-4.5 rounded-2xl flex items-center justify-between shadow-glow-green hover:opacity-95 transition-opacity">
+              <div class="flex items-center space-x-4">
+                <div class="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center">
+                  <i class="fa-solid fa-plus-circle text-xl"></i>
+                </div>
+                <div class="text-left">
+                  <div class="font-extrabold text-sm">เริ่มตรวจ Safety / 5ส (Admin)</div>
+                  <div class="text-[10px] text-emerald-100">บันทึกเคสใหม่ในสิทธิ์ผู้ดูแลระบบ</div>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-emerald-200 text-sm"></i>
+            </button>
+          </div>
+
           <div class="grid grid-cols-2 gap-3">
             <button onclick="setEmployeeWorkFilter('safety')" id="sb-filter-safety" class="work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-300 p-3 rounded-xl text-left">
               <i class="fa-solid fa-shield-halved text-emerald-400 mb-1.5 text-base"></i>
@@ -1264,13 +1280,13 @@
       // Populate select dropdown based on role selected
       let filtered = [];
       if (role === "supervisor") {
-        filtered = users.filter(u => u.role === "supervisor" || u.role === "admin");
+        filtered = users.filter(u => u.role === "supervisor");
         document.getElementById("login-icon").className = "fa-solid fa-user-lock text-safety-yellow text-2xl";
-        document.getElementById("login-subtitle").innerText = "กรุณาเลือกบัญชีผู้ตรวจสอบ หรือ Admin";
+        document.getElementById("login-subtitle").innerText = "กรุณาเลือกบัญชีผู้ตรวจสอบ";
       } else {
-        filtered = users.filter(u => u.role === "subordinate");
+        filtered = users.filter(u => u.role === "subordinate" || u.role === "admin");
         document.getElementById("login-icon").className = "fa-solid fa-user text-safety-green text-2xl";
-        document.getElementById("login-subtitle").innerText = "เลือกบัญชีผู้รับผิดชอบพื้นที่ของคุณ";
+        document.getElementById("login-subtitle").innerText = "เลือกบัญชีผู้รับผิดชอบ หรือ Admin";
       }
 
       filtered.forEach(u => {
@@ -1430,7 +1446,7 @@
 
       // Handle screen loading
       if (tab === "home") {
-        if (currentUser.role === "admin" || currentUser.role === "supervisor") {
+        if (currentUser.role === "supervisor") {
           document.getElementById("screen-supervisor-home").classList.remove("hidden");
           setupSupervisorDashboard();
         } else {
@@ -1464,11 +1480,11 @@
       if (!homeBadge || !currentUser) return;
 
       let pendingCount = 0;
-      if (currentUser.role === "admin" || currentUser.role === "supervisor") {
+      if (currentUser.role === "supervisor") {
         // Count all jobs in system that are pending or resolved (waiting approval)
         pendingCount = jobs.filter(j => j.status === "pending" || j.status === "resolved").length;
       } else {
-        // For subordinate, count pending jobs in their primary area
+        // For subordinate and admin, count pending jobs assigned to themselves
         pendingCount = jobs.filter(j => j.status === "pending" && j.assignee === currentUser.name).length;
       }
 
@@ -1557,6 +1573,15 @@
       
       const initials = currentUser.name.split(" ").map(n => n.charAt(0)).join("").slice(0, 2);
       document.getElementById("sb-avatar").innerText = initials.toUpperCase();
+      
+      const adminStartBtn = document.getElementById("sb-admin-start-audit-container");
+      if (adminStartBtn) {
+        if (currentUser.role === "admin") {
+          adminStartBtn.classList.remove("hidden");
+        } else {
+          adminStartBtn.classList.add("hidden");
+        }
+      }
       
       setEmployeeWorkFilter(currentEmployeeWorkFilter);
     }
