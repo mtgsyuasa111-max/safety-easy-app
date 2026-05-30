@@ -249,7 +249,7 @@
               <div id="pin-profile-avatar" class="w-12 h-12 bg-emerald-500/10 text-safety-green border border-emerald-500/20 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-2">
                 UT
               </div>
-              <div class="font-bold text-white text-sm" id="pin-user-name">อุดมชัย ทศรักษา</div>
+              <div class="font-bold text-white text-sm" id="pin-user-name">ผู้ใช้งาน Demo</div>
               <div class="text-[10px] text-slate-500 mt-0.5" id="pin-user-role">ผู้ดูแลระบบสูงสุด (Admin)</div>
             </div>
 
@@ -299,7 +299,7 @@
               </div>
               <div>
                 <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">ผู้เข้าใช้ระบบ</span>
-                <span class="text-base font-extrabold text-white" id="sp-profile-name">อุดมชัย ทศรักษา</span>
+                <span class="text-base font-extrabold text-white" id="sp-profile-name">หัวหน้างาน Demo</span>
                 <span class="inline-flex items-center px-2 py-0.5 bg-amber-500/10 text-safety-yellow rounded-full text-[9px] font-black border border-safety-yellow/20 uppercase tracking-widest ml-1" id="sp-role-badge">ADMIN</span>
               </div>
             </div>
@@ -383,7 +383,7 @@
               </div>
               <div>
                 <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider block">พนักงานผู้แก้เคส</span>
-                <span class="text-base font-extrabold text-white" id="sb-profile-name">วิทยา แพงศรี</span>
+                <span class="text-base font-extrabold text-white" id="sb-profile-name">พนักงาน Demo</span>
                 <span class="inline-flex px-2 py-0.5 bg-emerald-500/10 text-safety-green rounded-full text-[9px] font-bold border border-emerald-500/20 tracking-wider uppercase ml-1">OPERATOR</span>
               </div>
             </div>
@@ -617,8 +617,8 @@
           <div id="admin-view-users" class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="font-bold text-xs text-slate-400 uppercase tracking-widest">รายชื่อบุคลากรในระบบ</h3>
-              <button onclick="openAddUserModal()" class="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-[10px] font-extrabold shadow-glow-amber flex items-center hover:opacity-90">
-                <i class="fa-solid fa-plus-circle mr-1"></i> เพิ่มผู้ใช้งาน
+              <button onclick="openDirectSheetLink()" class="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-[10px] font-extrabold shadow-glow-amber flex items-center hover:opacity-90">
+                <i class="fa-solid fa-table mr-1"></i> เปิด Google Sheet
               </button>
             </div>
             
@@ -769,7 +769,7 @@
 
               <div>
                 <label class="block text-[9px] text-slate-400 font-bold uppercase tracking-wider">ผู้รับผิดชอบหลัก (อัตโนมัติ)</label>
-                <input type="text" id="audit-assignee" class="w-full mt-1 p-2.5 bg-slate-800/80 border border-white/5 rounded-xl text-xs font-bold text-slate-400 cursor-not-allowed focus:outline-none" readonly value="วิทยา แพงศรี">
+              <input type="text" id="audit-assignee" class="w-full mt-1 p-2.5 bg-slate-800/80 border border-white/5 rounded-xl text-xs font-bold text-slate-400 cursor-not-allowed focus:outline-none" readonly value="พนักงาน พื้นที่ A">
               </div>
             </div>
           </div>
@@ -835,7 +835,7 @@
         <div class="p-4 bg-slate-900 border border-white/5 rounded-2xl mb-4 space-y-3">
           <div class="flex justify-between text-[10px]">
             <span class="font-bold text-slate-400 uppercase tracking-widest" id="res-area">พื้นที่ D</span>
-            <span class="text-slate-500 font-bold" id="res-reporter">ผู้รายงาน: ปราโมทย์ ไพรวรรณ์</span>
+            <span class="text-slate-500 font-bold" id="res-reporter">ผู้รายงาน: หัวหน้างาน Demo</span>
           </div>
           <div>
             <span class="text-[10px] text-slate-500 block font-bold">จุดที่มีปัญหา:</span>
@@ -1097,41 +1097,17 @@
   <!-- JavaScript logic -->
   <script>
     // ==========================================
-    // Google Sheets & Drive API Endpoint Configuration
+    // Production configuration. Deploy apps-script/Code.gs, then paste its /exec URL here.
     // ==========================================
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPjAqjcLw-pbffFhNHvh8YWOgsdZEbBY8HDHmPQVfIXgo-RSAUCWAy5vbyYJ6R82arjg/exec"; 
-    const DRIVE_IMAGE_FOLDER_ID = "1HGNfy4ocFhPN8iAffzW-GsD5e6ymHO75";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHtI57K9rvIFtS3FCUCkuuiLiHClyimHy5OjM6uCWHvCqpSrnIe6NYR18LyurTOFPi_w/exec";
+    const DRIVE_IMAGE_FOLDER_ID = "";
+    const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/18fG-3MpRqiDe2EjJcdqqG_i6BdCEYFjdUqS4uYi6F3k/edit";
 
-    // DEFAULT USER DATA LIST - STORES IN LOCALSTORAGE FOR PERSISTENCY
-    const DEFAULT_USERS = [
-      { id: "U001", name: "อุดมชัย ทศรักษา", role: "admin", area: "พื้นที่ B", pin: "9999" }, 
-      { id: "U002", name: "ปราโมทย์ ไพรวรรณ์", role: "supervisor", area: "ทุกพื้นที่", pin: "1111" },
-      { id: "U003", name: "สกล กิจเจริญ", role: "supervisor", area: "ทุกพื้นที่", pin: "2222" },
-      { id: "U004", name: "บัณฑิต นิลอ่อน", role: "supervisor", area: "ทุกพื้นที่", pin: "3333" },
-      { id: "U005", name: "วิทยา แพงศรี", role: "subordinate", area: "พื้นที่ D", pin: "0001" },
-      { id: "U006", name: "ศิริชัย แสงวงค์", role: "subordinate", area: "พื้นที่ G", pin: "0002" },
-      { id: "U007", name: "สนธยา วงค์สีทธิไช", role: "subordinate", area: "พื้นที่ F", pin: "0003" },
-      { id: "U008", name: "สุทิน รอดยิ้ม", role: "subordinate", area: "พื้นที่ C", pin: "0004" },
-      { id: "U009", name: "ภิพัทยา แพทพีพัฒน์", role: "subordinate", area: "พื้นที่ H", pin: "0005" },
-      { id: "U010", name: "พิพัฒน์พล ทอยสังข์", role: "subordinate", area: "พื้นที่ J", pin: "0006" },
-      { id: "U011", name: "สมชาย วงษา", role: "subordinate", area: "พื้นที่ A", pin: "0007" },
-      { id: "U012", name: "ณัฐพงษ์ ยะล้อม", role: "subordinate", area: "พื้นที่ K", pin: "0008" },
-      { id: "U013", name: "วันชนะ แพงศรี", role: "subordinate", area: "พื้นที่ I", pin: "0009" }
-    ];
+    // Users and PIN hashes are loaded from Google Sheets through Apps Script.
+    const DEFAULT_USERS = [];
 
     // AREA OWNER MAPPING FOR AUTO-ASSIGNMENT
-    const AREA_REPRESENTATIVES = {
-      "พื้นที่ D": "วิทยา แพงศรี",
-      "พื้นที่ G": "ศิริชัย แสงวงค์",
-      "พื้นที่ F": "สนธยา วงค์สีทธิไช",
-      "พื้นที่ B": "อุดมชัย ทศรักษา",
-      "พื้นที่ C": "สุทิน รอดยิ้ม",
-      "พื้นที่ H": "ภิพัทยา แพทพีพัฒน์",
-      "พื้นที่ J": "พิพัฒน์พล ทอยสังข์",
-      "พื้นที่ A": "สมชาย วงษา",
-      "พื้นที่ K": "ณัฐพงษ์ ยะล้อม",
-      "พื้นที่ I": "วันชนะ แพงศรี"
-    };
+    let AREA_REPRESENTATIVES = {};
 
     // MOCK SAMPLE PHOTOS FOR CAMERA SIMULATION
     const MOCK_PHOTOS_BEFORE = [
@@ -1156,26 +1132,7 @@
       }
     ];
 
-    const DEFAULT_SEED_JOBS = [
-      {
-        id: "SF-20260527-083015",
-        area: "พื้นที่ D",
-        reporter: "ปราโมทย์ ไพรวรรณ์",
-        assignee: "วิทยา แพงศรี",
-        issue: "ถังดับเพลิงชำรุด เกจวัดแรงดันตกต่ำกว่าระดับมาตรฐานแถบสีเขียว",
-        suggestion: "กรุณาประสานงานฝ่ายจัดซื้อมารอเปลี่ยนเคสถังดับเพลิงใบใหม่ทันทีเพื่อความปลอดภัยหลัก",
-        taskType: "safety",
-        status: "pending",
-        photoBefore: MOCK_PHOTOS_BEFORE[0].data,
-        photoAfter: null,
-        createdAt: "2026-05-27 08:30 น.",
-        resolvedAt: "",
-        resolvedBy: "",
-        notes: "",
-        approvedAt: "",
-        approvedBy: ""
-      }
-    ];
+    const DEFAULT_SEED_JOBS = [];
 
     // RUN-TIME STATE VARIABLES
     let users = [];
@@ -1195,29 +1152,30 @@
     let currentDashboardType = "all";
     let currentAdminTab = "users";
     let lastSheetError = "";
+    let authToken = sessionStorage.getItem("safety_easy_auth_token") || "";
 
     // ==========================================
     // Database Initialization (LocalStorage)
     // ==========================================
     function initDatabase() {
       // 1. Initialize Users List
-      const storedUsers = localStorage.getItem("safety_users_v3");
+      const storedUsers = localStorage.getItem("safety_users_production_v1");
       if (storedUsers) {
         users = JSON.parse(storedUsers);
       } else {
         users = [...DEFAULT_USERS];
-        localStorage.setItem("safety_users_v3", JSON.stringify(users));
+        localStorage.setItem("safety_users_production_v1", JSON.stringify(users));
       }
 
       // 2. Initialize System Audit Logs
-      const storedLogs = localStorage.getItem("safety_audit_logs_v3");
+      const storedLogs = localStorage.getItem("safety_audit_logs_production_v1");
       if (storedLogs) {
         auditLogs = JSON.parse(storedLogs);
       } else {
         auditLogs = [
           { timestamp: getFormattedTimestamp(), user: "System", action: "ระบบเริ่มต้นการทำงานรูปแบบความปลอดภัยระดับโปร" }
         ];
-        localStorage.setItem("safety_audit_logs_v3", JSON.stringify(auditLogs));
+        localStorage.setItem("safety_audit_logs_production_v1", JSON.stringify(auditLogs));
       }
 
       // 3. Load Jobs
@@ -1225,7 +1183,7 @@
     }
 
     function saveUsers() {
-      localStorage.setItem("safety_users_v3", JSON.stringify(users));
+      localStorage.setItem("safety_users_production_v1", JSON.stringify(users));
     }
 
     function addAuditLog(actionUser, actionDescription) {
@@ -1235,7 +1193,7 @@
         action: actionDescription
       };
       auditLogs.push(entry);
-      localStorage.setItem("safety_audit_logs_v3", JSON.stringify(auditLogs));
+      localStorage.setItem("safety_audit_logs_production_v1", JSON.stringify(auditLogs));
       
       // If we are currently in admin logs screen, re-render immediately
       if (currentUser && currentUser.role === "admin" && currentAdminTab === "logs") {
@@ -1249,7 +1207,7 @@
     }
 
     function loadFromLocalStore() {
-      const stored = localStorage.getItem("safety_jobs_data_v3");
+      const stored = localStorage.getItem("safety_jobs_data_production_v1");
       if (stored) {
         jobs = JSON.parse(stored);
       } else {
@@ -1260,7 +1218,7 @@
 
     function saveToLocalStore() {
       try {
-        localStorage.setItem("safety_jobs_data_v3", JSON.stringify(jobs));
+        localStorage.setItem("safety_jobs_data_production_v1", JSON.stringify(jobs));
       } catch (error) {
         console.error("Local storage error:", error);
         showToast("ข้อมูลเตือนภัย", "ไม่สามารถเซฟข้อมูลงานประวัติตัวเครื่องได้เนื่องจากข้อจำกัดหน่วยความจำ", "fa-triangle-exclamation", "bg-safety-red");
@@ -1384,12 +1342,62 @@
       updatePinDots();
     }
 
-    function authenticateUser() {
+    async function callApi(payload) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED")) {
+        throw new Error("ยังไม่ได้ตั้งค่า Google Apps Script Web App URL");
+      }
+
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        redirect: "follow",
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        }
+      });
+      const result = await response.json();
+      if (result.status !== "success") {
+        throw new Error(result.message || "Google Apps Script ปฏิเสธคำขอ");
+      }
+      return result;
+    }
+
+    async function loadAllUsersData() {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED")) {
+        users = [];
+        updateCloudStatus(false);
+        return;
+      }
+
+      try {
+        const result = await callApi({ action: "getUsers" });
+        users = Array.isArray(result.data) ? result.data : [];
+        AREA_REPRESENTATIVES = {};
+        users.filter(user => user.role === "subordinate").forEach(user => {
+          AREA_REPRESENTATIVES[user.area] = user.name;
+        });
+        localStorage.setItem("safety_users_production_v1", JSON.stringify(users));
+      } catch (error) {
+        console.error("Failed to load users:", error);
+        users = [];
+        updateCloudStatus(false);
+        showToast("เชื่อมต่อระบบไม่ได้", error.message, "fa-wifi-slash", "bg-safety-red");
+      }
+    }
+
+    async function authenticateUser() {
       if (!selectedUserToLogin) return;
       
-      if (enteredPin === selectedUserToLogin.pin) {
-        currentUser = selectedUserToLogin;
+      try {
+        const result = await callApi({
+          action: "login",
+          data: { id: selectedUserToLogin.id, pin: enteredPin }
+        });
+        currentUser = result.user;
+        authToken = result.token;
+        sessionStorage.setItem("safety_easy_auth_token", authToken);
         addAuditLog(currentUser.name, "ลงชื่อเข้าใช้งานเข้าสู่ระบบสิทธิสำเร็จ");
+        await loadAllJobsData();
         
         // Show Navigation bar
         document.getElementById("app-nav-bar").classList.remove("hidden");
@@ -1405,11 +1413,11 @@
         // Direct to their respective screen
         navigateTo('home');
         showToast("สำเร็จเรียบร้อย", `ยินดีต้อนรับคุณ ${currentUser.name}`, "fa-circle-check", "bg-safety-green shadow-glow-green");
-      } else {
+      } catch (error) {
         // Visual shake error alert on pindots
         const row = document.getElementById("pin-dots-row");
         row.classList.add("shake-anim");
-        showToast("รหัส PIN ไม่ถูกต้อง", "กรุณาลองป้อนรหัส PIN 4 หลักใหม่อีกครั้ง", "fa-triangle-exclamation", "bg-safety-red shadow-glow-red");
+        showToast("เข้าสู่ระบบไม่ได้", error.message || "กรุณาลองป้อนรหัส PIN ใหม่อีกครั้ง", "fa-triangle-exclamation", "bg-safety-red shadow-glow-red");
         
         setTimeout(() => {
           row.classList.remove("shake-anim");
@@ -1421,6 +1429,8 @@
     function logout() {
       addAuditLog(currentUser ? currentUser.name : "Unknown", "ออกจากระบบการใช้งาน");
       currentUser = null;
+      authToken = "";
+      sessionStorage.removeItem("safety_easy_auth_token");
       selectedUserToLogin = null;
       selectedLoginRole = null;
       enteredPin = "";
@@ -2114,21 +2124,12 @@
                 ${roleBadge}
               </div>
               <div class="text-[9px] text-slate-500 mt-1 font-bold">
-                ดูแล: <span class="text-slate-400">${u.area}</span> • PIN: <span class="text-amber-400 font-mono tracking-widest">${u.pin}</span>
+                ดูแล: <span class="text-slate-400">${u.area}</span> • PIN: <span class="text-slate-500">ซ่อนเพื่อความปลอดภัย</span>
               </div>
             </div>
           </div>
           
-          ${u.id !== "U001" ? `
-            <div class="flex items-center space-x-1.5">
-              <button onclick="editUserPinPrompt('${u.id}')" class="w-7 h-7 bg-slate-950 hover:bg-slate-800 text-safety-yellow rounded-lg flex items-center justify-center border border-white/5 text-xs transition">
-                <i class="fa-solid fa-key"></i>
-              </button>
-              <button onclick="deleteUserAdmin('${u.id}')" class="w-7 h-7 bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 rounded-lg flex items-center justify-center border border-rose-500/20 text-xs transition">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </div>
-          ` : `<span class="text-[8px] text-slate-600 font-bold uppercase tracking-wider mr-2">Locked</span>`}
+          <span class="text-[8px] text-slate-600 font-bold uppercase tracking-wider mr-2">จัดการผ่าน Apps Script</span>
         `;
         container.appendChild(item);
       });
@@ -2245,7 +2246,7 @@
       if (!confirmed) return;
 
       auditLogs = [{ timestamp: getFormattedTimestamp(), user: currentUser.name, action: "ล้างระบบ Audit Logs โดย Admin" }];
-      localStorage.setItem("safety_audit_logs_v3", JSON.stringify(auditLogs));
+      localStorage.setItem("safety_audit_logs_production_v1", JSON.stringify(auditLogs));
       renderAuditLogsList();
       showToast("เคลียร์ Log แล้ว", "ล้างบันทึกความปลอดภัยเรียบร้อย", "fa-trash-can", "bg-slate-700");
     }
@@ -2287,7 +2288,7 @@
       
       if (failCount === 0) {
         showToast("ซิงก์คลาวด์เสร็จสิ้น", `ซิงก์งานทั้งหมดจำนวน ${successCount} เคสเรียบร้อยแล้ว`, "fa-cloud-arrow-up", "bg-safety-green shadow-glow-green");
-        showCustomAlert("ซิงก์ข้อมูลคลาวด์สำเร็จ", `ระบบอัปโหลดใบงานทั้งหมดจำนวน ${successCount} รายการ ขึ้นสู่ Google Sheets ของคุณอุดมชัยเสร็จสมบูรณ์แล้วครับ!`, "success");
+        showCustomAlert("ซิงก์ข้อมูลคลาวด์สำเร็จ", `ระบบอัปโหลดใบงานทั้งหมดจำนวน ${successCount} รายการ ขึ้นสู่ Google Sheets เรียบร้อยแล้วครับ!`, "success");
       } else {
         showToast("ซิงก์บางรายการไม่ได้", `สำเร็จ ${successCount} เคส ล้มเหลว ${failCount} เคส: ${lastSheetError}`, "fa-triangle-exclamation", "bg-safety-yellow shadow-glow-amber");
         showCustomAlert("ซิงก์ข้อมูลเสร็จสิ้นบางส่วน", `การเชื่อมต่อ Google Sheets ติดขัดเล็กน้อย:\n• อัปโหลดสำเร็จ: ${successCount} รายการ\n• ล้มเหลว: ${failCount} รายการ\n\nข้อผิดพลาดจาก Sheets:\n"${lastSheetError || 'ไม่สามารถติดต่อ Web App ได้'}"\n\nกรุณาตรวจสอบการ Deploy ของ Apps Script เป็นเวอร์ชันใหม่และกำหนดให้ 'Anyone' เข้าถึงได้ครับ`, "warning");
@@ -2298,9 +2299,9 @@
     // Google Sheets Online Sync Functions
     // ==========================================
     async function loadAllJobsData() {
-      if (GOOGLE_SCRIPT_URL) {
+      if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED") && authToken) {
         try {
-          const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs`);
+          const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs&token=${encodeURIComponent(authToken)}`);
           const data = await response.json();
           if (Array.isArray(data)) {
             // Merge remote sheet with local storage
@@ -2320,7 +2321,7 @@
 
     function readLocalJobs() {
       try {
-        const stored = localStorage.getItem("safety_jobs_data_v3");
+        const stored = localStorage.getItem("safety_jobs_data_production_v1");
         return stored ? JSON.parse(stored) : [];
       } catch (error) {
         return [];
@@ -2362,7 +2363,7 @@
     }
 
     async function sendToGoogleSheet(actionType, jobPayload) {
-      if (!GOOGLE_SCRIPT_URL) return true;
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED")) return false;
 
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -2370,6 +2371,7 @@
           method: "POST",
           body: JSON.stringify({
             action: actionType,
+            token: authToken,
             imageFolderId: DRIVE_IMAGE_FOLDER_ID,
             data: jobPayload
           }),
@@ -2956,7 +2958,7 @@
 
     function openDirectSheetLink() {
       if (GOOGLE_SCRIPT_URL) {
-        window.open(GOOGLE_SCRIPT_URL.replace("/exec", ""), "_blank");
+        window.open(GOOGLE_SHEET_URL, "_blank");
       } else {
         showToast("ระบบขัดข้อง", "ไม่ได้ตั้งค่า Google Sheet Script URL", "fa-exclamation", "bg-safety-red");
       }
@@ -3111,8 +3113,8 @@
       hideAllScreens();
       document.getElementById("screen-splash").classList.remove("hidden");
       
-      // Attempt syncing with Google Sheets
-      await loadAllJobsData();
+      // Load public user choices. Jobs are loaded only after successful login.
+      await loadAllUsersData();
     };
   </script>
 </body>
