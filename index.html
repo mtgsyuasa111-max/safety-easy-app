@@ -215,7 +215,13 @@
           </button>
         </div>
 
-        <div class="text-center">
+        <div class="text-center flex flex-col items-center justify-center space-y-3.5">
+          <!-- Install App Button (Visible only on PWA-supported mobile/desktop browsers) -->
+          <button id="pwa-install-btn" class="hidden inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-[11px] px-5 py-2.5 rounded-xl shadow-glow-green hover:opacity-90 transition transform active:scale-95 animate-pulse">
+            <i class="fa-solid fa-cloud-arrow-down"></i>
+            <span>ติดตั้งแอปนี้ลงบนมือถือ (Install Web App)</span>
+          </button>
+          
           <span class="inline-block bg-white/5 border border-white/10 text-slate-400 text-[10px] font-bold px-3 py-1 rounded-full">
             v4.0.0 Production PRO • ออฟไลน์สมบูรณ์แบบ
           </span>
@@ -3149,6 +3155,38 @@
           .catch(err => console.error('[PWA] Service Worker registration failed:', err));
       });
     }
+
+    // In-App PWA Install Prompting Logic
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      deferredPrompt = e;
+      // Update UI notify the user they can install the PWA
+      const installBtn = document.getElementById('pwa-install-btn');
+      if (installBtn) {
+        installBtn.classList.remove('hidden');
+        installBtn.addEventListener('click', async () => {
+          // Hide the app provided install promotion
+          installBtn.classList.add('hidden');
+          // Show the install prompt
+          deferredPrompt.prompt();
+          // Wait for the user to respond to the prompt
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`[PWA] User response to the install prompt: ${outcome}`);
+          // We've used the prompt, and can't use it again
+          deferredPrompt = null;
+        });
+      }
+    });
+
+    window.addEventListener('appinstalled', (event) => {
+      console.log('[PWA] App successfully installed on user device!');
+      const installBtn = document.getElementById('pwa-install-btn');
+      if (installBtn) installBtn.classList.add('hidden');
+      showToast("ติดตั้งสำเร็จ", "แอปพลิเคชันถูกเพิ่มไว้บนหน้าจอของคุณแล้ว!", "fa-circle-check", "bg-safety-green shadow-glow-green");
+    });
 
     // ==========================================
     // ON APP LAUNCH (WINDOW LOAD)
