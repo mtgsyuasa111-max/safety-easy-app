@@ -545,11 +545,15 @@
             </div>
           </div>
 
-          <!-- Monthly and Area Filter selection -->
-          <div class="grid grid-cols-2 gap-3">
+          <!-- Date, month and area filter selection -->
+          <div class="grid grid-cols-3 gap-3">
             <div>
               <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">เดือนตรวจ</label>
               <input type="month" id="dash-month-filter" onchange="renderWebDashboard()" class="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs font-bold text-white focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">วันที่ตรวจ</label>
+              <input type="date" id="dash-day-filter" onchange="renderWebDashboard()" class="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs font-bold text-white focus:outline-none">
             </div>
             <div>
               <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">พื้นที่</label>
@@ -754,16 +758,7 @@
               <div>
                 <label class="block text-[9px] text-slate-400 font-bold uppercase tracking-wider">พื้นที่</label>
                 <select id="audit-area" onchange="autoSelectResponsiblePerson()" class="w-full mt-1 p-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none">
-                  <option value="พื้นที่ D">พื้นที่ D</option>
-                  <option value="พื้นที่ G">พื้นที่ G</option>
-                  <option value="พื้นที่ F">พื้นที่ F</option>
-                  <option value="พื้นที่ B">พื้นที่ B</option>
-                  <option value="พื้นที่ C">พื้นที่ C</option>
-                  <option value="พื้นที่ H">พื้นที่ H</option>
-                  <option value="พื้นที่ J">พื้นที่ J</option>
-                  <option value="พื้นที่ A">พื้นที่ A</option>
-                  <option value="พื้นที่ K">พื้นที่ K</option>
-                  <option value="พื้นที่ I">พื้นที่ I</option>
+                  <option value="">เลือกพื้นที่</option>
                 </select>
               </div>
 
@@ -1376,6 +1371,7 @@
         users.filter(user => user.role === "subordinate").forEach(user => {
           AREA_REPRESENTATIVES[user.area] = user.name;
         });
+        populateAuditAreaOptions();
         localStorage.setItem("safety_users_production_v1", JSON.stringify(users));
         updateCloudStatus(true);
       } catch (error) {
@@ -1635,7 +1631,10 @@
         }
       });
 
-      const pendingJobsCount = filtered.filter(j => j.status === "pending" && j.assignee === currentUser.name).length;
+      const pendingJobsCount = filtered.filter(j => {
+        if (j.status !== "pending") return false;
+        return j.taskType === "safety" || j.assignee === currentUser.name;
+      }).length;
       document.getElementById("sb-pending-count").innerText = `${pendingJobsCount} งาน`;
 
       const container = document.getElementById("sb-jobs-list");
@@ -1795,7 +1794,7 @@
 
         ${timelineHtml}
 
-        ${(isPending && currentUser.name === job.assignee) ? `
+        ${(isPending && currentUser.role === "subordinate" && (job.taskType === "safety" || currentUser.name === job.assignee)) ? `
           <button onclick="openResolveModal('${job.id}')" class="w-full bg-gradient-to-r from-emerald-500 to-safety-green text-white py-2.5 rounded-xl font-bold text-xs shadow-glow-green hover:opacity-95 flex items-center justify-center space-x-1.5 transition">
             <i class="fa-solid fa-camera"></i>
             <span>ส่งรูป After เพื่อปิดงานแก้ไข</span>
@@ -1940,8 +1939,9 @@
     function populateDashboardFilters() {
       const areaFilter = document.getElementById("dash-area-filter");
       const monthFilter = document.getElementById("dash-month-filter");
+      const dayFilter = document.getElementById("dash-day-filter");
       
-      if (!areaFilter || !monthFilter) return;
+      if (!areaFilter || !monthFilter || !dayFilter) return;
 
       const currentArea = areaFilter.value || "all";
       areaFilter.innerHTML = `<option value="all">ทุกพื้นที่</option>`;
@@ -1965,15 +1965,17 @@
     function renderWebDashboard() {
       populateDashboardFilters();
       const month = document.getElementById("dash-month-filter").value;
+      const day = document.getElementById("dash-day-filter").value;
       const area = document.getElementById("dash-area-filter").value;
 
       // Filter jobs based on type selected, month and area
       const filtered = jobs.filter(job => {
         const matchType = currentDashboardType === "all" || job.taskType === currentDashboardType;
         const matchMonth = !month || String(job.createdAt || "").slice(0, 7) === month;
+        const matchDay = !day || String(job.createdAt || "").slice(0, 10) === day;
         const matchArea = area === "all" || job.area === area;
 
-        return matchType && matchMonth && matchArea;
+        return matchType && matchMonth && matchDay && matchArea;
       });
 
       const totalCount = filtered.length;
@@ -2431,6 +2433,20 @@
     // ==========================================
     // Form and Interactive Utilities
     // ==========================================
+    function populateAuditAreaOptions() {
+      const areaSelect = document.getElementById("audit-area");
+      if (!areaSelect) return;
+      const currentArea = areaSelect.value;
+      areaSelect.innerHTML = `<option value="">เลือกพื้นที่</option>`;
+      Object.keys(AREA_REPRESENTATIVES).sort().forEach(area => {
+        const option = document.createElement("option");
+        option.value = area;
+        option.textContent = area;
+        areaSelect.appendChild(option);
+      });
+      if (AREA_REPRESENTATIVES[currentArea]) areaSelect.value = currentArea;
+    }
+
     function autoDetectArea() {
       const keys = Object.keys(AREA_REPRESENTATIVES);
       const randArea = keys[Math.floor(Math.random() * keys.length)];
@@ -2442,7 +2458,7 @@
 
     function autoSelectResponsiblePerson() {
       const areaVal = document.getElementById("audit-area").value;
-      const staffName = AREA_REPRESENTATIVES[areaVal] || "ไม่ระบุ";
+      const staffName = AREA_REPRESENTATIVES[areaVal] || "";
       document.getElementById("audit-assignee").value = staffName;
     }
 
@@ -2688,9 +2704,15 @@
       if (type === "5s") {
         s5Btn.className = "border border-amber-500/20 bg-amber-500 text-slate-950 rounded-lg p-2 text-xs font-bold shadow-glow-amber transition";
         safetyBtn.className = "border border-transparent text-slate-500 rounded-lg p-2 text-xs font-bold transition";
+        document.getElementById("audit-area").value = "";
+        autoSelectResponsiblePerson();
       } else {
         safetyBtn.className = "border border-emerald-500/20 bg-emerald-500 text-white rounded-lg p-2 text-xs font-bold shadow-glow-green transition";
         s5Btn.className = "border border-transparent text-slate-500 rounded-lg p-2 text-xs font-bold transition";
+        if (!document.getElementById("audit-area").value) {
+          document.getElementById("audit-area").value = Object.keys(AREA_REPRESENTATIVES).sort()[0] || "";
+          autoSelectResponsiblePerson();
+        }
       }
     }
 
@@ -2797,6 +2819,10 @@
       const issue = document.getElementById("audit-issue").value.trim();
       const suggestion = document.getElementById("audit-suggestion").value.trim();
 
+      if (!area || !assignee) {
+        showToast("กรุณาเลือกพื้นที่", currentSupervisorWorkType === "5s" ? "งาน 5ส ต้องเลือกพื้นที่เพื่อส่งให้ผู้รับผิดชอบโดยอัตโนมัติ" : "กรุณาเลือกพื้นที่ที่พบปัญหา", "fa-location-dot", "bg-safety-red");
+        return;
+      }
       if (!issue || !suggestion) {
         showToast("ขาดข้อมูลสำคัญ", "กรุณาระบุจุดบกพร่องและคำแนะนำให้เรียบร้อย", "fa-triangle-exclamation", "bg-safety-red");
         return;
