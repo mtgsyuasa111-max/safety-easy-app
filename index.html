@@ -1377,6 +1377,7 @@
           AREA_REPRESENTATIVES[user.area] = user.name;
         });
         localStorage.setItem("safety_users_production_v1", JSON.stringify(users));
+        updateCloudStatus(true);
       } catch (error) {
         console.error("Failed to load users:", error);
         users = [];
