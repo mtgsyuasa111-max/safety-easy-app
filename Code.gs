@@ -97,7 +97,7 @@ function doPost(e) {
       var userSheet = ss.getSheetByName("Users");
       var userData = userSheet.getDataRange().getValues();
       for (var i = 1; i < userData.length; i++) {
-        if (String(userData[i][1]).trim() === String(rawData.username).trim() && String(userData[i][4]).trim() === String(rawData.pin).trim()) {
+        if (String(userData[i][0]).trim() === String(rawData.id).trim() && String(userData[i][4]).trim() === String(rawData.pin).trim()) {
           return ContentService.createTextOutput(JSON.stringify({
             status: "success",
             token: "AUTH_" + Utilities.getUuid(),
