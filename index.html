@@ -352,7 +352,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v8.0.0 Area Group PRO</span>
+              <span>v9.0.0 Remember Me PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -390,26 +390,15 @@
             </div>
 
             <!-- User Select Panel -->
-            <div class="space-y-5" id="user-select-container">
-              <div>
-                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">เลือกบัญชีผู้ใช้ของคุณ</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                    <i class="fa-solid fa-circle-user text-lg text-emerald-400"></i>
-                  </div>
-                  <select id="user-login-select" class="w-full pl-11 pr-10 py-4 bg-slate-950/60 border border-white/10 rounded-2xl text-sm font-bold text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300 appearance-none shadow-inner cursor-pointer hover:border-white/20">
-                    <!-- Will be populated dynamically based on role -->
-                  </select>
-                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
-                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                  </div>
-                </div>
-              </div>
+            <div class="space-y-4" id="user-select-container">
+              <label class="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest text-center mb-1">
+                คลิกเลือกบัญชีผู้ใช้ของคุณเพื่อระบุตัวตน (เข้าสู่ระบบได้ทันที)
+              </label>
               
-              <button onclick="proceedToPin()" class="w-full relative overflow-hidden group bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white py-4 px-6 rounded-2xl font-bold text-sm shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] active:scale-[0.98] transition-all duration-300 flex items-center justify-center space-x-2">
-                <span class="tracking-wider">ถัดไป</span>
-                <i class="fa-solid fa-chevron-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
-              </button>
+              <!-- Container for dynamic profile buttons -->
+              <div id="user-buttons-list" class="grid grid-cols-1 gap-2.5 max-h-[360px] overflow-y-auto pr-1 no-scrollbar">
+                <!-- User buttons will be populated dynamically -->
+              </div>
             </div>
 
             <!-- Virtual Numeric PIN Pad Panel -->
@@ -594,12 +583,12 @@
               </button>
             </div>
 
-            <!-- Horizontal Scrollable Area Group Filter -->
+            <!-- Grid Layout Area Group Filter -->
             <div class="mb-4 glass-card p-3 rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm">
               <label class="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center">
-                <i class="fa-solid fa-filter text-safety-green mr-1.5 text-[8px]"></i>แยกตามกลุ่มพื้นที่ดตรวจ
+                <i class="fa-solid fa-filter text-safety-green mr-1.5 text-[8px]"></i>แยกตามกลุ่มพื้นที่ตรวจ (คลิกเพื่อเลือกทันที)
               </label>
-              <div id="sp-area-chips-container" class="flex space-x-2 overflow-x-auto no-scrollbar pb-1">
+              <div id="sp-area-chips-container" class="flex flex-wrap gap-1.5 pb-0.5">
                 <!-- Populated dynamically in JavaScript -->
               </div>
             </div>
@@ -691,12 +680,12 @@
               <i class="fa-solid fa-list-check text-safety-green mr-2"></i>รายการของคุณที่ต้องการการแก้ไข
             </h3>
 
-            <!-- Horizontal Scrollable Area Group Filter -->
+            <!-- Grid Layout Area Group Filter -->
             <div class="mb-4 glass-card p-3 rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm">
               <label class="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center">
-                <i class="fa-solid fa-filter text-safety-green mr-1.5 text-[8px]"></i>แยกตามกลุ่มพื้นที่ดตรวจ
+                <i class="fa-solid fa-filter text-safety-green mr-1.5 text-[8px]"></i>แยกตามกลุ่มพื้นที่ตรวจ (คลิกเพื่อเลือกทันที)
               </label>
-              <div id="sb-area-chips-container" class="flex space-x-2 overflow-x-auto no-scrollbar pb-1">
+              <div id="sb-area-chips-container" class="flex flex-wrap gap-1.5 pb-0.5">
                 <!-- Populated dynamically in JavaScript -->
               </div>
             </div>
@@ -1554,10 +1543,11 @@
       selectedLoginRole = role;
       hideAllScreens();
       
-      const select = document.getElementById("user-login-select");
-      select.innerHTML = "";
+      const container = document.getElementById("user-buttons-list");
+      if (!container) return;
+      container.innerHTML = "";
       
-      // Populate select dropdown based on role selected
+      // Populate profile buttons based on role selected
       let filtered = [];
       if (role === "supervisor") {
         filtered = users.filter(u => u.role === "supervisor");
@@ -1570,10 +1560,56 @@
       }
 
       filtered.forEach(u => {
-        const opt = document.createElement("option");
-        opt.value = u.id;
-        opt.textContent = `${u.name} (${u.role === 'admin' ? 'Admin' : u.area})`;
-        select.appendChild(opt);
+        const btn = document.createElement("button");
+        btn.onclick = () => selectUserDirectly(u.id);
+        
+        // Initials
+        const names = u.name.split(" ");
+        const initials = names.map(n => n.charAt(0)).join("").slice(0, 2).toUpperCase();
+        
+        const avatarColor = u.role === "admin" 
+          ? "from-emerald-400 to-teal-500 text-white shadow-glow-green border-emerald-400/20" 
+          : u.role === "supervisor"
+            ? "from-amber-400 to-amber-600 text-white shadow-glow-amber border-amber-400/20"
+            : "from-blue-400 to-indigo-600 text-white shadow-glow border-blue-400/20";
+
+        const badgeColor = u.role === "admin"
+          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+          : u.role === "supervisor"
+            ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+            : "bg-blue-500/10 text-blue-400 border-blue-500/20";
+            
+        const roleLabel = u.role === "admin" ? "Admin" : u.role === "supervisor" ? "Supervisor" : `พื้นที่ ${u.area}`;
+
+        btn.className = "w-full relative group overflow-hidden rounded-2xl bg-white/[0.04] dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 hover:border-emerald-500/30 dark:hover:border-emerald-500/30 text-left p-3.5 flex items-center justify-between transition-all duration-200 active:scale-[0.985] shadow-sm hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-950/80";
+        
+        btn.innerHTML = `
+          <div class="flex items-center space-x-3.5 relative z-10">
+            <!-- Glowing Initials Avatar -->
+            <div class="w-10 h-10 bg-gradient-to-br ${avatarColor} border rounded-full flex items-center justify-center font-black text-xs tracking-wider">
+              ${initials}
+            </div>
+            
+            <div class="space-y-0.5">
+              <span class="font-extrabold text-sm text-slate-800 dark:text-slate-200 group-hover:text-emerald-500 transition-colors block leading-tight">
+                ${u.name}
+              </span>
+              <div class="flex items-center space-x-1.5 mt-0.5">
+                <span class="inline-flex px-1.5 py-0.5 rounded text-[8px] font-black border tracking-wider uppercase ${badgeColor}">
+                  ${roleLabel}
+                </span>
+                <span class="text-[8px] text-slate-400 font-mono">ID: ${u.id}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Small arrow that glows on hover -->
+          <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:text-emerald-400 group-hover:border-emerald-500/20 group-hover:bg-emerald-500/5 group-hover:translate-x-1 transition-all duration-200">
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+          </div>
+        `;
+        
+        container.appendChild(btn);
       });
 
       document.getElementById("screen-login").classList.remove("hidden");
@@ -1586,8 +1622,7 @@
       document.getElementById("screen-splash").classList.remove("hidden");
     }
 
-    function proceedToPin() {
-      const userId = document.getElementById("user-login-select").value;
+    function selectUserDirectly(userId) {
       selectedUserToLogin = users.find(u => u.id === userId);
       if (!selectedUserToLogin) return;
 
@@ -1725,6 +1760,8 @@
         currentUser = result.user;
         authToken = result.token;
         sessionStorage.setItem("safety_easy_auth_token", authToken);
+        localStorage.setItem("safety_easy_remembered_user", JSON.stringify(currentUser));
+        localStorage.setItem("safety_easy_remembered_token", authToken);
         addAuditLog(currentUser.name, "ลงชื่อเข้าใช้งานเข้าสู่ระบบสิทธิสำเร็จ");
         
         // Request mobile push notification permission upon successful login
@@ -1758,6 +1795,8 @@
           };
           authToken = "OFFLINE_" + Date.now();
           sessionStorage.setItem("safety_easy_auth_token", authToken);
+          localStorage.setItem("safety_easy_remembered_user", JSON.stringify(currentUser));
+          localStorage.setItem("safety_easy_remembered_token", authToken);
           addAuditLog(currentUser.name, "เข้าสู่ระบบสำเร็จ (โหมดออฟไลน์สำรอง)");
           await loadAllJobsData();
           document.getElementById("app-nav-bar").classList.remove("hidden");
@@ -1786,6 +1825,8 @@
       currentUser = null;
       authToken = "";
       sessionStorage.removeItem("safety_easy_auth_token");
+      localStorage.removeItem("safety_easy_remembered_user");
+      localStorage.removeItem("safety_easy_remembered_token");
       selectedUserToLogin = null;
       selectedLoginRole = null;
       enteredPin = "";
@@ -4113,7 +4154,6 @@
     window.onload = async function() {
       initDatabase();
       hideAllScreens();
-      document.getElementById("screen-splash").classList.remove("hidden");
       
       // Initialize theme toggle button
       const themeBtn = document.getElementById("theme-toggle-btn");
@@ -4124,6 +4164,50 @@
       
       // Load public user choices. Jobs are loaded only after successful login.
       await loadAllUsersData();
+      
+      // PERSISTENT LOGIN RECOVERY (AUTO LOGIN)
+      const rememberedUserStr = localStorage.getItem("safety_easy_remembered_user");
+      const rememberedToken = localStorage.getItem("safety_easy_remembered_token");
+      
+      if (rememberedUserStr && rememberedToken) {
+        try {
+          currentUser = JSON.parse(rememberedUserStr);
+          authToken = rememberedToken;
+          
+          sessionStorage.setItem("safety_easy_auth_token", authToken);
+          addAuditLog(currentUser.name, "กู้คืนเซสชันเข้าสู่ระบบเดิม (Auto Login)");
+          
+          // Request mobile push notification permission
+          if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+            Notification.requestPermission();
+          }
+          
+          await loadAllJobsData();
+          
+          // Show Navigation bar
+          document.getElementById("app-nav-bar").classList.remove("hidden");
+          
+          // Setup permissions on navigation
+          const navAdmin = document.getElementById("nav-admin");
+          if (currentUser.role === "admin") {
+            navAdmin.classList.remove("hidden");
+          } else {
+            navAdmin.classList.add("hidden");
+          }
+          
+          // Direct to home screen directly
+          navigateTo('home');
+          showToast("กู้คืนเซสชันสำเร็จ", `เข้าสู่ระบบค้างไว้ในชื่อคุณ ${currentUser.name}`, "fa-circle-check", "bg-safety-green shadow-glow-green");
+          return;
+        } catch (e) {
+          console.error("Auto login failed, resetting saved credentials:", e);
+          localStorage.removeItem("safety_easy_remembered_user");
+          localStorage.removeItem("safety_easy_remembered_token");
+        }
+      }
+      
+      // Fallback: If no auto-login, show splash screen as normal
+      document.getElementById("screen-splash").classList.remove("hidden");
     };
   </script>
 </body>

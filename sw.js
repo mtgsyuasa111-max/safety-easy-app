@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v8'; // v8: dynamic Area Group Filters on Home screen
+const CACHE_NAME = 'safety-easy-pro-v9'; // v9: Remember Me & User Grid Selection Buttons
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
