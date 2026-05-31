@@ -64,10 +64,11 @@ function doGet(e) {
         jobs.push(job);
       }
       
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", data: jobs }))
+      // Return plain array so app's Array.isArray() check passes
+      return ContentService.createTextOutput(JSON.stringify(jobs))
         .setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Invalid GET action" }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
