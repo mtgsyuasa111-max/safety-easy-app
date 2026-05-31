@@ -67,13 +67,13 @@
     }
     
     .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(15, 23, 42, 0.07);
       color: #0f172a;
-      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
-      transition: background 0.3s, border 0.3s, color 0.3s;
+      box-shadow: 0 4px 24px -4px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15,23,42,0.04);
+      transition: background 0.3s, border 0.3s, color 0.3s, box-shadow 0.3s;
     }
     .dark .glass-card {
       background: rgba(30, 41, 59, 0.65);
@@ -167,8 +167,11 @@
       width: 96px;
       height: 96px;
       border-radius: 50%;
-      background: #090d16;
+      background: #f1f5f9;
       position: absolute;
+    }
+    .dark .donut-chart::after {
+      background: #090d16;
     }
     .donut-chart > span {
       position: relative;
@@ -193,27 +196,38 @@
     .shake-anim {
       animation: shake 0.2s ease-in-out 2;
     }
+
+    @keyframes notification-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .notification-active {
+      animation: notification-pulse 1.5s ease-out infinite;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-tr from-slate-100 via-teal-50/20 to-slate-200 dark:bg-[radial-gradient(circle_at_top_left,#064e3b_0,#0f172a_38%,#020617_100%)] flex justify-center items-center min-h-screen text-slate-800 dark:text-slate-100 p-0 sm:p-4 transition-colors duration-300">
 
   <!-- Smart Phone Mobile Container Frame -->
-  <div id="phone-container" class="w-full max-w-md bg-slate-50 dark:bg-[#090d16] h-screen sm:h-[90vh] md:h-[880px] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col relative border border-slate-200/80 dark:border-white/5 shadow-glass transition-colors duration-300">
+  <div id="phone-container" class="w-full max-w-md lg:max-w-none lg:h-screen lg:rounded-none lg:border-none lg:shadow-none bg-slate-50 dark:bg-[#090d16] h-screen sm:h-[90vh] md:h-[880px] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col relative border border-slate-200/80 dark:border-white/5 shadow-glass transition-colors duration-300">
     
     <!-- Phone Top Status Bar Mockup -->
     <div class="bg-white/90 dark:bg-slate-950/80 backdrop-blur-md text-slate-700 dark:text-slate-300 px-6 pt-3 pb-2 flex justify-between items-center text-xs font-semibold z-40 border-b border-slate-200 dark:border-white/5 transition-all duration-300">
-      <div class="flex items-center space-x-1.5">
-        <i class="fa-solid fa-shield-halved text-safety-green animate-pulse"></i> 
-        <span class="tracking-wider text-[10px] font-bold text-slate-800 dark:text-slate-200">SAFETY EASY <span class="text-safety-yellow">PRO</span></span>
-      </div>
-      <div class="flex items-center space-x-2.5">
-        <button id="theme-toggle-btn" class="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:scale-105 active:scale-95 transition-all duration-150 flex items-center justify-center" title="สลับโหมด มืด/สว่าง">
-          <i id="theme-toggle-icon" class="fa-solid fa-moon text-xs"></i>
-        </button>
-        <span id="cloud-sync-status" class="text-[9px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 transition-all">
-          <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Local Mode
-        </span>
-        <span id="live-time" class="text-slate-600 dark:text-slate-400 font-mono">08:00</span>
+      <div class="w-full max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-1.5">
+          <i class="fa-solid fa-shield-halved text-safety-green animate-pulse"></i> 
+          <span class="tracking-wider text-[10px] font-bold text-slate-800 dark:text-slate-200">SAFETY EASY <span class="text-safety-yellow">PRO</span></span>
+        </div>
+        <div class="flex items-center space-x-2.5">
+          <button id="theme-toggle-btn" class="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:scale-105 active:scale-95 transition-all duration-150 flex items-center justify-center" title="สลับโหมด มืด/สว่าง">
+            <i id="theme-toggle-icon" class="fa-solid fa-moon text-xs"></i>
+          </button>
+          <span id="cloud-sync-status" class="text-[9px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 transition-all">
+            <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Local Mode
+          </span>
+          <span id="live-time" class="text-slate-600 dark:text-slate-400 font-mono">08:00</span>
+        </div>
       </div>
     </div>
 
@@ -223,7 +237,7 @@
       <!-- ========================================== -->
       <!-- 1. SCREEN: ROLE SELECT (SPLASH) -->
       <!-- ========================================== -->
-      <div id="screen-splash" class="screen-transition p-6 flex flex-col justify-between h-full min-h-[75vh]">
+      <div id="screen-splash" class="screen-transition p-6 flex flex-col justify-between h-full min-h-[75vh] lg:max-w-md lg:mx-auto lg:my-auto lg:w-full">
         
         <!-- BRAND HEADER SECTION -->
         <div class="mt-6 text-center">
@@ -352,7 +366,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v13.0.0 Real-time Alerts & Grouping PRO</span>
+              <span>v15.0.0 Premium PWA Notifications & UI PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -367,7 +381,7 @@
       <!-- ========================================== -->
       <!-- 2. SCREEN: USER SELECT & PIN LOGIN -->
       <!-- ========================================== -->
-      <div id="screen-login" class="screen-transition p-6 hidden flex flex-col justify-between h-full min-h-[75vh]">
+      <div id="screen-login" class="screen-transition p-6 hidden flex flex-col justify-between h-full min-h-[75vh] lg:max-w-md lg:mx-auto lg:my-auto lg:w-full lg:p-8 lg:rounded-[2.5rem] lg:border lg:border-slate-200/80 lg:dark:border-white/10 lg:bg-white/85 lg:dark:bg-slate-900/60 lg:backdrop-blur-xl lg:shadow-2xl">
         <div class="flex-1 flex flex-col justify-between">
           <div>
             <!-- Header back navigation -->
@@ -507,7 +521,8 @@
       <div id="screen-supervisor-home" class="screen-transition hidden">
         <!-- Top Profile Panel -->
         <div class="bg-gradient-to-br from-safety-slate to-slate-950 p-6 rounded-b-[2rem] border-b border-white/10 shadow-lg">
-          <div class="flex justify-between items-center">
+          <div class="w-full max-w-7xl mx-auto">
+            <div class="flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
               <div class="relative cursor-pointer group" onclick="triggerAvatarUpload()" title="เปลี่ยนรูปโปรไพล์">
                 <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center font-bold text-white border border-emerald-400/20 shadow-glow-green text-sm overflow-hidden" id="sp-avatar">
@@ -544,9 +559,10 @@
             </div>
           </div>
         </div>
+      </div>
 
         <!-- Tool / Menu Area -->
-        <div class="p-6 space-y-6">
+        <div class="p-6 space-y-6 w-full max-w-7xl mx-auto pb-28">
           <div>
             <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest mb-3">ประเภทงานตรวจ</h3>
             <div class="grid grid-cols-2 gap-3">
@@ -593,7 +609,7 @@
               </div>
             </div>
 
-            <div id="sp-jobs-list" class="space-y-4">
+            <div id="sp-jobs-list" class="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0 xl:grid-cols-3">
               <!-- Job cards will go here dynamically -->
             </div>
           </div>
@@ -606,7 +622,8 @@
       <div id="screen-subordinate-home" class="screen-transition hidden">
         <!-- Profile bar -->
         <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-b-[2rem] border-b border-white/10 shadow-lg">
-          <div class="flex justify-between items-center">
+          <div class="w-full max-w-7xl mx-auto">
+            <div class="flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
               <div class="relative cursor-pointer group" onclick="triggerAvatarUpload()" title="เปลี่ยนรูปโปรไพล์">
                 <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center font-bold text-white border border-amber-400/20 shadow-glow-amber text-sm overflow-hidden" id="sb-avatar">
@@ -644,8 +661,9 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="p-6 space-y-6">
+        <div class="p-6 space-y-6 w-full max-w-7xl mx-auto pb-28">
           <!-- Button "เริ่มตรวจ" for Admin only -->
           <div id="sb-admin-start-audit-container" class="hidden mb-4">
             <button onclick="openNewAuditModal()" class="w-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-safety-green text-white p-4.5 rounded-2xl flex items-center justify-between shadow-glow-green hover:opacity-95 transition-opacity">
@@ -690,7 +708,7 @@
               </div>
             </div>
 
-            <div id="sb-jobs-list" class="space-y-4">
+            <div id="sb-jobs-list" class="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0 xl:grid-cols-3">
               <!-- Operator jobs loaded dynamically -->
             </div>
           </div>
@@ -702,13 +720,15 @@
       <!-- ========================================== -->
       <div id="screen-jobs" class="screen-transition hidden">
         <div class="p-6 bg-slate-950/80 border-b border-white/5 sticky top-0 z-10 backdrop-blur-md">
-          <h2 class="text-xl font-bold text-white flex items-center">
-            <i class="fa-solid fa-folder-open text-safety-green mr-2"></i>แฟ้มข้อมูลงานทั้งหมด
-          </h2>
-          <p class="text-xs text-slate-400 mt-1">สืบค้น ค้นหา และติดตามงานความปลอดภัยทั้งหมดในระบบ</p>
+          <div class="w-full max-w-7xl mx-auto">
+            <h2 class="text-xl font-bold text-white flex items-center">
+              <i class="fa-solid fa-folder-open text-safety-green mr-2"></i>แฟ้มข้อมูลงานทั้งหมด
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">สืบค้น ค้นหา และติดตามงานความปลอดภัยทั้งหมดในระบบ</p>
+          </div>
         </div>
 
-        <div class="p-6 space-y-4">
+        <div class="p-6 space-y-4 w-full max-w-7xl mx-auto pb-28">
           <!-- Search and Filter Panel -->
           <div class="glass-card p-4 rounded-2xl space-y-3 border border-white/5">
             <div class="relative">
@@ -731,7 +751,7 @@
             </div>
           </div>
 
-          <div id="master-jobs-container" class="space-y-4">
+          <div id="master-jobs-container" class="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0 xl:grid-cols-3">
             <!-- Dynamic jobs list -->
           </div>
         </div>
@@ -766,74 +786,84 @@
           </div>
         </div>
 
-        <div class="p-6 space-y-6">
-          <!-- Summary Cards and Donut Chart -->
-          <div class="glass-card rounded-3xl p-5 border border-white/5 shadow-lg flex items-center justify-between gap-4">
-            <div class="donut-chart relative flex-shrink-0" id="dash-donut" style="--done:0deg">
-              <span class="text-center">
-                <b class="block text-xl text-white font-extrabold" id="dash-done-percent">0%</b>
-                <small class="text-[9px] text-slate-400 font-extrabold uppercase">เสร็จสมบูรณ์</small>
-              </span>
-            </div>
+        <div class="w-full max-w-7xl mx-auto px-6 py-6 pb-28">
+          <div class="lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start lg:space-y-0 space-y-6">
+            
+            <!-- Left Column: Metrics & Stats (5 columns span) -->
+            <div class="lg:col-span-5 space-y-6">
+              <!-- Summary Cards and Donut Chart -->
+              <div class="glass-card rounded-3xl p-5 border border-white/5 shadow-lg flex items-center justify-between gap-4">
+                <div class="donut-chart relative flex-shrink-0" id="dash-donut" style="--done:0deg">
+                  <span class="text-center">
+                    <b class="block text-xl text-white font-extrabold" id="dash-done-percent">0%</b>
+                    <small class="text-[9px] text-slate-400 font-extrabold uppercase">เสร็จสมบูรณ์</small>
+                  </span>
+                </div>
 
-            <div class="flex-1 space-y-3.5">
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-bold text-slate-400"><i class="fa-solid fa-circle text-emerald-400 mr-2 text-[8px]"></i>ตรวจสำเร็จแล้ว</span>
-                <span id="dash-chart-done" class="font-extrabold text-white">0</span>
+                <div class="flex-1 space-y-3.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-400"><i class="fa-solid fa-circle text-emerald-400 mr-2 text-[8px]"></i>ตรวจสำเร็จแล้ว</span>
+                    <span id="dash-chart-done" class="font-extrabold text-white">0</span>
+                  </div>
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-400"><i class="fa-solid fa-circle text-amber-500 mr-2 text-[8px]"></i>รอแก้ไข/ตรวจสอบ</span>
+                    <span id="dash-chart-pending" class="font-extrabold text-white">0</span>
+                  </div>
+                  <div class="h-2 rounded-full bg-slate-950 overflow-hidden border border-white/5">
+                    <div id="dash-bar-done" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green" style="width:0%"></div>
+                  </div>
+                </div>
               </div>
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-bold text-slate-400"><i class="fa-solid fa-circle text-amber-500 mr-2 text-[8px]"></i>รอแก้ไข/ตรวจสอบ</span>
-                <span id="dash-chart-pending" class="font-extrabold text-white">0</span>
+
+              <!-- Date, month and area filter selection -->
+              <div class="grid grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">เดือนตรวจ</label>
+                  <input type="month" id="dash-month-filter" onchange="renderWebDashboard()" class="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs font-bold text-white focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">วันที่ตรวจ</label>
+                  <input type="date" id="dash-day-filter" onchange="renderWebDashboard()" class="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs font-bold text-white focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">พื้นที่</label>
+                  <select id="dash-area-filter" onchange="renderWebDashboard()" class="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs font-bold text-white focus:outline-none">
+                    <option value="all">ทุกพื้นที่</option>
+                  </select>
+                </div>
               </div>
-              <div class="h-2 rounded-full bg-slate-950 overflow-hidden border border-white/5">
-                <div id="dash-bar-done" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green" style="width:0%"></div>
+
+              <!-- Progress summary by physical Area -->
+              <div>
+                <div class="flex justify-between items-center mb-3">
+                  <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-chart-bar text-safety-green mr-2"></i>สรุปความก้าวหน้าตามพื้นที่</h3>
+                  <button onclick="renderWebDashboard()" class="text-xs text-safety-green font-bold flex items-center hover:underline">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> รีเฟรช
+                  </button>
+                </div>
+                <div id="dash-area-list" class="space-y-3">
+                  <!-- Area lists -->
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Date, month and area filter selection -->
-          <div class="grid grid-cols-3 gap-3">
-            <div>
-              <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">เดือนตรวจ</label>
-              <input type="month" id="dash-month-filter" onchange="renderWebDashboard()" class="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs font-bold text-white focus:outline-none">
+            <!-- Right Column: Before/After Safety Tickets Grid (7 columns span) -->
+            <div class="lg:col-span-7 space-y-6">
+              <!-- Job List with Before/After Photos -->
+              <div>
+                <div class="flex justify-between items-center mb-3">
+                  <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-images text-safety-yellow mr-2"></i>รายการงาน Before / After</h3>
+                  <span id="dash-job-count-badge" class="text-[10px] bg-slate-800 text-slate-400 font-bold px-2 py-1 rounded-lg border border-white/5">0 งาน</span>
+                </div>
+                <div id="dash-recent-list" class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
+                  <!-- Job cards dynamically -->
+                </div>
+                <button id="dash-show-all-btn" onclick="dashToggleShowAll()" class="hidden w-full mt-3 py-2.5 rounded-2xl border border-white/10 text-xs font-bold text-slate-400 hover:text-white hover:border-emerald-500/40 transition-all">
+                  <i class="fa-solid fa-chevron-down mr-1"></i> ดูทั้งหมด
+                </button>
+              </div>
             </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">วันที่ตรวจ</label>
-              <input type="date" id="dash-day-filter" onchange="renderWebDashboard()" class="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs font-bold text-white focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-wider">พื้นที่</label>
-              <select id="dash-area-filter" onchange="renderWebDashboard()" class="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs font-bold text-white focus:outline-none">
-                <option value="all">ทุกพื้นที่</option>
-              </select>
-            </div>
-          </div>
 
-          <!-- Progress summary by physical Area -->
-          <div>
-            <div class="flex justify-between items-center mb-3">
-              <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-chart-bar text-safety-green mr-2"></i>สรุปความก้าวหน้าตามพื้นที่</h3>
-              <button onclick="renderWebDashboard()" class="text-xs text-safety-green font-bold flex items-center hover:underline">
-                <i class="fa-solid fa-rotate-right mr-1"></i> รีเฟรช
-              </button>
-            </div>
-            <div id="dash-area-list" class="space-y-3">
-              <!-- Area lists -->
-            </div>
-          </div>
-
-          <!-- Job List with Before/After Photos -->
-          <div>
-            <div class="flex justify-between items-center mb-3">
-              <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-images text-safety-yellow mr-2"></i>รายการงาน Before / After</h3>
-              <span id="dash-job-count-badge" class="text-[10px] bg-slate-800 text-slate-400 font-bold px-2 py-1 rounded-lg border border-white/5">0 งาน</span>
-            </div>
-            <div id="dash-recent-list" class="space-y-3">
-              <!-- Job cards dynamically -->
-            </div>
-            <button id="dash-show-all-btn" onclick="dashToggleShowAll()" class="hidden w-full mt-3 py-2.5 rounded-2xl border border-white/10 text-xs font-bold text-slate-400 hover:text-white hover:border-emerald-500/40 transition-all">
-              <i class="fa-solid fa-chevron-down mr-1"></i> ดูทั้งหมด
-            </button>
           </div>
         </div>
 
@@ -853,7 +883,8 @@
       <!-- ========================================== -->
       <div id="screen-admin" class="screen-transition hidden">
         <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-b-[2rem] border-b border-white/10 shadow-lg">
-          <div class="flex justify-between items-center">
+          <div class="w-full max-w-7xl mx-auto">
+            <div class="flex justify-between items-center">
             <div>
               <span class="text-[10px] text-amber-500 font-bold uppercase tracking-wider block">ผู้ควบคุมและจัดการระบบ</span>
               <h2 class="text-xl font-bold text-white mt-0.5">Admin Panel</h2>
@@ -876,8 +907,9 @@
             </button>
           </div>
         </div>
+      </div>
 
-        <div class="p-6">
+        <div class="p-6 w-full max-w-7xl mx-auto pb-28">
           
           <!-- SUB-TAB 1: USER MANAGEMENT -->
           <div id="admin-view-users" class="space-y-4">
@@ -888,7 +920,7 @@
               </button>
             </div>
             
-            <div id="admin-users-list" class="space-y-3">
+            <div id="admin-users-list" class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0 xl:grid-cols-3">
               <!-- Users database loop -->
             </div>
           </div>
@@ -940,7 +972,7 @@
     <!-- ============================================= -->
     <!-- 8. BOTTOM PREMIUM NAVIGATION BAR -->
     <!-- ============================================= -->
-    <div id="app-nav-bar" class="absolute bottom-0 inset-x-0 bg-slate-950/90 backdrop-blur-md border-t border-white/5 py-2 px-6 flex justify-between items-center z-40 hidden">
+    <div id="app-nav-bar" class="absolute bottom-0 inset-x-0 lg:inset-x-auto lg:w-[32rem] lg:left-1/2 lg:-translate-x-1/2 lg:bottom-6 lg:rounded-full lg:shadow-2xl lg:shadow-emerald-500/10 lg:border lg:border-white/10 lg:py-3 lg:px-8 bg-slate-950/90 backdrop-blur-md border-t border-white/5 py-2 px-6 flex justify-between items-center z-40 hidden">
       <button onclick="navigateTo('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-safety-green transition duration-200 flex-1 relative py-1">
         <i class="fa-solid fa-house-chimney text-base"></i>
         <span class="text-[9px] font-bold">หน้าแรก</span>
@@ -968,8 +1000,8 @@
     <!-- ============================================= -->
 
     <!-- MODAL 1: NEW SAFETY AUDIT FORM -->
-    <div id="modal-audit" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end hidden z-50 transition duration-300">
-      <div class="bg-[#090d16] rounded-t-[2.5rem] p-6 max-h-[92%] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl">
+    <div id="modal-audit" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end lg:items-center lg:justify-center lg:p-6 hidden z-50 transition duration-300">
+      <div class="bg-[#090d16] rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:border lg:border-white/10 lg:max-w-2xl lg:w-full lg:my-auto lg:shadow-2xl p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl">
         
         <div class="flex justify-between items-center mb-5">
           <div class="flex items-center space-x-3">
@@ -1081,8 +1113,8 @@
     </div>
 
     <!-- MODAL 2: RESOLVE FORM (AFTER PHOTO & REMARKS) -->
-    <div id="modal-resolve" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end hidden z-50 transition duration-300">
-      <div class="bg-[#090d16] rounded-t-[2.5rem] p-6 max-h-[92%] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl">
+    <div id="modal-resolve" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end lg:items-center lg:justify-center lg:p-6 hidden z-50 transition duration-300">
+      <div class="bg-[#090d16] rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:border lg:border-white/10 lg:max-w-2xl lg:w-full lg:my-auto lg:shadow-2xl p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl">
         
         <div class="flex justify-between items-center mb-5">
           <div class="flex items-center space-x-3">
@@ -1225,7 +1257,7 @@
 
     <!-- MODAL 4: FULL-TABLE GOOGLE SHEET MOCK PREVIEW -->
     <div id="modal-sheets" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-      <div class="bg-[#090d16] border border-white/10 rounded-3xl p-6 w-full max-w-sm flex flex-col justify-between shadow-2xl h-[80%] shadow-glass">
+      <div class="bg-[#090d16] border border-white/10 rounded-3xl p-6 w-full max-w-sm lg:max-w-5xl flex flex-col justify-between shadow-2xl h-[80%] shadow-glass">
         
         <div class="flex flex-col h-full overflow-hidden">
           <div class="flex justify-between items-center mb-4">
@@ -1392,18 +1424,18 @@
     // Users and PIN hashes are loaded from Google Sheets through Apps Script.
     // Emergency fallback for local/offline login when Apps Script is unavailable.
     const DEFAULT_USERS = [
-      { id: "U001", name: "ผู้ดูแลระบบ", role: "admin", area: "ทุกพื้นที่", pin: "9999" },
-      { id: "U002", name: "หัวหน้างาน", role: "supervisor", area: "ทุกพื้นที่", pin: "0002" },
-      { id: "U003", name: "วิทยา แพงศรี", role: "subordinate", area: "D", pin: "0003" },
-      { id: "U004", name: "ศิริชัย แสงวงค์", role: "subordinate", area: "G", pin: "0002" },
-      { id: "U005", name: "สนธยา วงค์สีทธิไช", role: "subordinate", area: "F", pin: "0005" },
-      { id: "U006", name: "อุดมชัย ทศรักษา", role: "subordinate", area: "B", pin: "0006" },
-      { id: "U007", name: "สุทิน รอดยิ้ม", role: "subordinate", area: "C", pin: "0007" },
-      { id: "U008", name: "ภิพัทยา แพทพีพัฒน์", role: "subordinate", area: "H", pin: "0008" },
-      { id: "U009", name: "พิพัฒน์พล ทอยสังข์", role: "subordinate", area: "J", pin: "0009" },
-      { id: "U010", name: "สมชาย วงษา", role: "subordinate", area: "A", pin: "0010" },
-      { id: "U011", name: "ณัฐพงษ์ ยะล้อม", role: "subordinate", area: "K", pin: "0011" },
-      { id: "U012", name: "วันชนะ แพงศรี", role: "subordinate", area: "I", pin: "0012" }
+      { id: "U001", name: "ผู้ดูแลระบบ", role: "admin", area: "ทุกพื้นที่", pin: "9324" },
+      { id: "U002", name: "หัวหน้างาน", role: "supervisor", area: "ทุกพื้นที่", pin: "2277" },
+      { id: "U003", name: "วิทยา แพงศรี", role: "subordinate", area: "D", pin: "3639" },
+      { id: "U004", name: "ศิริชัย แสงวงค์", role: "subordinate", area: "G", pin: "5272" },
+      { id: "U005", name: "สนธยา วงค์สีทธิไช", role: "subordinate", area: "F", pin: "9577" },
+      { id: "U006", name: "อุดมชัย ทศรักษา", role: "subordinate", area: "B", pin: "6028" },
+      { id: "U007", name: "สุทิน รอดยิ้ม", role: "subordinate", area: "C", pin: "2050" },
+      { id: "U008", name: "ภิพัทยา แพทพีพัฒน์", role: "subordinate", area: "H", pin: "3627" },
+      { id: "U009", name: "พิพัฒน์พล ทอยสังข์", role: "subordinate", area: "J", pin: "4384" },
+      { id: "U010", name: "สมชาย วงษา", role: "subordinate", area: "A", pin: "9330" },
+      { id: "U011", name: "ณัฐพงษ์ ยะล้อม", role: "subordinate", area: "K", pin: "8305" },
+      { id: "U012", name: "วันชนะ แพงศรี", role: "subordinate", area: "I", pin: "8814" }
     ];
 
     // AREA OWNER MAPPING FOR AUTO-ASSIGNMENT
@@ -1799,6 +1831,9 @@
           localStorage.setItem("safety_easy_remembered_user", JSON.stringify(currentUser));
           localStorage.setItem("safety_easy_remembered_token", authToken);
           addAuditLog(currentUser.name, "เข้าสู่ระบบสำเร็จ (โหมดออฟไลน์สำรอง)");
+          if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+            Notification.requestPermission();
+          }
           await loadAllJobsData();
           startBackgroundSync(); // Poll background data
           document.getElementById("app-nav-bar").classList.remove("hidden");
@@ -2918,6 +2953,17 @@
       addAuditLog(currentUser.name, `เปลี่ยนแปลงรหัสล็อกอิน PIN ของคุณ ${user.name}`);
       renderAdminUsersList();
       showToast("รีเซ็ต PIN สำเร็จ", `รหัสผ่านใหม่คือ ${user.pin}`, "fa-key", "bg-safety-green shadow-glow-green");
+
+      // Sync to Google Sheets
+      if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED")) {
+        callApi({
+          action: "updateUser",
+          token: authToken,
+          data: { id: user.id, area: user.area, pin: user.pin }
+        }).catch(err => {
+          console.warn("Sync user PIN change failed:", err);
+        });
+      }
     }
 
     function deleteUserAdmin(userId) {
@@ -4280,27 +4326,21 @@
     // Native PWA Push Notification System
     // ==========================================
     function triggerNativeNotification(title, body) {
-      if ('Notification' in window && Notification.permission === 'granted') {
-        if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-          navigator.serviceWorker.ready.then(registration => {
-            registration.showNotification(title, {
-              body: body,
-              icon: './icon-192.png',
-              badge: './icon-192.png',
-              vibrate: [150, 80, 150],
-              tag: 'safety-audit-alert',
-              renotify: true,
-              data: {
-                clickUrl: window.location.href
-              }
-            });
-          }).catch(err => {
-            console.warn('[PWA Notification] Failed using SW ready state:', err);
-            new Notification(title, { body: body, icon: './icon-192.png' });
-          });
-        } else {
-          new Notification(title, { body: body, icon: './icon-192.png' });
-        }
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+      const options = {
+        body: body,
+        icon: './icon-192.png',
+        badge: './icon-192.png',
+        vibrate: [150, 80, 150],
+        tag: 'safety-audit-alert',
+        renotify: true,
+        data: { clickUrl: window.location.href }
+      };
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options))
+          .catch(() => new Notification(title, { body, icon: './icon-192.png' }));
+      } else {
+        try { new Notification(title, options); } catch(e) { new Notification(title, { body, icon: './icon-192.png' }); }
       }
     }
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v13'; // v13: Group completed jobs by day, background sync & real-time notification alerts
+const CACHE_NAME = 'safety-easy-pro-v15'; // v15: Premium PWA notifications — push event handler & notificationclick support
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -83,6 +83,39 @@ self.addEventListener('fetch', (event) => {
           return caches.match('./index.html');
         }
       });
+    })
+  );
+});
+
+// Push Event — show notification from server push payload
+self.addEventListener('push', (event) => {
+  let data = { title: 'Safety Easy PRO', body: 'มีการแจ้งเตือนใหม่' };
+  try {
+    data = event.data.json();
+  } catch (e) {
+    // fallback data already set above
+  }
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: './icon-192.png',
+      badge: './icon-192.png',
+      vibrate: [150, 80, 150],
+      tag: 'safety-audit-alert',
+      renotify: true
+    })
+  );
+});
+
+// Notification Click Event — focus existing window or open new one
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+      return clients.openWindow(self.registration.scope);
     })
   );
 });
