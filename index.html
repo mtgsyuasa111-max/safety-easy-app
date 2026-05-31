@@ -2592,10 +2592,7 @@
       });
       areaFilter.value = currentArea;
 
-      if (!monthFilter.value) {
-        const now = new Date();
-        monthFilter.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}`;
-      }
+      // Leave monthFilter empty by default so all months are shown on first load
     }
 
     function renderWebDashboard() {
