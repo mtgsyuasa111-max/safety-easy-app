@@ -381,7 +381,7 @@
       <!-- ========================================== -->
       <!-- 2. SCREEN: USER SELECT & PIN LOGIN -->
       <!-- ========================================== -->
-      <div id="screen-login" class="screen-transition p-6 hidden flex flex-col justify-between h-full min-h-[75vh] lg:max-w-md lg:mx-auto lg:my-auto lg:w-full lg:p-8 lg:rounded-[2.5rem] lg:border lg:border-slate-200/80 lg:dark:border-white/10 lg:bg-white/85 lg:dark:bg-slate-900/60 lg:backdrop-blur-xl lg:shadow-2xl">
+      <div id="screen-login" class="screen-transition p-6 hidden flex flex-col justify-between h-full min-h-[75vh] lg:min-h-0 lg:max-w-md lg:mx-auto lg:my-auto lg:w-full lg:p-8 lg:rounded-[2.5rem] lg:border lg:border-slate-200/80 lg:dark:border-white/10 lg:bg-white/85 lg:dark:bg-slate-900/60 lg:backdrop-blur-xl lg:shadow-2xl">
         <div class="flex-1 flex flex-col justify-between">
           <div>
             <!-- Header back navigation -->
@@ -445,61 +445,61 @@
               </div>
 
               <!-- Keyboard Layout Grid -->
-              <div class="grid grid-cols-3 gap-y-4 gap-x-8 max-w-xs mx-auto pb-2">
+              <div class="grid grid-cols-3 gap-y-2 gap-x-4 max-w-xs mx-auto pb-2">
                 <!-- 1 -->
-                <button onclick="pressKey('1')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('1')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">1</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">&nbsp;</span>
                 </button>
                 <!-- 2 -->
-                <button onclick="pressKey('2')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('2')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">2</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">ABC</span>
                 </button>
                 <!-- 3 -->
-                <button onclick="pressKey('3')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('3')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">3</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">DEF</span>
                 </button>
                 <!-- 4 -->
-                <button onclick="pressKey('4')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('4')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">4</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">GHI</span>
                 </button>
                 <!-- 5 -->
-                <button onclick="pressKey('5')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('5')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">5</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">JKL</span>
                 </button>
                 <!-- 6 -->
-                <button onclick="pressKey('6')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('6')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">6</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">MNO</span>
                 </button>
                 <!-- 7 -->
-                <button onclick="pressKey('7')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('7')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">7</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">PQRS</span>
                 </button>
                 <!-- 8 -->
-                <button onclick="pressKey('8')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('8')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">8</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">TUV</span>
                 </button>
                 <!-- 9 -->
-                <button onclick="pressKey('9')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('9')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">9</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">WXYZ</span>
                 </button>
                 <!-- Clear -->
-                <button onclick="clearPin()" class="key-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950/40 text-xs font-bold text-slate-500 hover:text-rose-400 hover:border-rose-500/20 flex items-center justify-center mx-auto transition-all active:scale-90 duration-100">ล้าง</button>
+                <button onclick="clearPin()" class="key-btn w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-slate-950/40 text-xs font-bold text-slate-500 hover:text-rose-400 hover:border-rose-500/20 flex items-center justify-center mx-auto transition-all active:scale-90 duration-100">ล้าง</button>
                 <!-- 0 -->
-                <button onclick="pressKey('0')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                <button onclick="pressKey('0')" class="key-btn group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
                   <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">0</span>
                   <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">+</span>
                 </button>
                 <!-- Backspace -->
-                <button onclick="backspacePin()" class="key-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950/40 text-lg font-bold text-slate-500 hover:text-emerald-400 hover:border-emerald-500/20 flex items-center justify-center mx-auto transition-all active:scale-90 duration-100">
+                <button onclick="backspacePin()" class="key-btn w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-slate-950/40 text-lg font-bold text-slate-500 hover:text-emerald-400 hover:border-emerald-500/20 flex items-center justify-center mx-auto transition-all active:scale-90 duration-100">
                   <i class="fa-solid fa-delete-left"></i>
                 </button>
               </div>
