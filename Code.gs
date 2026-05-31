@@ -96,12 +96,19 @@ function doPost(e) {
     if (action === "login") {
       var userSheet = ss.getSheetByName("Users");
       var userData = userSheet.getDataRange().getValues();
+      var enteredPin = String(rawData.pin || "").trim();
       for (var i = 1; i < userData.length; i++) {
-        if (String(userData[i][0]).trim() === String(rawData.id).trim() && String(userData[i][4]).trim() === String(rawData.pin).trim()) {
+        var storedId  = String(userData[i][0] || "").trim();
+        var storedPin = String(userData[i][4] || "").trim();
+        if (storedId !== String(rawData.id || "").trim()) continue;
+        // Accept match if: stored is plain PIN (≤8 chars) OR stored equals entered directly
+        var isPlain = storedPin.length <= 8;
+        if ((isPlain && storedPin === enteredPin) || (!isPlain && storedPin === enteredPin)) {
           return ContentService.createTextOutput(JSON.stringify({
             status: "success",
             token: "AUTH_" + Utilities.getUuid(),
             user: {
+              id: String(userData[i][0]),
               name: String(userData[i][1]),
               role: String(userData[i][2]),
               area: String(userData[i][3])
@@ -254,10 +261,15 @@ function doPost(e) {
           .setMimeType(ContentService.MimeType.JSON);
       }
       
-      // Update Column 4 (D): Area (Index 3 since Columns are A=0, B=1, C=2, D=3)
-      userSheet.getRange(rowIndex, 4).setValue(rawData.area);
+      // Update Column 4 (D): Area and Column 5 (E): PIN
+      if (rawData.area !== undefined) {
+        userSheet.getRange(rowIndex, 4).setValue(rawData.area);
+      }
+      if (rawData.pin !== undefined) {
+        userSheet.getRange(rowIndex, 5).setValue(String(rawData.pin));
+      }
       
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "User area updated" }))
+      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "User updated successfully" }))
         .setMimeType(ContentService.MimeType.JSON);
         
     } else if (action === "delete") {
