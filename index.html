@@ -983,22 +983,29 @@
           <!-- Attach before photo -->
           <div class="p-3 bg-slate-900/40 border border-white/5 rounded-2xl space-y-2">
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">ถ่ายภาพจุดที่พบปัญหา (Before)</label>
-            
-            <div class="flex items-center space-x-4">
-              <div class="w-20 h-20 bg-slate-950 hover:bg-slate-900 border border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden transition" onclick="triggerBeforeCamera()">
+            <div class="flex items-center space-x-3">
+              <div class="w-20 h-20 bg-slate-950 border border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden transition active:scale-95" onclick="openPhotoSheet('before')">
                 <img id="before-preview" class="absolute inset-0 w-full h-full object-cover hidden">
-                <div id="before-placeholder" class="text-center text-slate-500">
+                <div id="before-placeholder" class="text-center text-slate-500 pointer-events-none">
                   <i class="fa-solid fa-camera text-xl"></i>
-                  <span class="block text-[8px] mt-1">กดถ่ายรูป</span>
+                  <span class="block text-[8px] mt-1">แตะเลือก</span>
                 </div>
               </div>
-              
-              <div class="flex-1 text-xs text-slate-400">
-                <p class="font-bold text-slate-200">ภาพก่อนแก้ไข (Before)</p>
-                <p class="text-[10px] text-slate-500 mt-1">แตะเพื่อถ่ายรูปหรือเปิดรูปไฟล์ด้วยกล้องของคุณ</p>
-                <input type="file" id="before-photo-input" accept="image/*" capture="environment" class="hidden" onchange="previewBeforePhoto(this)">
+              <div class="flex-1 space-y-2">
+                <p class="font-bold text-slate-200 text-xs">ภาพก่อนแก้ไข (Before)</p>
+                <div class="flex gap-2">
+                  <button type="button" onclick="openPhotoSheet('before','camera')" class="flex-1 flex items-center justify-center gap-1 bg-slate-800 border border-white/10 text-emerald-400 text-[10px] font-bold rounded-xl py-2 active:scale-95 transition">
+                    <i class="fa-solid fa-camera text-[11px]"></i> ถ่ายรูป
+                  </button>
+                  <button type="button" onclick="openPhotoSheet('before','gallery')" class="flex-1 flex items-center justify-center gap-1 bg-slate-800 border border-white/10 text-sky-400 text-[10px] font-bold rounded-xl py-2 active:scale-95 transition">
+                    <i class="fa-solid fa-images text-[11px]"></i> คลัง
+                  </button>
+                </div>
               </div>
             </div>
+            <!-- hidden inputs: one for camera, one for gallery -->
+            <input type="file" id="before-camera-input" accept="image/*" capture="environment" class="hidden" onchange="previewBeforePhoto(this)">
+            <input type="file" id="before-gallery-input" accept="image/*" class="hidden" onchange="previewBeforePhoto(this)">
           </div>
 
           <!-- Problem description -->
@@ -1068,22 +1075,29 @@
           <!-- Upload After Photo -->
           <div class="p-3 bg-slate-900/40 border border-white/5 rounded-2xl space-y-2">
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">ภาพยืนยันผลหลังการแก้ไข (After Photo)</label>
-            
-            <div class="flex items-center space-x-4">
-              <div class="w-20 h-20 bg-slate-950 hover:bg-slate-900 border border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden transition" onclick="triggerAfterCamera()">
+            <div class="flex items-center space-x-3">
+              <div class="w-20 h-20 bg-slate-950 border border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden transition active:scale-95" onclick="openPhotoSheet('after')">
                 <img id="after-preview" class="absolute inset-0 w-full h-full object-cover hidden">
-                <div id="after-placeholder" class="text-center text-slate-500">
+                <div id="after-placeholder" class="text-center text-slate-500 pointer-events-none">
                   <i class="fa-solid fa-camera text-xl"></i>
-                  <span class="block text-[8px] mt-1">ถ่ายรูปแก้ไข</span>
+                  <span class="block text-[8px] mt-1">แตะเลือก</span>
                 </div>
               </div>
-              
-              <div class="flex-1 text-xs text-slate-400">
-                <p class="font-bold text-safety-green">ภาพถ่ายเปรียบเทียบ (After)</p>
-                <p class="text-[10px] text-slate-500 mt-1">กรุณาถ่ายภาพในมุมและจุดเดิมเพื่อเทียบความคืบหน้า</p>
-                <input type="file" id="after-photo-input" accept="image/*" capture="environment" class="hidden" onchange="previewAfterPhoto(this)">
+              <div class="flex-1 space-y-2">
+                <p class="font-bold text-safety-green text-xs">ภาพถ่ายเปรียบเทียบ (After)</p>
+                <div class="flex gap-2">
+                  <button type="button" onclick="openPhotoSheet('after','camera')" class="flex-1 flex items-center justify-center gap-1 bg-slate-800 border border-white/10 text-emerald-400 text-[10px] font-bold rounded-xl py-2 active:scale-95 transition">
+                    <i class="fa-solid fa-camera text-[11px]"></i> ถ่ายรูป
+                  </button>
+                  <button type="button" onclick="openPhotoSheet('after','gallery')" class="flex-1 flex items-center justify-center gap-1 bg-slate-800 border border-white/10 text-sky-400 text-[10px] font-bold rounded-xl py-2 active:scale-95 transition">
+                    <i class="fa-solid fa-images text-[11px]"></i> คลัง
+                  </button>
+                </div>
               </div>
             </div>
+            <!-- hidden inputs: one for camera, one for gallery -->
+            <input type="file" id="after-camera-input" accept="image/*" capture="environment" class="hidden" onchange="previewAfterPhoto(this)">
+            <input type="file" id="after-gallery-input" accept="image/*" class="hidden" onchange="previewAfterPhoto(this)">
           </div>
 
           <!-- Completion remarks -->
@@ -3030,27 +3044,78 @@
     }
 
     // Camera simulated images popup
-    function triggerBeforeCamera() {
-      currentPhotoTarget = 'before';
-      const input = document.getElementById("before-photo-input");
-      if (input) {
-        input.value = "";
-        input.click();
-      } else {
-        openCameraSimulationModal();
+    // ==========================================
+    // Photo Sheet Picker (Camera / Gallery)
+    // ==========================================
+    function openPhotoSheet(target, mode) {
+      currentPhotoTarget = target;
+      if (mode === 'camera') {
+        const camId = target === 'before' ? 'before-camera-input' : 'after-camera-input';
+        const input = document.getElementById(camId);
+        if (input) { input.value = ''; input.click(); }
+        return;
       }
+      if (mode === 'gallery') {
+        const galId = target === 'before' ? 'before-gallery-input' : 'after-gallery-input';
+        const input = document.getElementById(galId);
+        if (input) { input.value = ''; input.click(); }
+        return;
+      }
+      // No mode: show bottom-sheet
+      _showPhotoBottomSheet(target);
     }
 
-    function triggerAfterCamera() {
-      currentPhotoTarget = 'after';
-      const input = document.getElementById("after-photo-input");
-      if (input) {
-        input.value = "";
-        input.click();
-      } else {
-        openCameraSimulationModal();
+    function _showPhotoBottomSheet(target) {
+      let sheet = document.getElementById('photo-source-sheet');
+      if (!sheet) {
+        sheet = document.createElement('div');
+        sheet.id = 'photo-source-sheet';
+        sheet.className = 'fixed inset-0 z-[200] flex flex-col justify-end';
+        sheet.innerHTML = `
+          <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="_closePhotoSheet()"></div>
+          <div class="relative bg-[#0d1420] border-t border-white/10 rounded-t-3xl p-6 pb-10 space-y-3 shadow-2xl">
+            <div class="w-10 h-1 bg-white/20 rounded-full mx-auto mb-4"></div>
+            <p class="text-center text-sm font-extrabold text-white mb-4">เลือกวิธีเพิ่มรูปภาพ</p>
+            <button id="ps-camera-btn" type="button"
+              class="w-full flex items-center gap-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-sm py-4 px-5 rounded-2xl active:scale-95 transition">
+              <span class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-lg"><i class="fa-solid fa-camera"></i></span>
+              <span>ถ่ายภาพจากกล้อง</span>
+              <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-50"></i>
+            </button>
+            <button id="ps-gallery-btn" type="button"
+              class="w-full flex items-center gap-4 bg-sky-500/10 border border-sky-500/30 text-sky-400 font-bold text-sm py-4 px-5 rounded-2xl active:scale-95 transition">
+              <span class="w-10 h-10 rounded-xl bg-sky-500/20 flex items-center justify-center text-lg"><i class="fa-solid fa-images"></i></span>
+              <span>เลือกจากคลังรูปภาพ</span>
+              <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-50"></i>
+            </button>
+            <button onclick="_closePhotoSheet()" type="button"
+              class="w-full text-slate-500 font-bold text-xs py-3 rounded-2xl active:scale-95 transition">
+              ยกเลิก
+            </button>
+          </div>`;
+        document.body.appendChild(sheet);
       }
+      // Wire up buttons fresh each open
+      document.getElementById('ps-camera-btn').onclick = () => {
+        _closePhotoSheet();
+        openPhotoSheet(currentPhotoTarget, 'camera');
+      };
+      document.getElementById('ps-gallery-btn').onclick = () => {
+        _closePhotoSheet();
+        openPhotoSheet(currentPhotoTarget, 'gallery');
+      };
+      sheet.classList.remove('hidden');
+      requestAnimationFrame(() => sheet.querySelector('[id$=-btn]')?.parentElement?.parentElement?.classList.add('translate-y-0'));
     }
+
+    function _closePhotoSheet() {
+      const sheet = document.getElementById('photo-source-sheet');
+      if (sheet) sheet.classList.add('hidden');
+    }
+
+    // Legacy trigger aliases (kept for backward compatibility)
+    function triggerBeforeCamera() { openPhotoSheet('before'); }
+    function triggerAfterCamera()  { openPhotoSheet('after');  }
 
     function openCameraSimulationModal() {
       const modal = document.getElementById("camera-simulation-modal");

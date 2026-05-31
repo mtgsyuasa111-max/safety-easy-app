@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v1';
+const CACHE_NAME = 'safety-easy-pro-v3'; // v3: mobile photo picker (camera+gallery)
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
