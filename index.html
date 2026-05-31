@@ -3945,11 +3945,17 @@
       triggerNativeNotification("📌 แจ้งเหตุไม่ปลอดภัยใหม่!", `พบปัญหาที่พื้นที่ ${area}: ${issue} (มอบหมายงานให้คุณ ${assignee})`);
 
       btn.disabled = false;
-      txt.innerText = "บันทึกข้อมูลและรายงานระบบ";
+      btn.classList.add("bg-emerald-600");
+      txt.innerText = "✅ ส่งสำเร็จแล้ว!";
 
-      closeNewAuditModal();
-      navigateTo('home');
-      showToast("อัปโหลดสำเร็จ", "ส่งรูป + รายงานเปิดใบงานขึ้น Google Sheet เรียบร้อยแล้ว", "fa-cloud-arrow-up", "bg-safety-green shadow-glow-green");
+      showToast("ส่งสำเร็จ!", "รูปภาพและข้อมูลใบงานถูกส่งขึ้น Google Sheet เรียบร้อยแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
+
+      setTimeout(() => {
+        btn.classList.remove("bg-emerald-600");
+        txt.innerText = "บันทึกข้อมูลและรายงานระบบ";
+        closeNewAuditModal();
+        navigateTo('home');
+      }, 1200);
     }
 
     async function saveResolveJob() {
@@ -4004,10 +4010,17 @@
       triggerNativeNotification("🔧 รายงานผลการแก้ไขเสร็จสิ้น!", `ใบงานหมายเลข ${activeJobForResolve.id} ได้รับการแก้ไขแล้ว รอการอนุมัติครับ`);
 
       btn.disabled = false;
-      btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
-      closeResolveModal();
-      navigateTo('home');
-      showToast("อัปเดตสำเร็จ", "ส่งรูป + ผลงานขึ้น Google Sheet เรียบร้อยแล้ว", "fa-check-double", "bg-safety-green shadow-glow-green");
+      btn.innerHTML = `<i class="fa-solid fa-circle-check text-white"></i> <span class="text-white font-black">✅ ส่งรูป After สำเร็จ!</span>`;
+      btn.classList.add("from-emerald-400", "to-emerald-600");
+
+      showToast("ส่งสำเร็จ!", "รูป After + ผลงานแก้ไขถูกส่งขึ้น Google Sheet เรียบร้อยแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
+
+      setTimeout(() => {
+        btn.classList.remove("from-emerald-400", "to-emerald-600");
+        btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
+        closeResolveModal();
+        navigateTo('home');
+      }, 1200);
     }
 
     // ==========================================
