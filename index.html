@@ -340,10 +340,10 @@
         <div class="text-center flex flex-col items-center justify-center space-y-4">
           
           <!-- Premium PWA Install Banner Card -->
-          <button id="pwa-install-btn" class="hidden w-full relative group overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/20 p-4 flex items-center justify-between text-left active:scale-[0.99] transition-all duration-200 shadow-lg">
+          <button id="pwa-install-btn" onclick="triggerInstall()" class="w-full relative group overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/20 p-4 flex items-center justify-between text-left active:scale-[0.99] transition-all duration-200 shadow-lg">
             <!-- Pulsing inside light glow -->
             <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/0 animate-pulse"></div>
-            
+
             <div class="flex items-center space-x-3.5 relative z-10">
               <!-- Glowing App Icon -->
               <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white shadow-[0_0_12px_rgba(16,185,129,0.3)]">
@@ -351,11 +351,11 @@
               </div>
               <!-- Banner Message -->
               <div class="space-y-0.5">
-                <div class="text-xs font-black text-white">ติดตั้งแอป Safety Easy PRO</div>
+                <div class="text-xs font-black text-white">ติดตั้งแอป Safe Maint PRO</div>
                 <div class="text-[10px] text-emerald-300/80 font-normal">เพิ่มไว้บนหน้าจอหลักเพื่อความปลอดภัยสูงสุดและรวดเร็ว</div>
               </div>
             </div>
-            
+
             <!-- Action Accent Button -->
             <div class="px-3.5 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-[10px] rounded-lg shadow-glow-green tracking-wider relative z-10 transition-colors uppercase">
               ติดตั้ง
@@ -4228,27 +4228,29 @@
     // In-App PWA Install Prompting Logic
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
-      // Stash the event so it can be triggered later.
       deferredPrompt = e;
-      // Update UI notify the user they can install the PWA
-      const installBtn = document.getElementById('pwa-install-btn');
-      if (installBtn) {
-        installBtn.classList.remove('hidden');
-        installBtn.addEventListener('click', async () => {
-          // Hide the app provided install promotion
-          installBtn.classList.add('hidden');
-          // Show the install prompt
-          deferredPrompt.prompt();
-          // Wait for the user to respond to the prompt
-          const { outcome } = await deferredPrompt.userChoice;
-          console.log(`[PWA] User response to the install prompt: ${outcome}`);
-          // We've used the prompt, and can't use it again
-          deferredPrompt = null;
-        });
-      }
     });
+
+    async function triggerInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`[PWA] Install outcome: ${outcome}`);
+        deferredPrompt = null;
+      } else {
+        // Fallback: show manual instructions based on browser
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isAndroid = /Android/.test(navigator.userAgent);
+        if (isIOS) {
+          showToast("ติดตั้งบน iPhone/iPad", "กด Share แล้วเลือก 'Add to Home Screen'", "fa-mobile-screen", "bg-emerald-600 shadow-glow-green");
+        } else if (isAndroid) {
+          showToast("ติดตั้งบน Android", "กดเมนู ⋮ แล้วเลือก 'Add to Home Screen'", "fa-mobile-screen", "bg-emerald-600 shadow-glow-green");
+        } else {
+          showToast("ติดตั้งบนเดสก์ท็อป", "กดไอคอน ⊕ ในแถบที่อยู่ของเบราว์เซอร์", "fa-desktop", "bg-emerald-600 shadow-glow-green");
+        }
+      }
+    }
 
     window.addEventListener('appinstalled', (event) => {
       console.log('[PWA] App successfully installed on user device!');
