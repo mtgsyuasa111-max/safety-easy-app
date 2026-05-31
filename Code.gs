@@ -98,9 +98,9 @@ function doPost(e) {
       var userSheet = ss.getSheetByName("Users");
       var userData = userSheet.getDataRange().getValues();
       var enteredPin = String(rawData.pin || "").trim();
-      // Compute SHA-256 of entered PIN for hash comparison
+      // Compute SHA-256 of entered PIN for hash comparison (Rhino + V8 compatible)
       var enteredPinHash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, enteredPin)
-        .map(function(b) { return (b < 0 ? b + 256 : b).toString(16).padStart(2, '0'); }).join('');
+        .map(function(b) { var h = (b < 0 ? b + 256 : b).toString(16); return h.length < 2 ? '0' + h : h; }).join('');
       for (var i = 1; i < userData.length; i++) {
         var storedId  = String(userData[i][0] || "").trim();
         var storedPin = String(userData[i][4] || "").trim();
