@@ -479,8 +479,13 @@
         <div class="bg-gradient-to-br from-safety-slate to-slate-950 p-6 rounded-b-[2rem] border-b border-white/10 shadow-lg">
           <div class="flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
-              <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center font-bold text-white border border-emerald-400/20 shadow-glow-green text-sm" id="sp-avatar">
-                UT
+              <div class="relative cursor-pointer group" onclick="triggerAvatarUpload()" title="เปลี่ยนรูปโปรไพล์">
+                <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center font-bold text-white border border-emerald-400/20 shadow-glow-green text-sm overflow-hidden" id="sp-avatar">
+                  UT
+                </div>
+                <div class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <i class="fa-solid fa-camera text-white text-xs"></i>
+                </div>
               </div>
               <div>
                 <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">ผู้เข้าใช้ระบบ</span>
@@ -563,8 +568,13 @@
         <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-b-[2rem] border-b border-white/10 shadow-lg">
           <div class="flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
-              <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center font-bold text-white border border-amber-400/20 shadow-glow-amber text-sm" id="sb-avatar">
-                WP
+              <div class="relative cursor-pointer group" onclick="triggerAvatarUpload()" title="เปลี่ยนรูปโปรไพล์">
+                <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center font-bold text-white border border-amber-400/20 shadow-glow-amber text-sm overflow-hidden" id="sb-avatar">
+                  WP
+                </div>
+                <div class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <i class="fa-solid fa-camera text-white text-xs"></i>
+                </div>
               </div>
               <div>
                 <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider block">พนักงานผู้แก้เคส</span>
@@ -1631,7 +1641,7 @@
     }
 
     function logout() {
-      addAuditLog(currentUser ? currentUser.name : "Unknown", "ออกจากระบบการใช้งาน");
+      addAuditLog(currentUser ? currentUser.name : "Unknown", "\u0e2d\u0e2d\u0e01\u0e08\u0e32\u0e01\u0e23\u0e30\u0e1a\u0e1a\u0e01\u0e32\u0e23\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19");
       currentUser = null;
       authToken = "";
       sessionStorage.removeItem("safety_easy_auth_token");
@@ -1644,6 +1654,51 @@
       
       hideAllScreens();
       document.getElementById("screen-splash").classList.remove("hidden");
+    }
+
+    // ==========================================
+    // Avatar / Profile Photo Upload
+    // ==========================================
+    function triggerAvatarUpload() {
+      let fileInput = document.getElementById("_avatar-file-input");
+      if (!fileInput) {
+        fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.id = "_avatar-file-input";
+        fileInput.style.display = "none";
+        document.body.appendChild(fileInput);
+        fileInput.addEventListener("change", function() {
+          const file = this.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const dataUrl = e.target.result;
+            if (currentUser) {
+              localStorage.setItem("avatar_" + currentUser.id, dataUrl);
+              applyAvatarToAll(dataUrl);
+              showToast("\u0e40\u0e1b\u0e25\u0e35\u0e48\u0e22\u0e19\u0e23\u0e39\u0e1b\u0e41\u0e25\u0e49\u0e27", "\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e23\u0e39\u0e1b\u0e42\u0e1b\u0e23\u0e44\u0e1f\u0e25\u0e4c\u0e40\u0e23\u0e35\u0e22\u0e1a\u0e23\u0e49\u0e2d\u0e22", "fa-user-circle", "bg-emerald-600 shadow-glow-green");
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+      fileInput.click();
+    }
+
+    function applyAvatarToAll(dataUrl) {
+      const avatarIds = ["sp-avatar", "sb-avatar", "pin-profile-avatar"];
+      const imgTag = `<img src="${dataUrl}" class="w-full h-full object-cover rounded-full" alt="avatar">`;
+      avatarIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = imgTag;
+      });
+    }
+
+    function loadSavedAvatar() {
+      if (!currentUser) return;
+      const saved = localStorage.getItem("avatar_" + currentUser.id);
+      if (saved) applyAvatarToAll(saved);
     }
 
     // ==========================================
@@ -1678,6 +1733,7 @@
           document.getElementById("screen-subordinate-home").classList.remove("hidden");
           setupSubordinateDashboard();
         }
+        loadSavedAvatar();
       } else if (tab === "dashboard") {
         document.getElementById("screen-dashboard").classList.remove("hidden");
         populateDashboardFilters();
@@ -1904,8 +1960,11 @@
         <div class="space-y-4 pt-2 border-t border-white/5">
           <!-- Step 1: Created -->
           <div class="flex space-x-3.5 relative">
-            <div class="absolute top-5 left-2 w-[2px] h-[calc(100%-8px)] ${line1Color}"></div>
-            <div class="w-4.5 h-4.5 rounded-full border-2 border-emerald-500 bg-[#090d16] flex items-center justify-center text-[7px] ${step1Color} z-10 font-bold">1</div>
+            <div class="absolute top-7 left-[14px] w-[2px] h-[calc(100%-4px)] ${line1Color}"></div>
+            <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center z-10
+              bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-glow-green border-2 border-emerald-300/30">
+              <i class="fa-solid fa-flag text-[9px] text-white"></i>
+            </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-start">
                 <span class="text-[10px] font-extrabold text-slate-200">ขั้นที่ 1: รายงานจุดบกพร่อง</span>
@@ -1926,8 +1985,13 @@
 
           <!-- Step 2: Resolved -->
           <div class="flex space-x-3.5 relative">
-            <div class="absolute top-5 left-2 w-[2px] h-[calc(100%-8px)] ${line2Color}"></div>
-            <div class="w-4.5 h-4.5 rounded-full border-2 ${isResolved || isApproved ? 'border-amber-500' : 'border-slate-700'} bg-[#090d16] flex items-center justify-center text-[7px] ${step2Color} z-10 font-bold">2</div>
+            <div class="absolute top-7 left-[14px] w-[2px] h-[calc(100%-4px)] ${line2Color}"></div>
+            <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center z-10
+              ${isResolved || isApproved
+                ? 'bg-gradient-to-br from-amber-400 to-amber-600 shadow-glow-amber border-2 border-amber-300/30'
+                : 'bg-slate-800 border-2 border-slate-700'}">
+              <i class="fa-solid fa-wrench text-[9px] ${isResolved || isApproved ? 'text-white' : 'text-slate-600'}"></i>
+            </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-start">
                 <span class="text-[10px] font-extrabold ${isResolved || isApproved ? 'text-slate-200' : 'text-slate-600'}">ขั้นที่ 2: ปฏิบัติงานแก้ไขเสร็จ</span>
@@ -1955,7 +2019,12 @@
 
           <!-- Step 3: Approved & Closed -->
           <div class="flex space-x-3.5">
-            <div class="w-4.5 h-4.5 rounded-full border-2 ${isApproved ? 'border-emerald-500 bg-emerald-500 text-[#090d16]' : 'border-slate-700 bg-[#090d16]'} flex items-center justify-center text-[7px] ${step3Color} z-10 font-extrabold"><i class="fa-solid fa-check text-[6px]"></i></div>
+            <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center z-10
+              ${isApproved
+                ? 'bg-gradient-to-br from-emerald-400 to-teal-500 shadow-glow-green border-2 border-emerald-300/30'
+                : 'bg-slate-800 border-2 border-slate-700'}">
+              <i class="fa-solid fa-circle-check text-[9px] ${isApproved ? 'text-white' : 'text-slate-600'}"></i>
+            </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-start">
                 <span class="text-[10px] font-extrabold ${isApproved ? 'text-slate-200' : 'text-slate-600'}">ขั้นที่ 3: ตรวจสอบและประเมินผลปิดงาน</span>
@@ -1980,23 +2049,6 @@
               `}
             </div>
           </div>
-        </div>
-      `;
-
-      card.innerHTML = `
-        <div class="flex justify-between items-start gap-2.5">
-          <div class="space-y-1">
-            <div class="flex items-center space-x-2">
-              <span class="inline-flex items-center border text-[9px] font-bold px-2 py-0.5 rounded-lg ${taskBadgeColor}">
-                <i class="fa-solid ${taskIcon} mr-1"></i>${taskLabel}
-              </span>
-              <span class="inline-flex bg-slate-900 border border-white/5 text-slate-300 text-[9px] font-bold px-2 py-0.5 rounded-lg">
-                ${job.area}
-              </span>
-            </div>
-            <div class="text-[9px] text-slate-500 font-bold font-mono">CASE ID: ${job.id}</div>
-          </div>
-          ${statusBadge}
         </div>
 
         ${timelineHtml}
