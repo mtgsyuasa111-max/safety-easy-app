@@ -219,6 +219,29 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ status: "success", id: rawData.id }))
         .setMimeType(ContentService.MimeType.JSON);
         
+    } else if (action === "updateUser") {
+      var userSheet = ss.getSheetByName("Users") || ss.getSheets()[0];
+      var userData = userSheet.getDataRange().getValues();
+      var rowIndex = -1;
+      
+      for (var i = 1; i < userData.length; i++) {
+        if (String(userData[i][0]) === String(rawData.id)) {
+          rowIndex = i + 1; // 1-based index including header
+          break;
+        }
+      }
+      
+      if (rowIndex === -1) {
+        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "User ID not found: " + rawData.id }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      // Update Column 4 (D): Area (Index 3 since Columns are A=0, B=1, C=2, D=3)
+      userSheet.getRange(rowIndex, 4).setValue(rawData.area);
+      
+      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "User area updated" }))
+        .setMimeType(ContentService.MimeType.JSON);
+        
     } else if (action === "delete") {
       var allData = sheet.getDataRange().getValues();
       for (var i = 1; i < allData.length; i++) {

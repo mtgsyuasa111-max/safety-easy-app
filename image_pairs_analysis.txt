@@ -1,0 +1,343 @@
+
+=========================================
+SHEET: FirePump
+=========================================
+Cell B3: 2 image(s)
+  -> Two copies of the SAME image (Img 0 is display, Img 11 is source)
+     Img 0: 138x184, Img 11: 585x565
+Cell B4: 2 image(s)
+  -> Two copies of the SAME image (Img 1 is display, Img 12 is source)
+     Img 1: 184x138, Img 12: 493x369
+Cell B5: 2 image(s)
+  -> Two copies of the SAME image (Img 2 is display, Img 13 is source)
+     Img 2: 138x184, Img 13: 343x457
+Cell B6: 2 image(s)
+  -> Two copies of the SAME image (Img 3 is display, Img 14 is source)
+     Img 3: 138x184, Img 14: 400x533
+Cell B7: 2 image(s)
+  -> Two copies of the SAME image (Img 4 is display, Img 15 is source)
+     Img 4: 138x184, Img 15: 555x737
+Cell B8: 1 image(s)
+  -> Single image (Img 5): size=138x184
+Cell B9: 1 image(s)
+  -> Single image (Img 6): size=138x184
+Cell B10: 2 image(s)
+  -> Two copies of the SAME image (Img 7 is display, Img 16 is source)
+     Img 7: 138x184, Img 16: 330x442
+Cell B11: 2 image(s)
+  -> Two copies of the SAME image (Img 8 is display, Img 17 is source)
+     Img 8: 138x184, Img 17: 1108x1477
+Cell B12: 2 image(s)
+  -> Two copies of the SAME image (Img 9 is display, Img 18 is source)
+     Img 9: 138x184, Img 18: 1108x1477
+Cell B13: 2 image(s)
+  -> Two copies of the SAME image (Img 10 is display, Img 19 is source)
+     Img 10: 138x182, Img 19: 1108x1477
+
+=========================================
+SHEET: MTShop
+=========================================
+Cell B3: 2 image(s)
+  -> Two copies of the SAME image (Img 2 is display, Img 25 is source)
+     Img 2: 178x133, Img 25: 1477x1108
+Cell E3: 1 image(s)
+  -> Single image (Img 48): size=394x378
+Cell B4: 2 image(s)
+  -> Two copies of the SAME image (Img 3 is display, Img 26 is source)
+     Img 3: 133x178, Img 26: 1108x1477
+Cell E4: 1 image(s)
+  -> Single image (Img 50): size=461x320
+Cell B5: 2 image(s)
+  -> Two copies of the SAME image (Img 4 is display, Img 27 is source)
+     Img 4: 133x178, Img 27: 1108x1477
+Cell E5: 1 image(s)
+  -> Single image (Img 46): size=469x342
+Cell B6: 2 image(s)
+  -> Two copies of the SAME image (Img 5 is display, Img 28 is source)
+     Img 5: 133x178, Img 28: 1108x1477
+Cell E6: 1 image(s)
+  -> Single image (Img 47): size=448x377
+Cell B7: 1 image(s)
+  -> Single image (Img 6): size=133x178
+Cell B8: 2 image(s)
+  -> Two copies of the SAME image (Img 7 is display, Img 29 is source)
+     Img 7: 133x178, Img 29: 1108x1477
+Cell E8: 1 image(s)
+  -> Single image (Img 53): size=508x530
+Cell B9: 3 image(s)
+  -> 3 images in cell! Checking unique images...
+     Img 8 vs Img 30: SAME
+     Img 8 vs Img 31: SAME
+     Img 30 vs Img 31: SAME
+Cell B10: 2 image(s)
+  -> Two copies of the SAME image (Img 9 is display, Img 32 is source)
+     Img 9: 133x178, Img 32: 384x517
+Cell E10: 1 image(s)
+  -> Single image (Img 58): size=389x408
+Cell B11: 2 image(s)
+  -> Two copies of the SAME image (Img 11 is display, Img 33 is source)
+     Img 11: 132x178, Img 33: 504x677
+Cell E11: 1 image(s)
+  -> Single image (Img 49): size=489x466
+Cell B12: 1 image(s)
+  -> Single image (Img 10): size=133x178
+Cell B13: 2 image(s)
+  -> Two copies of the SAME image (Img 12 is display, Img 34 is source)
+     Img 12: 177x134, Img 34: 666x505
+Cell E13: 1 image(s)
+  -> Single image (Img 59): size=351x364
+Cell B14: 2 image(s)
+  -> Two copies of the SAME image (Img 13 is display, Img 35 is source)
+     Img 13: 132x178, Img 35: 387x522
+Cell B15: 2 image(s)
+  -> Two copies of the SAME image (Img 14 is display, Img 36 is source)
+     Img 14: 133x178, Img 36: 398x531
+Cell B16: 2 image(s)
+  -> Two copies of the SAME image (Img 15 is display, Img 37 is source)
+     Img 15: 134x177, Img 37: 316x415
+Cell B17: 2 image(s)
+  -> Two copies of the SAME image (Img 16 is display, Img 38 is source)
+     Img 16: 134x177, Img 38: 341x451
+Cell B18: 2 image(s)
+  -> Two copies of the SAME image (Img 17 is display, Img 39 is source)
+     Img 17: 134x177, Img 39: 1108x1477
+Cell E18: 1 image(s)
+  -> Single image (Img 54): size=503x467
+Cell B19: 2 image(s)
+  -> Two copies of the SAME image (Img 18 is display, Img 40 is source)
+     Img 18: 134x177, Img 40: 1108x1477
+Cell E19: 1 image(s)
+  -> Single image (Img 55): size=510x399
+Cell B20: 2 image(s)
+  -> Two copies of the SAME image (Img 19 is display, Img 41 is source)
+     Img 19: 133x177, Img 41: 348x464
+Cell E20: 1 image(s)
+  -> Single image (Img 56): size=521x499
+Cell B21: 2 image(s)
+  -> Two copies of the SAME image (Img 21 is display, Img 42 is source)
+     Img 21: 133x177, Img 42: 1108x1477
+Cell E21: 1 image(s)
+  -> Single image (Img 52): size=523x447
+Cell B22: 2 image(s)
+  -> Two copies of the SAME image (Img 20 is display, Img 43 is source)
+     Img 20: 133x177, Img 43: 1108x1477
+Cell E22: 1 image(s)
+  -> Single image (Img 51): size=519x444
+Cell B23: 2 image(s)
+  -> Two copies of the SAME image (Img 22 is display, Img 44 is source)
+     Img 22: 178x133, Img 44: 548x413
+Cell E23: 1 image(s)
+  -> Single image (Img 57): size=539x476
+Cell B24: 2 image(s)
+  -> Two copies of the SAME image (Img 0 is display, Img 1 is source)
+     Img 0: 178x133, Img 1: 1477x1108
+Cell B25: 2 image(s)
+  -> Two copies of the SAME image (Img 23 is display, Img 45 is source)
+     Img 23: 133x177, Img 45: 480x634
+Cell B26: 1 image(s)
+  -> Single image (Img 24): size=395x294
+
+=========================================
+SHEET: AirCom
+=========================================
+Cell B3: 2 image(s)
+  -> Two copies of the SAME image (Img 0 is display, Img 23 is source)
+     Img 0: 134x179, Img 23: 416x556
+Cell B4: 2 image(s)
+  -> Two copies of the SAME image (Img 1 is display, Img 24 is source)
+     Img 1: 134x179, Img 24: 359x481
+Cell B5: 1 image(s)
+  -> Single image (Img 2): size=225x169
+Cell B6: 2 image(s)
+  -> Two copies of the SAME image (Img 3 is display, Img 25 is source)
+     Img 3: 133x179, Img 25: 330x444
+Cell B7: 1 image(s)
+  -> Single image (Img 4): size=246x186
+Cell B8: 1 image(s)
+  -> Single image (Img 5): size=133x178
+Cell B9: 2 image(s)
+  -> Two copies of the SAME image (Img 6 is display, Img 26 is source)
+     Img 6: 133x179, Img 26: 1108x1477
+Cell B10: 1 image(s)
+  -> Single image (Img 7): size=133x179
+Cell B11: 2 image(s)
+  -> Two copies of the SAME image (Img 8 is display, Img 27 is source)
+     Img 8: 178x134, Img 27: 821x617
+Cell B12: 2 image(s)
+  -> Two copies of the SAME image (Img 9 is display, Img 28 is source)
+     Img 9: 133x178, Img 28: 502x676
+Cell B13: 2 image(s)
+  -> Two copies of the SAME image (Img 10 is display, Img 29 is source)
+     Img 10: 133x178, Img 29: 1108x1477
+Cell B14: 2 image(s)
+  -> Two copies of the SAME image (Img 11 is display, Img 30 is source)
+     Img 11: 133x179, Img 30: 322x433
+Cell B15: 2 image(s)
+  -> Two copies of the SAME image (Img 12 is display, Img 31 is source)
+     Img 12: 134x179, Img 31: 484x644
+Cell B16: 1 image(s)
+  -> Single image (Img 13): size=236x177
+Cell B17: 1 image(s)
+  -> Single image (Img 14): size=134x179
+Cell B18: 2 image(s)
+  -> Two copies of the SAME image (Img 15 is display, Img 32 is source)
+     Img 15: 134x178, Img 32: 1108x1477
+Cell B19: 2 image(s)
+  -> Two copies of the SAME image (Img 16 is display, Img 33 is source)
+     Img 16: 134x179, Img 33: 1108x1477
+Cell B20: 2 image(s)
+  -> Two copies of the SAME image (Img 17 is display, Img 34 is source)
+     Img 17: 179x134, Img 34: 1477x1108
+Cell B21: 2 image(s)
+  -> Two copies of the SAME image (Img 18 is display, Img 35 is source)
+     Img 18: 134x179, Img 35: 1108x1477
+Cell B22: 2 image(s)
+  -> Two copies of the SAME image (Img 19 is display, Img 36 is source)
+     Img 19: 179x134, Img 36: 1477x1108
+Cell B23: 3 image(s)
+  -> 3 images in cell! Checking unique images...
+     Img 20 vs Img 37: SAME
+     Img 20 vs Img 38: SAME
+     Img 37 vs Img 38: SAME
+Cell B24: 1 image(s)
+  -> Single image (Img 22): size=134x179
+Cell B25: 2 image(s)
+  -> Two copies of the SAME image (Img 21 is display, Img 39 is source)
+     Img 21: 179x134, Img 39: 1477x1108
+
+=========================================
+SHEET: Sub MDB
+=========================================
+Cell B3: 2 image(s)
+  -> Two copies of the SAME image (Img 0 is display, Img 31 is source)
+     Img 0: 172x129, Img 31: 1477x1108
+Cell B4: 2 image(s)
+  -> Two copies of the SAME image (Img 1 is display, Img 30 is source)
+     Img 1: 129x173, Img 30: 328x439
+Cell B5: 2 image(s)
+  -> Two copies of the SAME image (Img 2 is display, Img 29 is source)
+     Img 2: 129x173, Img 29: 1108x1477
+Cell B6: 2 image(s)
+  -> Two copies of the SAME image (Img 3 is display, Img 28 is source)
+     Img 3: 129x173, Img 28: 1108x1477
+Cell B7: 2 image(s)
+  -> Two copies of the SAME image (Img 4 is display, Img 27 is source)
+     Img 4: 129x173, Img 27: 1108x1477
+Cell B8: 2 image(s)
+  -> Two copies of the SAME image (Img 5 is display, Img 26 is source)
+     Img 5: 129x173, Img 26: 1108x1477
+Cell B9: 2 image(s)
+  -> Two copies of the SAME image (Img 6 is display, Img 25 is source)
+     Img 6: 129x173, Img 25: 1108x1477
+Cell B10: 2 image(s)
+  -> Two copies of the SAME image (Img 7 is display, Img 24 is source)
+     Img 7: 129x173, Img 24: 411x552
+Cell B11: 2 image(s)
+  -> Two copies of the SAME image (Img 8 is display, Img 23 is source)
+     Img 8: 129x173, Img 23: 353x473
+Cell B12: 2 image(s)
+  -> Two copies of the SAME image (Img 9 is display, Img 22 is source)
+     Img 9: 128x173, Img 22: 1108x1477
+Cell B13: 1 image(s)
+  -> Single image (Img 10): size=128x173
+Cell B14: 1 image(s)
+  -> Single image (Img 11): size=128x173
+Cell B15: 1 image(s)
+  -> Single image (Img 12): size=129x173
+Cell B16: 1 image(s)
+  -> Single image (Img 13): size=129x173
+Cell B17: 2 image(s)
+  -> Two copies of the SAME image (Img 14 is display, Img 21 is source)
+     Img 14: 129x173, Img 21: 336x451
+Cell B18: 2 image(s)
+  -> Two copies of the SAME image (Img 15 is display, Img 20 is source)
+     Img 15: 129x173, Img 20: 294x394
+Cell B19: 2 image(s)
+  -> Two copies of the SAME image (Img 16 is display, Img 19 is source)
+     Img 16: 129x172, Img 19: 363x484
+Cell B20: 2 image(s)
+  -> Two copies of the SAME image (Img 17 is display, Img 18 is source)
+     Img 17: 129x173, Img 18: 446x598
+
+=========================================
+SHEET: MDB
+=========================================
+Cell B3: 2 image(s)
+  -> Two copies of the SAME image (Img 2 is display, Img 3 is source)
+     Img 2: 133x177, Img 3: 133x176
+Cell B5: 1 image(s)
+  -> Single image (Img 4): size=133x177
+Cell B6: 2 image(s)
+  -> Two copies of the SAME image (Img 5 is display, Img 33 is source)
+     Img 5: 133x176, Img 33: 1108x1477
+Cell B7: 2 image(s)
+  -> Two copies of the SAME image (Img 6 is display, Img 32 is source)
+     Img 6: 133x176, Img 32: 320x423
+Cell B8: 2 image(s)
+  -> Two copies of the SAME image (Img 7 is display, Img 31 is source)
+     Img 7: 133x178, Img 31: 1108x1477
+Cell B9: 2 image(s)
+  -> Two copies of the SAME image (Img 8 is display, Img 34 is source)
+     Img 8: 133x177, Img 34: 321x428
+Cell B10: 2 image(s)
+  -> Two copies of the SAME image (Img 0 is display, Img 1 is source)
+     Img 0: 133x177, Img 1: 318x424
+Cell B11: 1 image(s)
+  -> Single image (Img 9): size=132x177
+Cell B12: 2 image(s)
+  -> Two copies of the SAME image (Img 10 is display, Img 35 is source)
+     Img 10: 132x176, Img 35: 325x435
+Cell B13: 1 image(s)
+  -> Single image (Img 11): size=132x177
+Cell B14: 2 image(s)
+  -> Two copies of the SAME image (Img 12 is display, Img 36 is source)
+     Img 12: 132x178, Img 36: 314x421
+Cell B15: 2 image(s)
+  -> Two copies of the SAME image (Img 13 is display, Img 37 is source)
+     Img 13: 177x133, Img 37: 1477x1108
+Cell B16: 2 image(s)
+  -> Two copies of the SAME image (Img 14 is display, Img 38 is source)
+     Img 14: 133x177, Img 38: 416x554
+Cell B17: 2 image(s)
+  -> Two copies of the SAME image (Img 15 is display, Img 39 is source)
+     Img 15: 133x177, Img 39: 1108x1477
+Cell B18: 1 image(s)
+  -> Single image (Img 16): size=133x178
+Cell B19: 2 image(s)
+  -> Two copies of the SAME image (Img 17 is display, Img 40 is source)
+     Img 17: 133x177, Img 40: 441x590
+Cell B20: 2 image(s)
+  -> Two copies of the SAME image (Img 18 is display, Img 41 is source)
+     Img 18: 133x177, Img 41: 1108x1477
+Cell B21: 2 image(s)
+  -> Two copies of the SAME image (Img 19 is display, Img 42 is source)
+     Img 19: 133x177, Img 42: 1108x1477
+Cell B22: 1 image(s)
+  -> Single image (Img 22): size=133x178
+Cell B23: 2 image(s)
+  -> Two copies of the SAME image (Img 23 is display, Img 43 is source)
+     Img 23: 133x177, Img 43: 1108x1477
+Cell B24: 3 image(s)
+  -> 3 images in cell! Checking unique images...
+     Img 20 vs Img 21: SAME
+     Img 20 vs Img 44: SAME
+     Img 21 vs Img 44: SAME
+Cell B25: 1 image(s)
+  -> Single image (Img 24): size=133x177
+Cell B26: 2 image(s)
+  -> Two copies of the SAME image (Img 25 is display, Img 49 is source)
+     Img 25: 133x177, Img 49: 396x528
+Cell B27: 2 image(s)
+  -> Two copies of the SAME image (Img 26 is display, Img 45 is source)
+     Img 26: 133x177, Img 45: 1108x1477
+Cell B28: 2 image(s)
+  -> Two copies of the SAME image (Img 27 is display, Img 46 is source)
+     Img 27: 133x178, Img 46: 305x406
+Cell B29: 2 image(s)
+  -> Two copies of the SAME image (Img 29 is display, Img 47 is source)
+     Img 29: 133x177, Img 47: 543x722
+Cell B30: 3 image(s)
+  -> 3 images in cell! Checking unique images...
+     Img 28 vs Img 30: SAME
+     Img 28 vs Img 48: SAME
+     Img 30 vs Img 48: SAME

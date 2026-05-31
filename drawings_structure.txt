@@ -1,0 +1,632 @@
+Sheet: FirePump
+  Max row: 13, Max column: 4
+  Row 1: [None, None, None, None]
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Number of images: 20
+    Image 0:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+    Image 1:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 2:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=4 (0-based)
+    Image 3:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 4:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=6 (0-based)
+    Image 5:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 6:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 7:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=9 (0-based)
+    Image 8:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 9:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=11 (0-based)
+    Image 10:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=13 (0-based)
+    Image 11:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+    Image 12:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 13:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=4 (0-based)
+    Image 14:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 15:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=6 (0-based)
+    Image 16:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=9 (0-based)
+    Image 17:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 18:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=11 (0-based)
+    Image 19:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=12 (0-based)
+--------------------------------------------------
+Sheet: MTShop
+  Max row: 26, Max column: 4
+  Row 1: [None, None, None, None]
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Number of images: 60
+    Image 0:
+      Anchor type: OneCellAnchor
+    Image 1:
+      Anchor type: OneCellAnchor
+    Image 2:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+    Image 3:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 4:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=4 (0-based)
+    Image 5:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 6:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=6 (0-based)
+    Image 7:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 8:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 9:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=9 (0-based)
+    Image 10:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=11 (0-based)
+    Image 11:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 12:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=12 (0-based)
+    Image 13:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=13 (0-based)
+    Image 14:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=14 (0-based)
+    Image 15:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=15 (0-based)
+    Image 16:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=16 (0-based)
+    Image 17:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=17 (0-based)
+    Image 18:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=18 (0-based)
+    Image 19:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=19 (0-based)
+    Image 20:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=21 (0-based)
+    Image 21:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=20 (0-based)
+    Image 22:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=22 (0-based)
+    Image 23:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=24 (0-based)
+    Image 24:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=25 (0-based)
+    Image 25:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+    Image 26:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 27:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=4 (0-based)
+    Image 28:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 29:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 30:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 31:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 32:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=9 (0-based)
+    Image 33:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 34:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=12 (0-based)
+    Image 35:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=13 (0-based)
+    Image 36:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=14 (0-based)
+    Image 37:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=15 (0-based)
+    Image 38:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=16 (0-based)
+    Image 39:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=17 (0-based)
+    Image 40:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=18 (0-based)
+    Image 41:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=19 (0-based)
+    Image 42:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=20 (0-based)
+    Image 43:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=21 (0-based)
+    Image 44:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=22 (0-based)
+    Image 45:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=24 (0-based)
+    Image 46:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=4 (0-based)
+    Image 47:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=5 (0-based)
+    Image 48:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=2 (0-based)
+    Image 49:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=10 (0-based)
+    Image 50:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=3 (0-based)
+    Image 51:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=21 (0-based)
+    Image 52:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=20 (0-based)
+    Image 53:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=8 (0-based)
+    Image 54:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=17 (0-based)
+    Image 55:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=18 (0-based)
+    Image 56:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=19 (0-based)
+    Image 57:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=22 (0-based)
+    Image 58:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=9 (0-based)
+    Image 59:
+      Anchor type: TwoCellAnchor
+      To: Col=4, Row=12 (0-based)
+--------------------------------------------------
+Sheet: AirCom
+  Max row: 25, Max column: 4
+  Row 1: [None, None, None, None]
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Number of images: 40
+    Image 0:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+    Image 1:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 2:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=4 (0-based)
+    Image 3:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 4:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=6 (0-based)
+    Image 5:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 6:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 7:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=9 (0-based)
+    Image 8:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 9:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=11 (0-based)
+    Image 10:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=12 (0-based)
+    Image 11:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=13 (0-based)
+    Image 12:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=14 (0-based)
+    Image 13:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=15 (0-based)
+    Image 14:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=16 (0-based)
+    Image 15:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=17 (0-based)
+    Image 16:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=18 (0-based)
+    Image 17:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=19 (0-based)
+    Image 18:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=20 (0-based)
+    Image 19:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=21 (0-based)
+    Image 20:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=22 (0-based)
+    Image 21:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=24 (0-based)
+    Image 22:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=23 (0-based)
+    Image 23:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+    Image 24:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 25:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 26:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 27:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 28:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=11 (0-based)
+    Image 29:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=12 (0-based)
+    Image 30:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=13 (0-based)
+    Image 31:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=14 (0-based)
+    Image 32:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=17 (0-based)
+    Image 33:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=18 (0-based)
+    Image 34:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=19 (0-based)
+    Image 35:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=20 (0-based)
+    Image 36:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=21 (0-based)
+    Image 37:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=22 (0-based)
+    Image 38:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=22 (0-based)
+    Image 39:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=24 (0-based)
+--------------------------------------------------
+Sheet: Sub MDB
+  Max row: 20, Max column: 4
+  Row 1: [None, None, None, None]
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Number of images: 32
+    Image 0:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+    Image 1:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 2:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=4 (0-based)
+    Image 3:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 4:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=6 (0-based)
+    Image 5:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 6:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 7:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=9 (0-based)
+    Image 8:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 9:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=11 (0-based)
+    Image 10:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=12 (0-based)
+    Image 11:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=13 (0-based)
+    Image 12:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=14 (0-based)
+    Image 13:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=15 (0-based)
+    Image 14:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=16 (0-based)
+    Image 15:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=17 (0-based)
+    Image 16:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=18 (0-based)
+    Image 17:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=19 (0-based)
+    Image 18:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=19 (0-based)
+    Image 19:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=18 (0-based)
+    Image 20:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=17 (0-based)
+    Image 21:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=16 (0-based)
+    Image 22:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=11 (0-based)
+    Image 23:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 24:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=9 (0-based)
+    Image 25:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 26:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 27:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=6 (0-based)
+    Image 28:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 29:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=4 (0-based)
+    Image 30:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 31:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+--------------------------------------------------
+Sheet: MDB
+  Max row: 30, Max column: 4
+  Row 1: [None, None, None, None]
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Number of images: 50
+    Image 0:
+      Anchor type: OneCellAnchor
+    Image 1:
+      Anchor type: OneCellAnchor
+    Image 2:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=2 (0-based)
+    Image 3:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=3 (0-based)
+    Image 4:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=4 (0-based)
+    Image 5:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=6 (0-based)
+    Image 6:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 7:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 8:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 9:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=10 (0-based)
+    Image 10:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=12 (0-based)
+    Image 11:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=12 (0-based)
+    Image 12:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=13 (0-based)
+    Image 13:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=14 (0-based)
+    Image 14:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=15 (0-based)
+    Image 15:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=16 (0-based)
+    Image 16:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=17 (0-based)
+    Image 17:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=18 (0-based)
+    Image 18:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=19 (0-based)
+    Image 19:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=20 (0-based)
+    Image 20:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=23 (0-based)
+    Image 21:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=23 (0-based)
+    Image 22:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=21 (0-based)
+    Image 23:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=22 (0-based)
+    Image 24:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=24 (0-based)
+    Image 25:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=25 (0-based)
+    Image 26:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=26 (0-based)
+    Image 27:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=27 (0-based)
+    Image 28:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=29 (0-based)
+    Image 29:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=28 (0-based)
+    Image 30:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=29 (0-based)
+    Image 31:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=7 (0-based)
+    Image 32:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=6 (0-based)
+    Image 33:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=5 (0-based)
+    Image 34:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=8 (0-based)
+    Image 35:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=11 (0-based)
+    Image 36:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=13 (0-based)
+    Image 37:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=14 (0-based)
+    Image 38:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=15 (0-based)
+    Image 39:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=16 (0-based)
+    Image 40:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=18 (0-based)
+    Image 41:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=19 (0-based)
+    Image 42:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=20 (0-based)
+    Image 43:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=22 (0-based)
+    Image 44:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=23 (0-based)
+    Image 45:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=26 (0-based)
+    Image 46:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=27 (0-based)
+    Image 47:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=28 (0-based)
+    Image 48:
+      Anchor type: TwoCellAnchor
+      To: Col=2, Row=29 (0-based)
+    Image 49:
+      Anchor type: TwoCellAnchor
+      To: Col=1, Row=25 (0-based)
+--------------------------------------------------

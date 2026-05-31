@@ -1,0 +1,463 @@
+
+=========================================
+SHEET: FirePump
+=========================================
+CELL VALUES:
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Row 3: [None, None, 'สายไฟลอยบนดิน', 'ฝังท่อและสายไฟลงดิน']
+  Row 4: [None, None, 'สายไฟโผล่', 'เก็บสายเข้าตู้และยึดคอนเนคเตอร์ให้มาตฐาน']
+  Row 5: [None, None, 'ท่อไฟหลุดจากคอนเนคเตอร์', 'ซ่อมจุดต่อให้ได้มาตฐาน']
+  Row 6: [None, None, 'ท่อไฟหลุดจากคอนเนคเตอร์', 'ซ่อมจุดต่อให้ได้มาตฐาน']
+  Row 7: [None, None, 'โครงเหล็กเป็นสนิมขาด', 'ซ่อมตัดต่อเชื่อมใหม่']
+  Row 8: [None, None, 'พัดลมตะแกรงช่องใหญ่', 'ติดตะแกรง ใช้มาตฐานเหมือนในห้อง Sub MDB ']
+  Row 9: [None, None, 'พัดลมไม่มีตะแกรง', 'ติดตะแกรง ใช้มาตฐานเหมือนในห้อง Sub MDB ']
+  Row 10: [None, None, 'Pressuer น้ำโยกไปมา \nSupport ไม่มี', 'ยึด Support ให้ได้มาตฐาน']
+  Row 11: [None, None, 'หลอดไฟสถานะ สีน้ำเงิน ไม่ติด', 'เปลี่ยนหลอดไฟ']
+  Row 12: [None, None, 'หลอดไฟสถานะ สีน้ำเงิน ไม่ติด\nและสีเฟส S กับ T สลับกัน', 'เปลี่ยนหลอดไฟ\nและสลับสีน้ำเงิน T กับเหลือง S']
+  Row 13: [None, None, 'หลอดไฟสถานะ สีน้ำเงิน ไม่ติด', 'เปลี่ยนหลอดไฟ']
+
+IMAGES IN SHEET (20):
+  Cell B10: 2 image(s)
+    - Image 7: Size=138x184
+    - Image 16: Size=330x442
+  Cell B11: 2 image(s)
+    - Image 8: Size=138x184
+    - Image 17: Size=1108x1477
+  Cell B12: 2 image(s)
+    - Image 9: Size=138x184
+    - Image 18: Size=1108x1477
+  Cell B13: 2 image(s)
+    - Image 10: Size=138x182
+    - Image 19: Size=1108x1477
+  Cell B3: 2 image(s)
+    - Image 0: Size=138x184
+    - Image 11: Size=585x565
+  Cell B4: 2 image(s)
+    - Image 1: Size=184x138
+    - Image 12: Size=493x369
+  Cell B5: 2 image(s)
+    - Image 2: Size=138x184
+    - Image 13: Size=343x457
+  Cell B6: 2 image(s)
+    - Image 3: Size=138x184
+    - Image 14: Size=400x533
+  Cell B7: 2 image(s)
+    - Image 4: Size=138x184
+    - Image 15: Size=555x737
+  Cell B8: 1 image(s)
+    - Image 5: Size=138x184
+  Cell B9: 1 image(s)
+    - Image 6: Size=138x184
+
+=========================================
+SHEET: MTShop
+=========================================
+CELL VALUES:
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Row 3: [None, None, 'สายเส้นในโผล่', 'ซ่อมจุดต่อให้ได้มาตฐาน']
+  Row 4: [None, None, 'ปลั๊กโทรศัพท์ หลุด', 'ซ่อมให้ได้มาตฐาน']
+  Row 5: [None, None, 'หลอดไฟสถานะ สีน้ำเงิน ไม่ติด', 'เปลี่ยนหลอดไฟ']
+  Row 6: [None, None, 'คอนเน็คเตอร์ไม่ใช้งาน', 'รื้อออกแล้วปิดรู']
+  Row 7: [None, None, 'เสาเครนมีโอกาศรถชน', 'ทาสีเหลือง ดำ ตามมาตฐานโรงงาน']
+  Row 8: [None, None, 'โช้คประตู ชำรุด', 'ซ่อม หรือ เปลี่ยน']
+  Row 9: [None, None, 'ฝาครอบหลอดไฟหาย\nและมีรูไม่ใช้งาน', 'เปลี่ยนชุดฝาครอบ\nและปิดรูไม่ใช้งาน']
+  Row 10: [None, None, 'บล๊อคไฟไม่มีฝาครอบ', 'ปิดฝาครอบ']
+  Row 11: [None, None, 'น็อตยึดหลวม', 'ขันให้แน่น']
+  Row 12: [None, None, 'มีใบตรวจเช็คเครื่องกรองน้ำมัน?', 'ที่หน้างานไม่เห็นโค้ดสแกน']
+  Row 13: [None, None, 'Support หลุดหาย ท่อตกท้องช้าง', 'ยึดท่อให้ได้ตามมาตฐาน']
+  Row 14: [None, None, 'กล่องเครื่องมือดันอคลิกโผล่ชน ขูด ขีด กับประตู', 'หาแผ่นกั้นที่แข็งแรง และห่างจากผนังอคิลิก']
+  Row 15: [None, None, 'น็อตยึดอคิลิกหาย ', 'ยึดน็อตให้ได้มาตฐาน']
+  Row 16: [None, None, 'เทปสีเขียวหลุดหาย', 'แนะนำทาสีจะทนกว่า']
+  Row 17: [None, None, 'คล้องโซ่กับเสา', 'ทำกล่องใส่ให้มีมาตฐาน']
+  Row 18: [None, None, 'สายเส้นในโผล่', 'ซ่อมจุดต่อให้ได้มาตฐาน']
+  Row 19: [None, None, 'สายเส้นในโผล่', 'ซ่อมจุดต่อให้ได้มาตฐาน']
+  Row 20: [None, None, 'สายสลิงขาด', 'เปลี่ยนใหม่']
+  Row 21: [None, None, 'สายเส้นในโผล่', 'ซ่อมจุดต่อให้ได้มาตฐาน']
+  Row 22: [None, None, 'สายเส้นในโผล่', 'ซ่อมจุดต่อให้ได้มาตฐาน']
+  Row 23: [None, None, 'มอเตอร์สตาร์ทไม่ออก ไม่หมุน', 'ซ่อม']
+  Row 24: [None, None, 'หลอดไฟไม่ติด', 'แนะนำใช้หลอด LED เพราะมีแรงสั่นเยอะ']
+  Row 25: [None, None, 'สายไฟโผล่', 'ใส่ท่อให้ตามมาตฐาน']
+  Row 26: [None, None, 'สายไฟวางบนดิน', 'เดินสายไฟให้ได้ตามมาตฐานไฟฟ้า']
+
+IMAGES IN SHEET (60):
+  Cell B10: 2 image(s)
+    - Image 9: Size=133x178
+    - Image 32: Size=384x517
+  Cell B11: 2 image(s)
+    - Image 11: Size=132x178
+    - Image 33: Size=504x677
+  Cell B12: 1 image(s)
+    - Image 10: Size=133x178
+  Cell B13: 2 image(s)
+    - Image 12: Size=177x134
+    - Image 34: Size=666x505
+  Cell B14: 2 image(s)
+    - Image 13: Size=132x178
+    - Image 35: Size=387x522
+  Cell B15: 2 image(s)
+    - Image 14: Size=133x178
+    - Image 36: Size=398x531
+  Cell B16: 2 image(s)
+    - Image 15: Size=134x177
+    - Image 37: Size=316x415
+  Cell B17: 2 image(s)
+    - Image 16: Size=134x177
+    - Image 38: Size=341x451
+  Cell B18: 2 image(s)
+    - Image 17: Size=134x177
+    - Image 39: Size=1108x1477
+  Cell B19: 2 image(s)
+    - Image 18: Size=134x177
+    - Image 40: Size=1108x1477
+  Cell B20: 2 image(s)
+    - Image 19: Size=133x177
+    - Image 41: Size=348x464
+  Cell B21: 2 image(s)
+    - Image 21: Size=133x177
+    - Image 42: Size=1108x1477
+  Cell B22: 2 image(s)
+    - Image 20: Size=133x177
+    - Image 43: Size=1108x1477
+  Cell B23: 2 image(s)
+    - Image 22: Size=178x133
+    - Image 44: Size=548x413
+  Cell B24: 2 image(s)
+    - Image 0: Size=178x133
+    - Image 1: Size=1477x1108
+  Cell B25: 2 image(s)
+    - Image 23: Size=133x177
+    - Image 45: Size=480x634
+  Cell B26: 1 image(s)
+    - Image 24: Size=395x294
+  Cell B3: 2 image(s)
+    - Image 2: Size=178x133
+    - Image 25: Size=1477x1108
+  Cell B4: 2 image(s)
+    - Image 3: Size=133x178
+    - Image 26: Size=1108x1477
+  Cell B5: 2 image(s)
+    - Image 4: Size=133x178
+    - Image 27: Size=1108x1477
+  Cell B6: 2 image(s)
+    - Image 5: Size=133x178
+    - Image 28: Size=1108x1477
+  Cell B7: 1 image(s)
+    - Image 6: Size=133x178
+  Cell B8: 2 image(s)
+    - Image 7: Size=133x178
+    - Image 29: Size=1108x1477
+  Cell B9: 3 image(s)
+    - Image 8: Size=133x178
+    - Image 30: Size=529x706
+    - Image 31: Size=557x747
+  Cell E10: 1 image(s)
+    - Image 58: Size=389x408
+  Cell E11: 1 image(s)
+    - Image 49: Size=489x466
+  Cell E13: 1 image(s)
+    - Image 59: Size=351x364
+  Cell E18: 1 image(s)
+    - Image 54: Size=503x467
+  Cell E19: 1 image(s)
+    - Image 55: Size=510x399
+  Cell E20: 1 image(s)
+    - Image 56: Size=521x499
+  Cell E21: 1 image(s)
+    - Image 52: Size=523x447
+  Cell E22: 1 image(s)
+    - Image 51: Size=519x444
+  Cell E23: 1 image(s)
+    - Image 57: Size=539x476
+  Cell E3: 1 image(s)
+    - Image 48: Size=394x378
+  Cell E4: 1 image(s)
+    - Image 50: Size=461x320
+  Cell E5: 1 image(s)
+    - Image 46: Size=469x342
+  Cell E6: 1 image(s)
+    - Image 47: Size=448x377
+  Cell E8: 1 image(s)
+    - Image 53: Size=508x530
+
+=========================================
+SHEET: AirCom
+=========================================
+CELL VALUES:
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Row 3: [None, None, 'โครงสร้างเป็นสนิม', 'ทาสีใหม่']
+  Row 4: [None, None, 'มุ้งลาดหลุด', 'ยึดใหม่ให้แน่น']
+  Row 5: [None, None, 'ลิปบริ้นชำรุด ขาด', 'เปลี่ยนใหม่']
+  Row 6: [None, None, 'คราบน้ำไหลมาตามผนัง', 'ทาสีกันซึม TOA']
+  Row 7: [None, None, 'คราบน้ำไหลมาตามผนัง', 'ทาสีกันซึม TOA']
+  Row 8: [None, None, 'เศษสกปรกในราง', 'ทำความสะอาด']
+  Row 9: [None, None, 'ปรับคันโยกไม่ตรง', 'ปรับให้ตรง']
+  Row 10: [None, None, 'ประตู กด ขึ้น ลงไม่ได้', 'ถ้ายกเลิกใช้ ติดป้ายด้วย']
+  Row 11: [None, None, 'มีความคมและเป็นสนิม', 'เชื่อมปิด']
+  Row 12: [None, None, 'โครงสร้างไม่ได้ยึดพื้น', 'เจาะยึดฟลุ๊ก']
+  Row 13: [None, None, 'น็อตหลวมและเป็นสนิม', 'ขันแน่น และทาสี']
+  Row 14: [None, None, 'ท่อไม่มียูโบลขันยึด', 'ใส่ยูโบล ขันแน่น']
+  Row 15: [None, None, 'โครงสร้างลอย ท่อลอย', 'เสริมโครงสร้างและยึดให้แน่น']
+  Row 16: [None, None, 'เป็นสนิม', 'ทาสีกันสนิมและหุ้มฉนวน']
+  Row 17: [None, None, 'มีคราบน้ำไหลตามผนัง', 'ซ่อมและเก็บทาสี']
+  Row 18: [None, None, 'สายยางอะไร? ', 'เก็บ']
+  Row 19: [None, None, 'มีคราบน้ำหยดที่พื้น', 'ซ่อมและเก็บทาสี']
+  Row 20: [None, None, 'เบรกเกอร์ทริป', 'ถ้าไม่ใช้ ให้ติดป้ายด้วย']
+  Row 21: [None, None, 'มีหยักใย๋', None]
+  Row 22: [None, None, 'หลอดไฟเฟส T ไม่ติด', 'เปลี่ยนใหม่']
+  Row 23: [None, None, 'น้ำรั่วตรงข้อต่อ', 'ซ่อม']
+  Row 24: [None, None, 'ไฟสีเหลืองติดคืออะไร', 'ติดป้ายสถานะ ']
+  Row 25: [None, None, 'ลิปบริ้นชำรุด ขาด', 'เปลี่ยนใหม่']
+
+IMAGES IN SHEET (40):
+  Cell B10: 1 image(s)
+    - Image 7: Size=133x179
+  Cell B11: 2 image(s)
+    - Image 8: Size=178x134
+    - Image 27: Size=821x617
+  Cell B12: 2 image(s)
+    - Image 9: Size=133x178
+    - Image 28: Size=502x676
+  Cell B13: 2 image(s)
+    - Image 10: Size=133x178
+    - Image 29: Size=1108x1477
+  Cell B14: 2 image(s)
+    - Image 11: Size=133x179
+    - Image 30: Size=322x433
+  Cell B15: 2 image(s)
+    - Image 12: Size=134x179
+    - Image 31: Size=484x644
+  Cell B16: 1 image(s)
+    - Image 13: Size=236x177
+  Cell B17: 1 image(s)
+    - Image 14: Size=134x179
+  Cell B18: 2 image(s)
+    - Image 15: Size=134x178
+    - Image 32: Size=1108x1477
+  Cell B19: 2 image(s)
+    - Image 16: Size=134x179
+    - Image 33: Size=1108x1477
+  Cell B20: 2 image(s)
+    - Image 17: Size=179x134
+    - Image 34: Size=1477x1108
+  Cell B21: 2 image(s)
+    - Image 18: Size=134x179
+    - Image 35: Size=1108x1477
+  Cell B22: 2 image(s)
+    - Image 19: Size=179x134
+    - Image 36: Size=1477x1108
+  Cell B23: 3 image(s)
+    - Image 20: Size=134x178
+    - Image 37: Size=296x394
+    - Image 38: Size=1108x1477
+  Cell B24: 1 image(s)
+    - Image 22: Size=134x179
+  Cell B25: 2 image(s)
+    - Image 21: Size=179x134
+    - Image 39: Size=1477x1108
+  Cell B3: 2 image(s)
+    - Image 0: Size=134x179
+    - Image 23: Size=416x556
+  Cell B4: 2 image(s)
+    - Image 1: Size=134x179
+    - Image 24: Size=359x481
+  Cell B5: 1 image(s)
+    - Image 2: Size=225x169
+  Cell B6: 2 image(s)
+    - Image 3: Size=133x179
+    - Image 25: Size=330x444
+  Cell B7: 1 image(s)
+    - Image 4: Size=246x186
+  Cell B8: 1 image(s)
+    - Image 5: Size=133x178
+  Cell B9: 2 image(s)
+    - Image 6: Size=133x179
+    - Image 26: Size=1108x1477
+
+=========================================
+SHEET: Sub MDB
+=========================================
+CELL VALUES:
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Row 3: [None, None, 'ลูกยางประตูชำรุด แตกร้าว', 'เปลี่ยนใหม่']
+  Row 4: [None, None, 'แผ่นยางกันไฟหน้าตู้จุดนี้ไม่ครอบคลุม', 'เพิ่มแผ่นยาง']
+  Row 5: [None, None, 'น็อตยึดฝาตู้ ไม่มี ไม่ได้ยึด มีหลายตัว หลายจุด', 'ใส่น้อตยึดให้ครบทุกตัว']
+  Row 6: [None, None, 'กุญแจล็อคฝาตู้หาย', 'ซื้อมาใส่ใหม่']
+  Row 7: [None, None, 'กุญแจล็อคฝาตู้หาย', 'ซื้อมาใส่ใหม่']
+  Row 8: [None, None, 'หลอดไฟเฟส T ไม่ติด', 'เปลี่ยนใหม่']
+  Row 9: [None, None, 'หลอดไฟเฟส T ไม่ติด', 'เปลี่ยนใหม่']
+  Row 10: [None, None, 'มีช่องเปิดโล่ง', 'ปิดให้สนิท']
+  Row 11: [None, None, 'มีหยักใย๋', None]
+  Row 12: [None, None, 'มีหยักใย๋', None]
+  Row 13: [None, None, 'ขอบผนังหลุด', 'ซ่อม ติดกาว']
+  Row 14: [None, None, 'แผ่นฝ้าใกล้ร่วง', 'เปลี่ยนใช้แผ่นพลาสวูด อยู่ MT ตัดไปใส่แทน']
+  Row 15: [None, None, 'แผ่นฝ้าใกล้ร่วง', 'เปลี่ยนใช้แผ่นพลาสวูด อยู่ MT ตัดไปใส่แทน']
+  Row 16: [None, None, 'แผ่นฝ้าใกล้ร่วง', 'เปลี่ยนใช้แผ่นพลาสวูด อยู่ MT ตัดไปใส่แทน']
+  Row 17: [None, None, 'มีหยักใย๋', None]
+  Row 18: [None, None, 'แผ่นฝ้าใกล้ร่วง', 'เปลี่ยนใช้แผ่นพลาสวูด อยู่ MT ตัดไปใส่แทน']
+  Row 19: [None, None, 'มีหยักใย๋', None]
+  Row 20: [None, None, 'ลวดสลิงไม่ใช้งาน', 'ถอด รื้อถอน']
+
+IMAGES IN SHEET (32):
+  Cell B10: 2 image(s)
+    - Image 7: Size=129x173
+    - Image 24: Size=411x552
+  Cell B11: 2 image(s)
+    - Image 8: Size=129x173
+    - Image 23: Size=353x473
+  Cell B12: 2 image(s)
+    - Image 9: Size=128x173
+    - Image 22: Size=1108x1477
+  Cell B13: 1 image(s)
+    - Image 10: Size=128x173
+  Cell B14: 1 image(s)
+    - Image 11: Size=128x173
+  Cell B15: 1 image(s)
+    - Image 12: Size=129x173
+  Cell B16: 1 image(s)
+    - Image 13: Size=129x173
+  Cell B17: 2 image(s)
+    - Image 14: Size=129x173
+    - Image 21: Size=336x451
+  Cell B18: 2 image(s)
+    - Image 15: Size=129x173
+    - Image 20: Size=294x394
+  Cell B19: 2 image(s)
+    - Image 16: Size=129x172
+    - Image 19: Size=363x484
+  Cell B20: 2 image(s)
+    - Image 17: Size=129x173
+    - Image 18: Size=446x598
+  Cell B3: 2 image(s)
+    - Image 0: Size=172x129
+    - Image 31: Size=1477x1108
+  Cell B4: 2 image(s)
+    - Image 1: Size=129x173
+    - Image 30: Size=328x439
+  Cell B5: 2 image(s)
+    - Image 2: Size=129x173
+    - Image 29: Size=1108x1477
+  Cell B6: 2 image(s)
+    - Image 3: Size=129x173
+    - Image 28: Size=1108x1477
+  Cell B7: 2 image(s)
+    - Image 4: Size=129x173
+    - Image 27: Size=1108x1477
+  Cell B8: 2 image(s)
+    - Image 5: Size=129x173
+    - Image 26: Size=1108x1477
+  Cell B9: 2 image(s)
+    - Image 6: Size=129x173
+    - Image 25: Size=1108x1477
+
+=========================================
+SHEET: MDB
+=========================================
+CELL VALUES:
+  Row 2: [None, 'รูป', 'ปัญหา', 'วิธีแก้ไข']
+  Row 3: [None, None, 'ผนังถูกชน และเป็นสนิม', 'เปลี่ยนใหม่ หรือทาสีกันสนิม']
+  Row 4: [None, None, 'ผนังถูกชน และเป็นสนิม', 'เปลี่ยนใหม่ หรือทาสีกันสนิม']
+  Row 5: [None, None, 'เป็นสนิมและผุกร่อน', 'ซ่อมและทาสีกันสนิม']
+  Row 6: [None, None, 'เป็นสนิมและผุกร่อน', 'ซ่อมและทาสีกันสนิม']
+  Row 7: [None, None, 'ตาข่ายกันสัตว์มีไม่รอบกรง', 'ติดให้รอบกรง']
+  Row 8: [None, None, 'แม่กุญแจเก่า', 'ทิ้ง']
+  Row 9: [None, None, 'ป้ายเก่า ไม่ใช้งาน', 'ทิ้ง']
+  Row 10: [None, None, 'โครงสร้างเป็นสนิม', 'ทาสีกันสนิม']
+  Row 11: [None, None, 'เป็นสนิมและผุกร่อน', 'ซ่อมและทาสีกันสนิม']
+  Row 12: [None, None, 'เป็นสนิมและชำรุด', 'เปลี่ยนใหม่']
+  Row 13: [None, None, 'พัดลมระบายอากาศไม่หมุน', 'ตรวจซ่อม เสียเปลี่ยน ']
+  Row 14: [None, None, 'มีเหล็กวางอยู่ ?', 'ทิ้ง']
+  Row 15: [None, None, 'หลอดไฟเฟส T ไม่ติด', 'เปลี่ยนใหม่']
+  Row 16: [None, None, 'ตาข่ายทรุดตัวและมีช่องว่างใหญ่เกินไป', 'ยึดตาข่ายให่แน่นและเพิ่มช่องว่างให้เล็กลง']
+  Row 17: [None, None, 'รีโมทแอร์ ?', 'ทิ้ง']
+  Row 18: [None, None, 'เศษอะไหล่ซ่อนในช่องผนัง', 'รื้อทิ้ง']
+  Row 19: [None, None, 'น็อตฝาตู้ขันไม่แน่น', 'ขันแน่น']
+  Row 20: [None, None, 'น็อตฝาตู้ขันไม่แน่น', 'ขันแน่น']
+  Row 21: [None, None, 'น็อตยึดฝาตู้ ไม่มี ไม่ได้ยึด มีหลายตัว หลายจุด', 'ใส่น้อตยึดให้ครบทุกตัว']
+  Row 22: [None, None, 'ฝาตู้ปิดไม่สนิท', 'ปิดให้สนิท']
+  Row 23: [None, None, 'กุญแจล็อคฝาตู้หาย', 'ซื้อมาใส่ใหม่']
+  Row 24: [None, None, 'น็อตยึดฝาราง ไม่มี ไม่ได้ยึด มีหลายตัว หลายจุด', 'ใส่น้อตยึดให้ครบทุกตัว']
+  Row 25: [None, None, 'ฝาตู้ปิดไม่สนิท', 'ปิดให้สนิท']
+  Row 26: [None, None, 'หน้ากากเบรกเกอร์แตก', 'ทำป้ายใหญ่ๆ ปิดหน้ากากให้สนิม และเขียนว่ายกเลิกใช้งาน']
+  Row 27: [None, None, 'ไฟสถานะผิดปกติโชว์', 'ติดป้าย กำหนดการแก้ไข']
+  Row 28: [None, None, 'มีคราบสนิมไหลตามผนัง', 'ซ่อมและทาสี']
+  Row 29: [None, None, 'ท่อสายอะไรหัก ?', 'ซ่อมใหม่']
+  Row 30: [None, None, 'น้ำรั่วเข้าห้อง', 'เจาะรูเดรนทิ้งฝั่งด้านนอก']
+
+IMAGES IN SHEET (50):
+  Cell B10: 2 image(s)
+    - Image 0: Size=133x177
+    - Image 1: Size=318x424
+  Cell B11: 1 image(s)
+    - Image 9: Size=132x177
+  Cell B12: 2 image(s)
+    - Image 10: Size=132x176
+    - Image 35: Size=325x435
+  Cell B13: 1 image(s)
+    - Image 11: Size=132x177
+  Cell B14: 2 image(s)
+    - Image 12: Size=132x178
+    - Image 36: Size=314x421
+  Cell B15: 2 image(s)
+    - Image 13: Size=177x133
+    - Image 37: Size=1477x1108
+  Cell B16: 2 image(s)
+    - Image 14: Size=133x177
+    - Image 38: Size=416x554
+  Cell B17: 2 image(s)
+    - Image 15: Size=133x177
+    - Image 39: Size=1108x1477
+  Cell B18: 1 image(s)
+    - Image 16: Size=133x178
+  Cell B19: 2 image(s)
+    - Image 17: Size=133x177
+    - Image 40: Size=441x590
+  Cell B20: 2 image(s)
+    - Image 18: Size=133x177
+    - Image 41: Size=1108x1477
+  Cell B21: 2 image(s)
+    - Image 19: Size=133x177
+    - Image 42: Size=1108x1477
+  Cell B22: 1 image(s)
+    - Image 22: Size=133x178
+  Cell B23: 2 image(s)
+    - Image 23: Size=133x177
+    - Image 43: Size=1108x1477
+  Cell B24: 3 image(s)
+    - Image 20: Size=136x177
+    - Image 21: Size=136x177
+    - Image 44: Size=1108x1477
+  Cell B25: 1 image(s)
+    - Image 24: Size=133x177
+  Cell B26: 2 image(s)
+    - Image 25: Size=133x177
+    - Image 49: Size=396x528
+  Cell B27: 2 image(s)
+    - Image 26: Size=133x177
+    - Image 45: Size=1108x1477
+  Cell B28: 2 image(s)
+    - Image 27: Size=133x178
+    - Image 46: Size=305x406
+  Cell B29: 2 image(s)
+    - Image 29: Size=133x177
+    - Image 47: Size=543x722
+  Cell B3: 2 image(s)
+    - Image 2: Size=133x177
+    - Image 3: Size=133x176
+  Cell B30: 3 image(s)
+    - Image 28: Size=133x177
+    - Image 30: Size=133x177
+    - Image 48: Size=368x534
+  Cell B5: 1 image(s)
+    - Image 4: Size=133x177
+  Cell B6: 2 image(s)
+    - Image 5: Size=133x176
+    - Image 33: Size=1108x1477
+  Cell B7: 2 image(s)
+    - Image 6: Size=133x176
+    - Image 32: Size=320x423
+  Cell B8: 2 image(s)
+    - Image 7: Size=133x178
+    - Image 31: Size=1108x1477
+  Cell B9: 2 image(s)
+    - Image 8: Size=133x177
+    - Image 34: Size=321x428

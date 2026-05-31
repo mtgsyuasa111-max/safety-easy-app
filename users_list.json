@@ -1,0 +1,77 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "id": "U001",
+      "name": "ผู้ดูแลระบบ",
+      "role": "admin",
+      "area": "ทุกพื้นที่"
+    },
+    {
+      "id": "U002",
+      "name": "หัวหน้างาน",
+      "role": "supervisor",
+      "area": "ทุกพื้นที่"
+    },
+    {
+      "id": "U003",
+      "name": "วิทยา แพงศรี",
+      "role": "subordinate",
+      "area": "D"
+    },
+    {
+      "id": "U004",
+      "name": "ศิริชัย แสงวงค์",
+      "role": "subordinate",
+      "area": "G"
+    },
+    {
+      "id": "U005",
+      "name": "สนธยา วงค์สีทธิไช",
+      "role": "subordinate",
+      "area": "F"
+    },
+    {
+      "id": "U006",
+      "name": "อุดมชัย ทศรักษา",
+      "role": "subordinate",
+      "area": "B"
+    },
+    {
+      "id": "U007",
+      "name": "สุทิน รอดยิ้ม",
+      "role": "subordinate",
+      "area": "C"
+    },
+    {
+      "id": "U008",
+      "name": "ภิพัทยา แพทพีพัฒน์",
+      "role": "subordinate",
+      "area": "H"
+    },
+    {
+      "id": "U009",
+      "name": "พิพัฒน์พล ทอยสังข์",
+      "role": "subordinate",
+      "area": "J"
+    },
+    {
+      "id": "U010",
+      "name": "สมชาย วงษา",
+      "role": "subordinate",
+      "area": "A"
+    },
+    {
+      "id": "U011",
+      "name": "ณัฐพงษ์ ยะล้อม",
+      "role": "subordinate",
+      "area": "K"
+    },
+    {
+      "id": "U012",
+      "name": "วันชนะ แพงศรี",
+      "role": "subordinate",
+      "area": "I"
+    }
+  ]
+}

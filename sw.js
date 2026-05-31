@@ -16,8 +16,6 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[Service Worker] Pre-caching offline assets...');
       return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => {
-      return self.skipWaiting();
     })
   );
 });
@@ -87,4 +85,12 @@ self.addEventListener('fetch', (event) => {
       });
     })
   );
+});
+
+// Handle update requests from client to trigger skipWaiting
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('[Service Worker] SKIP_WAITING received. Activating new worker...');
+    self.skipWaiting();
+  }
 });
