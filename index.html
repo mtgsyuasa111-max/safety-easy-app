@@ -1339,7 +1339,21 @@
     const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/18fG-3MpRqiDe2EjJcdqqG_i6BdCEYFjdUqS4uYi6F3k/edit";
 
     // Users and PIN hashes are loaded from Google Sheets through Apps Script.
-    const DEFAULT_USERS = [];
+    // Emergency fallback for local/offline login when Apps Script is unavailable.
+    const DEFAULT_USERS = [
+      { id: "U001", name: "ผู้ดูแลระบบ", role: "admin", area: "ทุกพื้นที่", pin: "0001" },
+      { id: "U002", name: "หัวหน้างาน", role: "supervisor", area: "ทุกพื้นที่", pin: "0002" },
+      { id: "U003", name: "วิทยา เทพศิริ", role: "subordinate", area: "D", pin: "0003" },
+      { id: "U004", name: "ศิริชัย แสงวงศ์", role: "subordinate", area: "G", pin: "0002" },
+      { id: "U005", name: "สมยศ วงศ์สิทธิ์โช", role: "subordinate", area: "F", pin: "0005" },
+      { id: "U006", name: "ออปซี่ หล่อภัทรา", role: "subordinate", area: "B", pin: "0006" },
+      { id: "U007", name: "สกิม รอดยิ้ม", role: "subordinate", area: "C", pin: "0007" },
+      { id: "U008", name: "กิตติยา เทพทิพพ์นิม", role: "subordinate", area: "H", pin: "0008" },
+      { id: "U009", name: "พิเชษทล พลอยสังข์", role: "subordinate", area: "J", pin: "0009" },
+      { id: "U010", name: "สมชาย งามวา", role: "subordinate", area: "A", pin: "0010" },
+      { id: "U011", name: "ณัฐพงษ์ ยะอ้วย", role: "subordinate", area: "K", pin: "0011" },
+      { id: "U012", name: "วันชนะ เทพศิริ", role: "subordinate", area: "I", pin: "0012" }
+    ];
 
     // AREA OWNER MAPPING FOR AUTO-ASSIGNMENT
     let AREA_REPRESENTATIVES = {};
@@ -1622,9 +1636,19 @@
         updateCloudStatus(true);
       } catch (error) {
         console.error("Failed to load users:", error);
-        users = [];
+        users = [...DEFAULT_USERS];
+        AREA_REPRESENTATIVES = {};
+        users.forEach(user => {
+          if (user.area && user.area.trim()) {
+            if (!AREA_REPRESENTATIVES[user.area.trim()]) {
+              AREA_REPRESENTATIVES[user.area.trim()] = user.name || user.id || "-";
+            }
+          }
+        });
+        populateAuditAreaOptions();
+        localStorage.setItem("safety_users_production_v1", JSON.stringify(users));
         updateCloudStatus(false);
-        showToast("เชื่อมต่อระบบไม่ได้", error.message, "fa-wifi-slash", "bg-safety-red");
+        showToast("โหมดสำรองถูกเปิด", "เชื่อมชีตไม่ได้ จึงเปิดผู้ใช้สำรองเพื่อให้เข้าใช้งานต่อได้ทันที", "fa-wifi-slash", "bg-safety-yellow shadow-glow-amber");
       }
     }
 
@@ -1657,6 +1681,27 @@
         navigateTo('home');
         showToast("สำเร็จเรียบร้อย", `ยินดีต้อนรับคุณ ${currentUser.name}`, "fa-circle-check", "bg-safety-green shadow-glow-green");
       } catch (error) {
+        const localPin = String(selectedUserToLogin.pin || "").trim();
+        if (localPin && enteredPin === localPin) {
+          currentUser = {
+            id: selectedUserToLogin.id,
+            name: selectedUserToLogin.name,
+            role: selectedUserToLogin.role,
+            area: selectedUserToLogin.area
+          };
+          authToken = "OFFLINE_" + Date.now();
+          sessionStorage.setItem("safety_easy_auth_token", authToken);
+          addAuditLog(currentUser.name, "เข้าสู่ระบบสำเร็จ (โหมดออฟไลน์สำรอง)");
+          await loadAllJobsData();
+          document.getElementById("app-nav-bar").classList.remove("hidden");
+          const navAdmin = document.getElementById("nav-admin");
+          if (currentUser.role === "admin") navAdmin.classList.remove("hidden");
+          else navAdmin.classList.add("hidden");
+          navigateTo("home");
+          showToast("เข้าใช้งานสำเร็จ", `ยินดีต้อนรับคุณ ${currentUser.name} (Local Mode)`, "fa-circle-check", "bg-safety-green shadow-glow-green");
+          return;
+        }
+
         // Visual shake error alert on pindots
         const row = document.getElementById("pin-dots-row");
         row.classList.add("shake-anim");
