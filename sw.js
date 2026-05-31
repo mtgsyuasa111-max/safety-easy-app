@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v10'; // v10: Name Alignment for Subordinate Resolving
+const CACHE_NAME = 'safety-easy-pro-v11'; // v11: Enforce Subordinate Assignee Validation UI Guard
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
