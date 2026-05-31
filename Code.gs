@@ -97,13 +97,17 @@ function doPost(e) {
       var userSheet = ss.getSheetByName("Users");
       var userData = userSheet.getDataRange().getValues();
       var enteredPin = String(rawData.pin || "").trim();
+      // Compute SHA-256 of entered PIN for hash comparison
+      var enteredPinHash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, enteredPin)
+        .map(function(b) { return (b < 0 ? b + 256 : b).toString(16).padStart(2, '0'); }).join('');
       for (var i = 1; i < userData.length; i++) {
         var storedId  = String(userData[i][0] || "").trim();
         var storedPin = String(userData[i][4] || "").trim();
         if (storedId !== String(rawData.id || "").trim()) continue;
-        // Accept match if: stored is plain PIN (≤8 chars) OR stored equals entered directly
+        // Accept: plain PIN match (≤8 chars) OR SHA-256 hash match (64 chars)
         var isPlain = storedPin.length <= 8;
-        if ((isPlain && storedPin === enteredPin) || (!isPlain && storedPin === enteredPin)) {
+        var matched = isPlain ? (storedPin === enteredPin) : (storedPin === enteredPinHash);
+        if (matched) {
           return ContentService.createTextOutput(JSON.stringify({
             status: "success",
             token: "AUTH_" + Utilities.getUuid(),

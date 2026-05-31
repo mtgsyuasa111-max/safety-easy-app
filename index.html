@@ -205,15 +205,37 @@
     .notification-active {
       animation: notification-pulse 1.5s ease-out infinite;
     }
+
+    /* Desktop sidebar layout */
+    @media (min-width: 1024px) {
+      #app-nav-bar:not(.hidden) {
+        display: flex !important;
+      }
+      #app-nav-bar button span.text-\[9px\] {
+        display: none;
+      }
+    }
+    @media (min-width: 1280px) {
+      #app-nav-bar button span.text-\[9px\] {
+        display: block;
+      }
+    }
+    /* Desktop job grid */
+    @media (min-width: 1024px) {
+      .lg-job-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    }
+    @media (min-width: 1280px) {
+      .lg-job-grid { grid-template-columns: repeat(3, 1fr); }
+    }
   </style>
 </head>
-<body class="bg-gradient-to-tr from-slate-100 via-teal-50/20 to-slate-200 dark:bg-[radial-gradient(circle_at_top_left,#064e3b_0,#0f172a_38%,#020617_100%)] flex justify-center items-center min-h-screen text-slate-800 dark:text-slate-100 p-0 sm:p-4 transition-colors duration-300">
+<body class="bg-gradient-to-tr from-slate-100 via-teal-50/20 to-slate-200 dark:bg-[radial-gradient(circle_at_top_left,#064e3b_0,#0f172a_38%,#020617_100%)] flex justify-center items-start lg:items-stretch min-h-screen text-slate-800 dark:text-slate-100 p-0 sm:p-4 lg:p-0 transition-colors duration-300">
 
   <!-- Smart Phone Mobile Container Frame -->
-  <div id="phone-container" class="w-full max-w-md lg:max-w-none lg:h-screen lg:rounded-none lg:border-none lg:shadow-none bg-slate-50 dark:bg-[#090d16] h-screen sm:h-[90vh] md:h-screen md:max-h-[880px] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col relative border border-slate-200/80 dark:border-white/5 shadow-glass transition-colors duration-300">
+  <div id="phone-container" class="w-full max-w-md lg:max-w-none lg:h-screen lg:rounded-none lg:border-none lg:shadow-none bg-slate-50 dark:bg-[#090d16] h-screen sm:h-[90vh] md:h-screen md:max-h-[880px] sm:rounded-[3rem] shadow-2xl overflow-hidden lg:overflow-visible flex flex-col lg:flex-row relative border border-slate-200/80 dark:border-white/5 shadow-glass transition-colors duration-300">
     
     <!-- Phone Top Status Bar Mockup -->
-    <div class="bg-white/90 dark:bg-slate-950/80 backdrop-blur-md text-slate-700 dark:text-slate-300 px-6 pt-3 pb-2 flex justify-between items-center text-xs font-semibold z-40 border-b border-slate-200 dark:border-white/5 transition-all duration-300">
+    <div class="lg:hidden bg-white/90 dark:bg-slate-950/80 backdrop-blur-md text-slate-700 dark:text-slate-300 px-6 pt-3 pb-2 flex justify-between items-center text-xs font-semibold z-40 border-b border-slate-200 dark:border-white/5 transition-all duration-300">
       <div class="w-full max-w-7xl mx-auto flex justify-between items-center">
         <div class="flex items-center space-x-1.5">
           <i class="fa-solid fa-shield-halved text-safety-green animate-pulse"></i> 
@@ -232,7 +254,7 @@
     </div>
 
     <!-- MAIN INTERACTIVE APP VIEWPORT -->
-    <div id="screen-container" class="flex-1 overflow-y-auto no-scrollbar pb-20 relative bg-slate-50 dark:bg-[#090d16] transition-colors duration-300">
+    <div id="screen-container" class="flex-1 overflow-y-auto no-scrollbar pb-20 lg:pb-0 relative bg-slate-50 dark:bg-[#090d16] transition-colors duration-300">
       
       <!-- ========================================== -->
       <!-- 1. SCREEN: ROLE SELECT (SPLASH) -->
@@ -520,7 +542,7 @@
       <!-- ========================================== -->
       <div id="screen-supervisor-home" class="screen-transition hidden">
         <!-- Top Profile Panel -->
-        <div class="bg-gradient-to-br from-safety-slate to-slate-950 p-6 rounded-b-[2rem] border-b border-white/10 shadow-lg">
+        <div class="bg-white dark:bg-gradient-to-br dark:from-safety-slate dark:to-slate-950 p-6 rounded-b-[2rem] border-b border-slate-200 dark:border-white/10 shadow-lg transition-colors duration-300">
           <div class="w-full max-w-7xl mx-auto">
             <div class="flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
@@ -534,7 +556,7 @@
               </div>
               <div>
                 <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">ผู้เข้าใช้ระบบ</span>
-                <span class="text-base font-extrabold text-white" id="sp-profile-name">หัวหน้างาน Demo</span>
+                <span class="text-base font-extrabold text-slate-900 dark:text-white" id="sp-profile-name">หัวหน้างาน Demo</span>
                 <span class="inline-flex items-center px-2 py-0.5 bg-amber-500/10 text-safety-yellow rounded-full text-[9px] font-black border border-safety-yellow/20 uppercase tracking-widest ml-1" id="sp-role-badge">ADMIN</span>
               </div>
             </div>
@@ -566,11 +588,11 @@
           <div>
             <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest mb-3">ประเภทงานตรวจ</h3>
             <div class="grid grid-cols-2 gap-3">
-              <button onclick="setActiveWorkType('safety')" id="sp-work-safety" class="work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-300 p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-md">
+              <button onclick="setActiveWorkType('safety')" id="sp-work-safety" class="work-chip border-2 border-transparent bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-md">
                 <i class="fa-solid fa-shield-halved text-emerald-400 text-lg"></i>
                 <div class="text-xs font-black">Safety Leader</div>
               </button>
-              <button onclick="setActiveWorkType('5s')" id="sp-work-5s" class="work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-300 p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-md">
+              <button onclick="setActiveWorkType('5s')" id="sp-work-5s" class="work-chip border-2 border-transparent bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-md">
                 <i class="fa-solid fa-broom text-amber-400 text-lg"></i>
                 <div class="text-xs font-black">งาน 5ส</div>
               </button>
@@ -621,7 +643,7 @@
       <!-- ========================================== -->
       <div id="screen-subordinate-home" class="screen-transition hidden">
         <!-- Profile bar -->
-        <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-b-[2rem] border-b border-white/10 shadow-lg">
+        <div class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 p-6 rounded-b-[2rem] border-b border-slate-200 dark:border-white/10 shadow-lg transition-colors duration-300">
           <div class="w-full max-w-7xl mx-auto">
             <div class="flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
@@ -635,7 +657,7 @@
               </div>
               <div>
                 <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider block">พนักงานผู้แก้เคส</span>
-                <span class="text-base font-extrabold text-white" id="sb-profile-name">พนักงาน Demo</span>
+                <span class="text-base font-extrabold text-slate-900 dark:text-white" id="sb-profile-name">พนักงาน Demo</span>
                 <span class="inline-flex px-2 py-0.5 bg-emerald-500/10 text-safety-green rounded-full text-[9px] font-bold border border-emerald-500/20 tracking-wider uppercase ml-1">OPERATOR</span>
               </div>
             </div>
@@ -652,7 +674,7 @@
               </div>
               <div>
                 <span class="text-[10px] text-slate-400 block font-bold">พื้นที่ดูแลรับผิดชอบหลัก</span>
-                <span class="font-extrabold text-xs text-white" id="sb-profile-area">พื้นที่ D</span>
+                <span class="font-extrabold text-xs text-slate-900 dark:text-white" id="sb-profile-area">พื้นที่ D</span>
               </div>
             </div>
             <div class="text-right">
@@ -681,12 +703,12 @@
           </div>
 
           <div class="grid grid-cols-2 gap-3">
-            <button onclick="setEmployeeWorkFilter('safety')" id="sb-filter-safety" class="work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-300 p-3 rounded-xl text-left">
+            <button onclick="setEmployeeWorkFilter('safety')" id="sb-filter-safety" class="work-chip border-2 border-transparent bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 p-3 rounded-xl text-left">
               <i class="fa-solid fa-shield-halved text-emerald-400 mb-1.5 text-base"></i>
               <div class="text-xs font-black">Safety Leader</div>
               <div class="text-[9px] text-slate-500 mt-0.5">งานความปลอดภัยทั้งหมด</div>
             </button>
-            <button onclick="setEmployeeWorkFilter('5s')" id="sb-filter-5s" class="work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-300 p-3 rounded-xl text-left">
+            <button onclick="setEmployeeWorkFilter('5s')" id="sb-filter-5s" class="work-chip border-2 border-transparent bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 p-3 rounded-xl text-left">
               <i class="fa-solid fa-broom text-amber-400 mb-1.5 text-base"></i>
               <div class="text-xs font-black">งาน 5ส</div>
               <div class="text-[9px] text-slate-500 mt-0.5">ดูเฉพาะพื้นที่รับผิดชอบ</div>
@@ -721,7 +743,7 @@
       <div id="screen-jobs" class="screen-transition hidden">
         <div class="p-6 bg-white/90 dark:bg-slate-950/80 border-b border-slate-200 dark:border-white/5 sticky top-0 z-10 backdrop-blur-md transition-colors duration-300">
           <div class="w-full max-w-7xl mx-auto">
-            <h2 class="text-xl font-bold text-white flex items-center">
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center">
               <i class="fa-solid fa-folder-open text-safety-green mr-2"></i>แฟ้มข้อมูลงานทั้งหมด
             </h2>
             <p class="text-xs text-slate-400 mt-1">สืบค้น ค้นหา และติดตามงานความปลอดภัยทั้งหมดในระบบ</p>
@@ -882,12 +904,12 @@
       <!-- 7. SCREEN: FULL ADMIN PANEL -->
       <!-- ========================================== -->
       <div id="screen-admin" class="screen-transition hidden">
-        <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-b-[2rem] border-b border-white/10 shadow-lg">
+        <div class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 p-6 rounded-b-[2rem] border-b border-slate-200 dark:border-white/10 shadow-lg transition-colors duration-300">
           <div class="w-full max-w-7xl mx-auto">
             <div class="flex justify-between items-center">
             <div>
               <span class="text-[10px] text-amber-500 font-bold uppercase tracking-wider block">ผู้ควบคุมและจัดการระบบ</span>
-              <h2 class="text-xl font-bold text-white mt-0.5">Admin Panel</h2>
+              <h2 class="text-xl font-bold text-slate-900 dark:text-white mt-0.5">Admin Panel</h2>
             </div>
             <div class="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-safety-yellow border border-amber-500/20 shadow-glow-amber">
               <i class="fa-solid fa-gears text-lg"></i>
@@ -972,26 +994,38 @@
     <!-- ============================================= -->
     <!-- 8. BOTTOM PREMIUM NAVIGATION BAR -->
     <!-- ============================================= -->
-    <div id="app-nav-bar" class="absolute bottom-0 inset-x-0 lg:inset-x-auto lg:w-[32rem] lg:left-1/2 lg:-translate-x-1/2 lg:bottom-6 lg:rounded-full lg:shadow-2xl lg:shadow-emerald-500/10 lg:border lg:border-white/10 lg:py-3 lg:px-8 bg-slate-950/90 backdrop-blur-md border-t border-white/5 py-2 px-6 flex justify-between items-center z-40 hidden">
-      <button onclick="navigateTo('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-safety-green transition duration-200 flex-1 relative py-1">
+    <div id="app-nav-bar" class="absolute bottom-0 inset-x-0 lg:static lg:inset-auto lg:w-20 xl:w-56 lg:h-full lg:flex-col lg:justify-start lg:items-center lg:pt-6 lg:pb-4 lg:px-2 xl:px-4 lg:gap-1 lg:border-r lg:border-slate-200 lg:dark:border-white/5 lg:border-t-0 lg:rounded-none lg:shadow-none bg-white/90 dark:bg-slate-950/90 lg:bg-white/95 lg:dark:bg-slate-950 backdrop-blur-md border-t border-slate-200 dark:border-white/5 py-2 px-6 flex justify-between items-center z-40 hidden transition-colors duration-300">
+      <!-- Desktop sidebar brand -->
+      <div class="hidden lg:flex flex-col items-center xl:items-start w-full pb-4 mb-2 border-b border-slate-200 dark:border-white/5 px-1">
+        <img src="./icon-192.png" class="w-10 h-10 rounded-xl object-cover shadow-lg mb-2">
+        <span class="hidden xl:block text-[10px] font-black text-slate-800 dark:text-slate-200 tracking-wider leading-tight">SAFE MAINT<br><span class="text-emerald-500 font-normal">ซ่อมบำรุงปลอดภัย</span></span>
+      </div>
+      <!-- Desktop theme + clock row -->
+      <div class="hidden lg:flex items-center justify-between xl:justify-start xl:gap-2 w-full px-1 mb-4">
+        <button id="theme-toggle-btn-sidebar" onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-all">
+          <i id="theme-toggle-icon-sidebar" class="fa-solid fa-moon text-sm"></i>
+        </button>
+        <span id="live-time-sidebar" class="text-[10px] text-slate-500 dark:text-slate-400 font-mono hidden xl:block"></span>
+      </div>
+      <button onclick="navigateTo('home')" id="nav-home" class="flex flex-col items-center space-y-1 lg:w-full lg:flex-row lg:space-y-0 lg:space-x-3 lg:px-3 lg:py-2.5 lg:rounded-xl lg:justify-center xl:justify-start lg:hover:bg-slate-100 lg:dark:hover:bg-slate-800/60 text-safety-green transition duration-200 flex-1 lg:flex-none relative py-1">
         <i class="fa-solid fa-house-chimney text-base"></i>
-        <span class="text-[9px] font-bold">หน้าแรก</span>
-        <span id="badge-nav-home" class="absolute -top-1 right-5 bg-rose-500 text-white text-[8px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center hidden border border-slate-950">0</span>
+        <span class="text-[9px] lg:text-xs font-bold hidden lg:hidden xl:block">หน้าแรก</span>
+        <span id="badge-nav-home" class="absolute -top-1 right-5 lg:right-1 bg-rose-500 text-white text-[8px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center hidden border border-slate-950">0</span>
       </button>
-      
-      <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="flex flex-col items-center space-y-1 text-slate-500 hover:text-slate-300 transition duration-200 flex-1 py-1">
+
+      <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="flex flex-col items-center space-y-1 lg:w-full lg:flex-row lg:space-y-0 lg:space-x-3 lg:px-3 lg:py-2.5 lg:rounded-xl lg:justify-center xl:justify-start lg:hover:bg-slate-100 lg:dark:hover:bg-slate-800/60 text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition duration-200 flex-1 lg:flex-none py-1">
         <i class="fa-solid fa-chart-pie text-base"></i>
-        <span class="text-[9px] font-bold">แดชบอร์ด</span>
+        <span class="text-[9px] lg:text-xs font-bold hidden xl:block">แดชบอร์ด</span>
       </button>
-      
-      <button onclick="navigateTo('jobs')" id="nav-jobs" class="flex flex-col items-center space-y-1 text-slate-500 hover:text-slate-300 transition duration-200 flex-1 py-1">
+
+      <button onclick="navigateTo('jobs')" id="nav-jobs" class="flex flex-col items-center space-y-1 lg:w-full lg:flex-row lg:space-y-0 lg:space-x-3 lg:px-3 lg:py-2.5 lg:rounded-xl lg:justify-center xl:justify-start lg:hover:bg-slate-100 lg:dark:hover:bg-slate-800/60 text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition duration-200 flex-1 lg:flex-none py-1">
         <i class="fa-solid fa-folder-open text-base"></i>
-        <span class="text-[9px] font-bold">งานทั้งหมด</span>
+        <span class="text-[9px] lg:text-xs font-bold hidden xl:block">งานทั้งหมด</span>
       </button>
-      
-      <button onclick="navigateTo('admin')" id="nav-admin" class="flex flex-col items-center space-y-1 text-slate-500 hover:text-slate-300 transition duration-200 flex-1 py-1 hidden">
+
+      <button onclick="navigateTo('admin')" id="nav-admin" class="flex flex-col items-center space-y-1 lg:w-full lg:flex-row lg:space-y-0 lg:space-x-3 lg:px-3 lg:py-2.5 lg:rounded-xl lg:justify-center xl:justify-start lg:hover:bg-slate-100 lg:dark:hover:bg-slate-800/60 text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition duration-200 flex-1 lg:flex-none py-1 hidden">
         <i class="fa-solid fa-gears text-base"></i>
-        <span class="text-[9px] font-bold">จัดการระบบ</span>
+        <span class="text-[9px] lg:text-xs font-bold hidden xl:block">จัดการระบบ</span>
       </button>
     </div>
 
@@ -2034,11 +2068,11 @@
       
       if (type === "5s") {
         s5Btn.className = "work-chip border-2 border-amber-500 bg-slate-900 text-white p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-glow-amber";
-        safetyBtn.className = "work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-400 p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-md";
+        safetyBtn.className = "work-chip border-2 border-transparent bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-400 p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-md";
         document.getElementById("sp-start-title").innerText = "เริ่มตรวจงาน 5ส";
       } else {
         safetyBtn.className = "work-chip border-2 border-emerald-500 bg-slate-900 text-white p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-glow-green";
-        s5Btn.className = "work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-400 p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-md";
+        s5Btn.className = "work-chip border-2 border-transparent bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-400 p-3.5 rounded-2xl text-left flex flex-col justify-between h-20 transition duration-200 shadow-md";
         document.getElementById("sp-start-title").innerText = "เริ่มตรวจ Safety Leader";
       }
       
@@ -2142,10 +2176,10 @@
       
       if (type === "5s") {
         s5Btn.className = "work-chip border-2 border-amber-500 bg-slate-900 text-white p-3 rounded-xl text-left shadow-glow-amber";
-        safetyBtn.className = "work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-400 p-3 rounded-xl text-left shadow-md";
+        safetyBtn.className = "work-chip border-2 border-transparent bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-400 p-3 rounded-xl text-left shadow-md";
       } else {
         safetyBtn.className = "work-chip border-2 border-emerald-500 bg-slate-900 text-white p-3 rounded-xl text-left shadow-glow-green";
-        s5Btn.className = "work-chip border-2 border-transparent bg-slate-900 hover:bg-slate-800 text-slate-400 p-3 rounded-xl text-left shadow-md";
+        s5Btn.className = "work-chip border-2 border-transparent bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-400 p-3 rounded-xl text-left shadow-md";
       }
 
       renderSubordinateJobs();
@@ -2274,10 +2308,10 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-start">
-                <span class="text-[10px] font-extrabold text-slate-200">ขั้นที่ 1: รายงานจุดบกพร่อง</span>
+                <span class="text-[10px] font-extrabold text-slate-700 dark:text-slate-200">ขั้นที่ 1: รายงานจุดบกพร่อง</span>
                 <span class="text-[8px] text-slate-500 font-mono">${job.createdAt}</span>
               </div>
-              <p class="text-xs text-slate-300 font-bold mt-1 text-slate-200 leading-normal">${job.issue}</p>
+              <p class="text-xs font-bold mt-1 text-slate-800 dark:text-slate-200 leading-normal">${job.issue}</p>
               <div class="flex space-x-2.5 mt-2">
                 <button onclick="openImageViewer('${job.id}', 'before')" class="w-14 h-14 bg-slate-950 border border-white/10 rounded-xl overflow-hidden shadow-md active:scale-95 transition-transform flex-shrink-0">
                   ${renderSafeImage(job.photoBefore, 'ภาพ Before', 'w-full h-full object-cover')}
@@ -2301,7 +2335,7 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-start">
-                <span class="text-[10px] font-extrabold ${isResolved || isApproved ? 'text-slate-200' : 'text-slate-600'}">ขั้นที่ 2: ปฏิบัติงานแก้ไขเสร็จ</span>
+                <span class="text-[10px] font-extrabold ${isResolved || isApproved ? 'text-slate-700 dark:text-slate-200' : 'text-slate-500 dark:text-slate-600'}">ขั้นที่ 2: ปฏิบัติงานแก้ไขเสร็จ</span>
                 ${job.resolvedAt ? `<span class="text-[8px] text-slate-500 font-mono">${job.resolvedAt}</span>` : ""}
               </div>
               
@@ -2334,7 +2368,7 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-start">
-                <span class="text-[10px] font-extrabold ${isApproved ? 'text-slate-200' : 'text-slate-600'}">ขั้นที่ 3: ตรวจสอบและประเมินผลปิดงาน</span>
+                <span class="text-[10px] font-extrabold ${isApproved ? 'text-slate-700 dark:text-slate-200' : 'text-slate-500 dark:text-slate-600'}">ขั้นที่ 3: ตรวจสอบและประเมินผลปิดงาน</span>
                 ${job.approvedAt ? `<span class="text-[8px] text-slate-500 font-mono">${job.approvedAt}</span>` : ""}
               </div>
               
@@ -2366,7 +2400,7 @@
               <span class="inline-flex items-center border text-[9px] font-bold px-2 py-0.5 rounded-lg ${taskBadgeColor}">
                 <i class="fa-solid ${taskIcon} mr-1"></i>${taskLabel}
               </span>
-              <span class="inline-flex bg-slate-900 border border-white/5 text-slate-300 text-[9px] font-bold px-2 py-0.5 rounded-lg">
+              <span class="inline-flex bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-white/5 text-slate-700 dark:text-slate-300 text-[9px] font-bold px-2 py-0.5 rounded-lg">
                 ${job.area}
               </span>
             </div>
@@ -4162,7 +4196,10 @@
       const now = new Date();
       const hours = String(now.getHours()).padStart(2, '0');
       const min = String(now.getMinutes()).padStart(2, '0');
-      document.getElementById("live-time").innerText = `${hours}:${min}`;
+      const timeStr = `${hours}:${min}`;
+      document.getElementById("live-time").innerText = timeStr;
+      const sidebarTime = document.getElementById("live-time-sidebar");
+      if (sidebarTime) sidebarTime.innerText = timeStr;
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -4269,8 +4306,10 @@
       const sbContainer = document.getElementById("sb-area-chips-container");
       if (!spContainer && !sbContainer) return;
       
-      // Get unique area values present in database
-      const uniqueAreas = ["all", ...new Set(jobs.map(j => j.area).filter(Boolean))].sort();
+      // Include all known representative areas + any areas from jobs
+      const repAreas = Object.keys(AREA_REPRESENTATIVES || {});
+      const jobAreas = jobs.map(j => j.area).filter(Boolean);
+      const uniqueAreas = ["all", ...new Set([...repAreas, ...jobAreas])].sort();
       
       const renderChips = (container, userRole) => {
         if (!container) return;
@@ -4314,6 +4353,8 @@
       if (theme === "dark") {
         html.classList.add("dark");
         if (themeIcon) themeIcon.className = "fa-solid fa-sun text-xs text-amber-400 animate-pulse";
+        const sidebarIcon = document.getElementById("theme-toggle-icon-sidebar");
+        if (sidebarIcon) sidebarIcon.className = "fa-solid fa-sun text-sm text-amber-400 animate-pulse";
         if (phoneContainer) {
           phoneContainer.classList.add("dark:bg-[#090d16]", "dark:border-white/5");
           phoneContainer.classList.remove("bg-slate-50", "border-slate-200/80");
@@ -4321,6 +4362,8 @@
       } else {
         html.classList.remove("dark");
         if (themeIcon) themeIcon.className = "fa-solid fa-moon text-xs text-slate-500 hover:text-slate-700";
+        const sidebarIcon = document.getElementById("theme-toggle-icon-sidebar");
+        if (sidebarIcon) sidebarIcon.className = "fa-solid fa-moon text-sm text-slate-500";
         if (phoneContainer) {
           phoneContainer.classList.add("bg-slate-50", "border-slate-200/80");
           phoneContainer.classList.remove("dark:bg-[#090d16]", "dark:border-white/5");
