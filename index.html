@@ -3171,17 +3171,18 @@
       if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED") && authToken) {
         try {
           const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs&token=${encodeURIComponent(authToken)}`);
-          const data = await response.json();
-          if (Array.isArray(data)) {
+          const raw = await response.json();
+          const data = Array.isArray(raw) ? raw : (raw?.status === "success" && Array.isArray(raw?.data) ? raw.data : null);
+          if (data) {
             if (previousJobsCache && previousJobsCache.length > 0) {
               detectJobsChanges(data, previousJobsCache);
             }
             previousJobsCache = JSON.parse(JSON.stringify(data));
-            
+
             jobs = mergeJobs(data, readLocalJobs());
             saveToLocalStore();
             updateCloudStatus(true);
-            
+
             if (currentUser) {
               if (currentUser.role === "admin" || currentUser.role === "supervisor") {
                 renderSupervisorJobs();
@@ -3215,8 +3216,9 @@
       if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED") && authToken) {
         try {
           const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs&token=${encodeURIComponent(authToken)}`);
-          const data = await response.json();
-          if (Array.isArray(data)) {
+          const raw = await response.json();
+          const data = Array.isArray(raw) ? raw : (raw?.status === "success" && Array.isArray(raw?.data) ? raw.data : null);
+          if (data) {
             // Initialize previousJobsCache on first load
             if (!previousJobsCache || previousJobsCache.length === 0) {
               previousJobsCache = JSON.parse(JSON.stringify(data));
