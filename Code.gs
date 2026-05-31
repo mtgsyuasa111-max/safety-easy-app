@@ -175,10 +175,12 @@ function doPost(e) {
     }
     
     if (action === "create") {
-      // Process Before image if it is base64
+      // Process Before image: try Drive upload, fallback to inline base64
       var beforeUrl = "";
       if (rawData.photoBefore && rawData.photoBefore.indexOf("data:image/") === 0) {
-        beforeUrl = uploadBase64ToDrive(rawData.photoBefore, "BEFORE_" + rawData.id, folderId);
+        var driveUrl = uploadBase64ToDrive(rawData.photoBefore, "BEFORE_" + rawData.id, folderId);
+        // Use Drive URL if upload succeeded, otherwise store compressed base64 directly
+        beforeUrl = (driveUrl && driveUrl.indexOf("ERROR:") !== 0) ? driveUrl : rawData.photoBefore;
       } else {
         beforeUrl = rawData.photoBefore || "";
       }
@@ -229,14 +231,16 @@ function doPost(e) {
       if (rawData.status === "resolved") {
         var afterUrl = "";
         if (rawData.photoAfter && rawData.photoAfter.indexOf("data:image/") === 0) {
-          afterUrl = uploadBase64ToDrive(rawData.photoAfter, "AFTER_" + rawData.id, folderId);
+          var driveAfterUrl = uploadBase64ToDrive(rawData.photoAfter, "AFTER_" + rawData.id, folderId);
+          // Use Drive URL if upload succeeded, otherwise store compressed base64 directly
+          afterUrl = (driveAfterUrl && driveAfterUrl.indexOf("ERROR:") !== 0) ? driveAfterUrl : rawData.photoAfter;
         } else {
           afterUrl = rawData.photoAfter || "";
         }
-        
+
         sheet.getRange(rowIndex, 8).setValue("resolved");       // Column H (8): Status
         if (afterUrl) {
-          sheet.getRange(rowIndex, 10).setValue(afterUrl);      // Column J (10): photoAfter (Corrected Index!)
+          sheet.getRange(rowIndex, 10).setValue(afterUrl);      // Column J (10): photoAfter
         }
         sheet.getRange(rowIndex, 12).setValue(rawData.resolvedAt); // Column L (12): resolvedAt
         sheet.getRange(rowIndex, 13).setValue(rawData.resolvedBy || "Operator"); // Column M (13): resolvedBy
