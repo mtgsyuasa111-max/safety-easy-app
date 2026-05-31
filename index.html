@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -1820,30 +1820,43 @@
     }
 
     function renderSupervisorJobs() {
-      // Stats always count ALL job types (not just current tab)
+      // Stats count ALL job types
       document.getElementById("stat-total").innerText = jobs.length;
       document.getElementById("stat-pending").innerText = jobs.filter(j => j.status === "pending" || j.status === "resolved").length;
       document.getElementById("stat-done").innerText = jobs.filter(j => j.status === "approved").length;
 
-      // List filtered by current type tab
-      const visible = jobs.filter(j => j.taskType === currentSupervisorWorkType);
       const container = document.getElementById("sp-jobs-list");
       container.innerHTML = "";
 
-      const activeJobs = [...visible].reverse(); // Show ALL — no slice limit
-      if (activeJobs.length === 0) {
+      // ALWAYS show pending/resolved jobs at top (any type) so nothing is hidden by tab
+      const urgentJobs = [...jobs].filter(j => j.status === "pending" || j.status === "resolved").reverse();
+      const doneJobs   = [...jobs].filter(j => j.status === "approved" && j.taskType === currentSupervisorWorkType).reverse();
+
+      if (urgentJobs.length === 0 && doneJobs.length === 0) {
         container.innerHTML = `
           <div class="glass-card rounded-2xl p-8 border border-white/5 text-center text-xs text-slate-500">
-            <i class="fa-solid fa-box-open text-2xl text-slate-600 mb-2 block"></i>
-            ไม่มีรายการประวัติการตรวจในหัวข้อนี้ — ลองเปลี่ยนแท็บประเภทงาน
+            <i class="fa-solid fa-clipboard-check text-2xl text-emerald-500/20 mb-2 block"></i>
+            ไม่มีงานค้างในระบบ — ทุกงานเสร็จสมบูรณ์แล้ว ✅
           </div>
         `;
         return;
       }
 
-      activeJobs.forEach(job => {
-        container.appendChild(createTimelineJobCard(job));
-      });
+      if (urgentJobs.length > 0) {
+        const h1 = document.createElement("div");
+        h1.className = "flex items-center gap-2 mb-3";
+        h1.innerHTML = `<span class="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation animate-pulse"></i> งานรอดำเนินการ (${urgentJobs.length} รายการ)</span>`;
+        container.appendChild(h1);
+        urgentJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
+      }
+
+      if (doneJobs.length > 0) {
+        const h2 = document.createElement("div");
+        h2.className = "flex items-center gap-2 mt-5 mb-3";
+        h2.innerHTML = `<span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> เสร็จแล้ว — ${currentSupervisorWorkType === "5s" ? "งาน 5ส" : "Safety"} (${doneJobs.length})</span>`;
+        container.appendChild(h2);
+        doneJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
+      }
     }
 
     // ==========================================
