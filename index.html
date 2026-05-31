@@ -3167,18 +3167,47 @@
     }
 
     async function previewCompressedPhoto(file, target) {
+      // Show loading toast
+      showToast("กำลังโหลดรูป", `ประมวลผลรูป ${file.name || ''} (ขนาด ${(file.size/1024).toFixed(0)} KB)...`, "fa-spinner fa-spin", "bg-slate-700");
+
+      // Step 1: Try canvas compression (works for JPEG/PNG/WebP)
       try {
-        showToast("กำลังบีบอัดรูป", "ระบบกำลังประมวลบีบอัดรูปภาพหน้างานเพื่อความรวดเร็วในการส่งข้อมูล...", "fa-compress", "bg-slate-700");
         const compressed = await compressImageFile(file);
         applyPreviewPhoto(target, compressed);
-        showToast("บีบอัดภาพสำเร็จ", `ภาพขนาด ${(dataUrlBytes(compressed)/1024).toFixed(0)} KB พร้อมประมวลผลเซฟเข้าระบบ`, "fa-image", "bg-safety-green shadow-glow-green");
-      } catch (err) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          applyPreviewPhoto(target, e.target.result);
-        };
-        reader.readAsDataURL(file);
+        showToast("บีบอัดภาพสำเร็จ", `ภาพ ${(dataUrlBytes(compressed)/1024).toFixed(0)} KB พร้อมอัปโหลด`, "fa-image", "bg-safety-green shadow-glow-green");
+        return;
+      } catch (e1) {
+        // Step 2: Canvas failed (e.g. HEIC on some browsers) - try FileReader as raw base64
+        console.warn('[Photo] Canvas compress failed, trying FileReader:', e1);
       }
+
+      // Step 2: FileReader fallback (works for most formats including HEIC on Safari)
+      try {
+        const dataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.onerror = (e) => reject(e);
+          reader.readAsDataURL(file);
+        });
+        applyPreviewPhoto(target, dataUrl);
+        showToast("เพิ่มรูปสำเร็จ", `รูป ${(file.size/1024).toFixed(0)} KB พร้อมใช้งาน`, "fa-check", "bg-safety-green");
+        return;
+      } catch (e2) {
+        console.warn('[Photo] FileReader also failed:', e2);
+      }
+
+      // Step 3: Last resort - object URL (temporary, lost on page refresh)
+      try {
+        const objectUrl = URL.createObjectURL(file);
+        applyPreviewPhoto(target, objectUrl);
+        showToast("เพิ่มรูปชั่วคราว", "รูปใช้งานได้เฉพาะทดสอบ ไม่บันทึกลง Drive", "fa-exclamation-triangle", "bg-amber-600");
+        return;
+      } catch(e3) {
+        console.error('[Photo] All methods failed:', e3);
+      }
+
+      // All failed
+      showToast("รูปไม่รองรับ", `ไม่สามารถโหลดรูปได้ (นามสกุล: ${file.name}) ลองเปลี่ยนเป็น JPG/PNG`, "fa-times-circle", "bg-rose-700");
     }
 
     function applyPreviewPhoto(target, dataUrl) {
@@ -3196,28 +3225,46 @@
       }
     }
 
-    function compressImageFile(file, maxSize = 720, quality = 0.58) {
+    function compressImageFile(file, maxSize = 1080, quality = 0.72) {
       return new Promise((resolve, reject) => {
         const img = new Image();
         const url = URL.createObjectURL(file);
+        
+        const cleanup = () => { try { URL.revokeObjectURL(url); } catch(e) {} };
+
         img.onload = () => {
-          URL.revokeObjectURL(url);
-          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-          const canvas = document.createElement("canvas");
-          canvas.width = Math.max(1, Math.round(img.width * scale));
-          canvas.height = Math.max(1, Math.round(img.height * scale));
-          
-          const ctx = canvas.getContext("2d");
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          resolve(canvas.toDataURL("image/jpeg", quality));
+          cleanup();
+          try {
+            const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const canvas = document.createElement("canvas");
+            canvas.width  = Math.max(1, Math.round(img.width  * scale));
+            canvas.height = Math.max(1, Math.round(img.height * scale));
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const result = canvas.toDataURL("image/jpeg", quality);
+            if (!result || result === 'data:,') throw new Error('Empty canvas output');
+            resolve(result);
+          } catch (canvasErr) {
+            reject(canvasErr);
+          }
         };
         img.onerror = (e) => {
-          URL.revokeObjectURL(url);
-          reject(e);
+          cleanup();
+          reject(new Error('Image load failed: ' + (file.name || '') + ' type=' + (file.type || 'unknown')));
         };
+        // Set crossOrigin before src to avoid tainted canvas
+        img.crossOrigin = 'anonymous';
         img.src = url;
+
+        // Safety timeout: 15s
+        setTimeout(() => {
+          if (!img.complete) {
+            cleanup();
+            reject(new Error('Compress timeout'));
+          }
+        }, 15000);
       });
     }
 
@@ -3395,7 +3442,14 @@
           <span>ไม่มีรูป</span>
         </div>
       `;
-      return `<img src="${imageSrc}" alt="${alt}" class="${className}" loading="lazy">`;
+      // Try thumbnail URL first; on error fall back to uc?export=view (avoids cookie-blocked thumbnails)
+      const fallbackSrc = imageSrc.includes('thumbnail?id=')
+        ? imageSrc.replace('thumbnail?id=', 'uc?export=view&id=').replace(/&sz=\w+/, '')
+        : '';
+      const errorHandler = fallbackSrc
+        ? `onerror="if(this.dataset.tried!='1'){this.dataset.tried='1';this.src='${fallbackSrc}';}else{this.style.display='none';this.insertAdjacentHTML('afterend','<div class=\'${className} bg-slate-950 text-slate-600 flex items-center justify-center text-[8px] font-bold\'>\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e42หลด</div>');}"`
+        : `onerror="this.style.display='none';"` ;
+      return `<img src="${imageSrc}" alt="${alt}" class="${className}" loading="lazy" ${errorHandler}>`;
     }
 
     // ==========================================
