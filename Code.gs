@@ -113,6 +113,24 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
     
+    if (action === "getUsers") {
+      var userSheet = ss.getSheetByName("Users");
+      var userData = userSheet.getDataRange().getValues();
+      var users = [];
+      for (var i = 1; i < userData.length; i++) {
+        if (!userData[i][0]) continue;
+        users.push({
+          id:      String(userData[i][0]),
+          name:    String(userData[i][1] || ""),
+          role:    String(userData[i][2] || "subordinate"),
+          area:    String(userData[i][3] || ""),
+          pinHash: String(userData[i][4] || "")
+        });
+      }
+      return ContentService.createTextOutput(JSON.stringify({ status: "success", data: users }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     if (action === "getJobs") {
       // Allow loading jobs via POST as fallback
       var sheet = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
