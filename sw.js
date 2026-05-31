@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v7'; // v7: Light mode black text contrast fix
+const CACHE_NAME = 'safety-easy-pro-v8'; // v8: dynamic Area Group Filters on Home screen
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
