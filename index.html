@@ -2147,14 +2147,13 @@
     }
 
     function renderSubordinateJobs() {
-      // Subordinate views jobs that belong to them or their assigned area
+      // Safety: all users see all jobs. 5ส: only the direct assignee sees their own jobs.
       let filtered = jobs.filter(j => {
         if (currentEmployeeWorkFilter === "5s") {
-          // Admin sees all 5s jobs; others see only their area/assigned
           if (currentUser.role === "admin") return j.taskType === "5s";
-          return j.taskType === "5s" && (j.assignee === currentUser.name || j.area === currentUser.area);
+          return j.taskType === "5s" && j.assignee === currentUser.name;
         } else {
-          return j.taskType === "safety"; // Safety is global for all operators to view and help fix
+          return j.taskType === "safety";
         }
       });
 
@@ -2373,7 +2372,12 @@
 
         ${timelineHtml}
 
-        ${(isPending && (currentUser.role === "admin" || currentUser.role === "supervisor" || (currentUser.role === "subordinate" && currentUser.name === job.assignee))) ? `
+        ${(isPending && (
+          currentUser.role === "admin" ||
+          currentUser.role === "supervisor" ||
+          (currentUser.role === "subordinate" && job.taskType === "safety") ||
+          (currentUser.role === "subordinate" && job.taskType !== "safety" && currentUser.name === job.assignee)
+        )) ? `
           <button onclick="openResolveModal('${job.id}')" class="w-full bg-gradient-to-r from-emerald-500 to-safety-green text-white py-2.5 rounded-xl font-bold text-xs shadow-glow-green hover:opacity-95 flex items-center justify-center space-x-1.5 transition">
             <i class="fa-solid fa-camera"></i>
             <span>ส่งรูป After เพื่อปิดงานแก้ไข</span>
