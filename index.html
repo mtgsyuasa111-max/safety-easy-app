@@ -1726,7 +1726,7 @@
 
       // Handle screen loading
       if (tab === "home") {
-        if (currentUser.role === "supervisor") {
+        if (currentUser.role === "supervisor" || currentUser.role === "admin") {
           document.getElementById("screen-supervisor-home").classList.remove("hidden");
           setupSupervisorDashboard();
         } else {
@@ -1820,21 +1820,22 @@
     }
 
     function renderSupervisorJobs() {
-      // Count metrics
-      const visible = jobs.filter(j => j.taskType === currentSupervisorWorkType);
-      document.getElementById("stat-total").innerText = visible.length;
-      document.getElementById("stat-pending").innerText = visible.filter(j => j.status === "pending" || j.status === "resolved").length;
-      document.getElementById("stat-done").innerText = visible.filter(j => j.status === "approved").length;
+      // Stats always count ALL job types (not just current tab)
+      document.getElementById("stat-total").innerText = jobs.length;
+      document.getElementById("stat-pending").innerText = jobs.filter(j => j.status === "pending" || j.status === "resolved").length;
+      document.getElementById("stat-done").innerText = jobs.filter(j => j.status === "approved").length;
 
+      // List filtered by current type tab
+      const visible = jobs.filter(j => j.taskType === currentSupervisorWorkType);
       const container = document.getElementById("sp-jobs-list");
       container.innerHTML = "";
 
-      const activeJobs = [...visible].reverse().slice(0, 10);
+      const activeJobs = [...visible].reverse(); // Show ALL — no slice limit
       if (activeJobs.length === 0) {
         container.innerHTML = `
           <div class="glass-card rounded-2xl p-8 border border-white/5 text-center text-xs text-slate-500">
             <i class="fa-solid fa-box-open text-2xl text-slate-600 mb-2 block"></i>
-            ไม่มีรายการประวัติการตรวจในหัวข้อนี้
+            ไม่มีรายการประวัติการตรวจในหัวข้อนี้ — ลองเปลี่ยนแท็บประเภทงาน
           </div>
         `;
         return;
@@ -1888,6 +1889,8 @@
       // Subordinate views jobs that belong to them or their assigned area
       const filtered = jobs.filter(j => {
         if (currentEmployeeWorkFilter === "5s") {
+          // Admin sees all 5s jobs; others see only their area/assigned
+          if (currentUser.role === "admin") return j.taskType === "5s";
           return j.taskType === "5s" && (j.assignee === currentUser.name || j.area === currentUser.area);
         } else {
           return j.taskType === "safety"; // Safety is global for all operators to view and help fix
