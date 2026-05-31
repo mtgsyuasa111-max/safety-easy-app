@@ -2406,7 +2406,7 @@
 
       users.forEach(u => {
         const item = document.createElement("div");
-        item.className = "bg-slate-900 border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-md";
+        item.className = "bg-slate-900 border border-white/5 rounded-2xl p-4 flex items-center justify-between gap-2 shadow-md";
         
         let roleBadge = `<span class="bg-slate-950 text-slate-400 text-[8px] font-bold px-1.5 py-0.5 rounded border border-white/5">Operator</span>`;
         if (u.role === "admin") {
@@ -2415,26 +2415,60 @@
           roleBadge = `<span class="bg-emerald-500/10 text-emerald-400 text-[8px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-500/20">Supervisor</span>`;
         }
 
+        const rawPin = u.pinHash || u.pin || '';
         item.innerHTML = `
-          <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 bg-slate-950 rounded-full flex items-center justify-center text-slate-400 font-bold border border-white/5 text-xs">
+          <div class="flex items-center space-x-3 flex-1 min-w-0">
+            <div class="w-9 h-9 bg-slate-950 rounded-full flex items-center justify-center text-slate-400 font-bold border border-white/5 text-xs flex-shrink-0">
               ${u.name.charAt(0)}
             </div>
-            <div>
-              <div class="font-extrabold text-xs text-slate-200 flex items-center space-x-1">
+            <div class="min-w-0">
+              <div class="font-extrabold text-xs text-slate-200 flex items-center space-x-1 flex-wrap">
                 <span>${u.name}</span>
                 ${roleBadge}
               </div>
-              <div class="text-[9px] text-slate-500 mt-1 font-bold">
-                ดูแล: <span class="text-slate-400">${u.area}</span> • PIN: <span class="text-slate-500">ซ่อนเพื่อความปลอดภัย</span>
+              <div class="text-[9px] text-slate-500 mt-1 font-bold flex items-center gap-1 flex-wrap">
+                <span>ดูแล: <span class="text-slate-400">${u.area}</span></span>
+                <span class="text-slate-700">•</span>
+                <span>PIN: <span id="pin-val-${u.id}" class="font-mono text-slate-600 tracking-widest">••••</span>
+                  <button onclick="togglePinView('${u.id}','${rawPin.replace(/'/g, '\\&apos;')}')"
+                    id="pin-eye-${u.id}"
+                    class="ml-0.5 text-slate-500 hover:text-emerald-400 transition-colors">
+                    <i class="fa-solid fa-eye text-[10px]"></i>
+                  </button>
+                </span>
               </div>
             </div>
           </div>
-          
-          <span class="text-[8px] text-slate-600 font-bold uppercase tracking-wider mr-2">จัดการผ่าน Apps Script</span>
+          <button onclick="editUserPinPrompt('${u.id}')" class="flex-shrink-0 text-[8px] text-amber-400 hover:text-amber-300 font-bold uppercase border border-amber-500/20 px-2 py-1.5 rounded-lg hover:border-amber-400/50 transition-all">
+            <i class="fa-solid fa-key mr-0.5"></i>เปลี่ยน PIN
+          </button>
         `;
         container.appendChild(item);
       });
+    }
+
+    // Toggle PIN visibility per user row
+    const _pinRevealed = {};
+    function togglePinView(userId, pinValue) {
+      const valEl = document.getElementById('pin-val-' + userId);
+      const eyeEl = document.getElementById('pin-eye-' + userId);
+      if (!valEl) return;
+      _pinRevealed[userId] = !_pinRevealed[userId];
+      if (_pinRevealed[userId]) {
+        valEl.textContent = pinValue || '(ว่าง)';
+        valEl.style.color = '#34d399';
+        valEl.style.fontWeight = '800';
+        valEl.style.letterSpacing = '0.15em';
+        eyeEl.innerHTML = '<i class="fa-solid fa-eye-slash text-[10px]"></i>';
+        eyeEl.style.color = '#34d399';
+      } else {
+        valEl.textContent = '\u2022\u2022\u2022\u2022';
+        valEl.style.color = '';
+        valEl.style.fontWeight = '';
+        valEl.style.letterSpacing = '';
+        eyeEl.innerHTML = '<i class="fa-solid fa-eye text-[10px]"></i>';
+        eyeEl.style.color = '';
+      }
     }
 
     function openAddUserModal() {
