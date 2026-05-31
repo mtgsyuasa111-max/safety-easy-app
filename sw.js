@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v6'; // v6: premium Light/Dark switcher & native push notifications
+const CACHE_NAME = 'safety-easy-pro-v7'; // v7: Light mode black text contrast fix
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
