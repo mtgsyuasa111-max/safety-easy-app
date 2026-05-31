@@ -174,128 +174,298 @@
       <!-- 1. SCREEN: ROLE SELECT (SPLASH) -->
       <!-- ========================================== -->
       <div id="screen-splash" class="screen-transition p-6 flex flex-col justify-between h-full min-h-[75vh]">
-        <div class="mt-8 text-center">
-          <div class="inline-flex p-4 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-3xl shadow-glow-green mb-6 pulse-animation">
-            <i class="fa-solid fa-shield-heart text-white text-5xl"></i>
+        
+        <!-- BRAND HEADER SECTION -->
+        <div class="mt-6 text-center">
+          
+          <!-- Neon Glowing Shield Badge -->
+          <div class="relative inline-flex items-center justify-center mb-5">
+            <!-- Outer Glowing Halo -->
+            <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/25 to-teal-500/25 rounded-full blur-2xl scale-150 animate-pulse"></div>
+            
+            <!-- Premium Glass/Metal Badge Rim -->
+            <div class="relative p-0.5 rounded-[2.5rem] bg-gradient-to-b from-white/20 via-white/5 to-white/0 shadow-[0_0_30px_rgba(16,185,129,0.25)]">
+              <!-- Glassmorphic Inner Shield Container -->
+              <div class="p-6 bg-gradient-to-br from-slate-900/95 via-slate-800/80 to-slate-950/95 rounded-[2.4rem] backdrop-blur-xl border border-white/5 flex items-center justify-center relative overflow-hidden group">
+                
+                <!-- Subtle Radial Internal Flare -->
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.2),transparent_70%)]"></div>
+                
+                <!-- Glowing Green Shield Icon & Gradient -->
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-emerald-400 flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] relative z-10 transform group-hover:scale-105 transition-transform duration-300">
+                  <!-- Sleek SVG Shield Icon -->
+                  <svg class="w-9 h-9 filter drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
-          <h1 class="text-3xl font-extrabold tracking-tight text-white font-sans">SAFETY EASY</h1>
-          <p class="text-emerald-400 text-xs font-bold tracking-widest mt-1">PRODUCTION STANDARD</p>
-          <p class="text-xs text-slate-400 mt-3 max-w-xs mx-auto leading-relaxed">ระบบบันทึก ตรวจสอบ และบริหารงานความปลอดภัย และกิจกรรม 5ส แบบครบวงจร</p>
+
+          <!-- Double-Toned Premium Typography -->
+          <h1 class="text-4xl font-black tracking-tight font-sans text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
+            SAFETY <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400 font-extrabold">EASY</span>
+          </h1>
+          
+          <!-- Premium Accent Label -->
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20 mt-3.5 shadow-[0_2px_10px_rgba(16,185,129,0.05)]">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            <p class="text-[9px] text-emerald-400 font-black tracking-widest uppercase">PRODUCTION STANDARD PRO</p>
+          </div>
+          
+          <p class="text-xs text-slate-400/90 mt-4.5 max-w-[290px] mx-auto leading-relaxed font-light">
+            แพลตฟอร์มบันทึก ตรวจสอบ และบริหารงานความปลอดภัย และกิจกรรม 5ส แบบครบวงจรระดับองค์กร
+          </p>
         </div>
 
-        <div class="space-y-4 my-8">
-          <p class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest text-center">กรุณาเลือกประเภทผู้ใช้งาน</p>
+        <!-- ROLE SELECTION INTERACTIVE BUTTONS -->
+        <div class="space-y-4.5 my-7">
+          <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest text-center mb-1">
+            กรุณาเลือกประเภทผู้ใช้งาน
+          </p>
           
-          <!-- Role Button: Supervisor -->
-          <button onclick="selectRole('supervisor')" class="w-full glass-card hover:bg-slate-800/90 text-white p-5 rounded-2xl flex items-center justify-between border border-white/10 shadow-lg group transition duration-300">
-            <div class="flex items-center space-x-4">
-              <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center text-white group-hover:scale-105 transition-transform shadow-glow-amber">
+          <!-- Role Button: Supervisor / Inspector -->
+          <button onclick="selectRole('supervisor')" class="w-full relative group overflow-hidden rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent hover:from-white/[0.12] active:scale-[0.985] transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/5 hover:border-amber-500/30 text-left p-5 flex items-center justify-between">
+            <!-- Ambient Hover Glow Effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-amber-500/0 via-amber-500/[0.02] to-amber-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            
+            <div class="flex items-center space-x-4 relative z-10">
+              <!-- Amber Gradient Icon Box -->
+              <div class="w-12 h-12 bg-gradient-to-br from-amber-400/20 to-amber-600/20 border border-amber-500/30 text-amber-400 rounded-xl flex items-center justify-center group-hover:scale-105 group-hover:shadow-[0_0_15px_rgba(245,158,11,0.25)] transition-all duration-300">
                 <i class="fa-solid fa-user-tie text-xl"></i>
               </div>
-              <div class="text-left">
-                <div class="font-bold text-slate-200">หัวหน้า / ผู้ตรวจ</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">เปิดงานประเมิน หรือตรวจอนุมัติงานความปลอดภัย</div>
+              <!-- Description details -->
+              <div class="space-y-0.5">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-sm text-slate-100 group-hover:text-amber-300 transition-colors">หัวหน้า / ผู้ตรวจงาน</span>
+                  <span class="text-[8px] font-extrabold bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded border border-amber-500/20 tracking-wider">SUPERVISOR</span>
+                </div>
+                <div class="text-[11px] text-slate-400/90 leading-relaxed font-light">
+                  เปิดงานประเมิน สั่งการแก้ไข หรือตรวจอนุมัติงานความปลอดภัย
+                </div>
               </div>
             </div>
-            <i class="fa-solid fa-chevron-right text-slate-500 group-hover:translate-x-1 transition-transform"></i>
+            
+            <!-- Glass Arrow Button -->
+            <div class="w-8 h-8 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-slate-500 group-hover:text-amber-400 group-hover:border-amber-500/20 group-hover:bg-amber-500/5 group-hover:translate-x-1 transition-all duration-300">
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </div>
           </button>
 
-          <!-- Role Button: Employee/Operator & Admin -->
-          <button onclick="selectRole('subordinate')" class="w-full glass-card hover:bg-slate-800/90 text-white p-5 rounded-2xl flex items-center justify-between border border-white/10 shadow-lg group transition duration-300">
-            <div class="flex items-center space-x-4">
-              <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center text-white group-hover:scale-105 transition-transform shadow-glow-green">
+          <!-- Role Button: Operator / Employee & Admin -->
+          <button onclick="selectRole('subordinate')" class="w-full relative group overflow-hidden rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent hover:from-white/[0.12] active:scale-[0.985] transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/5 hover:border-emerald-500/30 text-left p-5 flex items-center justify-between">
+            <!-- Ambient Hover Glow Effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/[0.02] to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <div class="flex items-center space-x-4 relative z-10">
+              <!-- Emerald Gradient Icon Box -->
+              <div class="w-12 h-12 bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 border border-emerald-500/30 text-emerald-400 rounded-xl flex items-center justify-center group-hover:scale-105 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.25)] transition-all duration-300">
                 <i class="fa-solid fa-user-gear text-xl"></i>
               </div>
-              <div class="text-left">
-                <div class="font-bold text-slate-200">พนักงาน / ผู้รับผิดชอบ / Admin</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">ดูงานแก้ไข ส่งรูป After หรือเข้าจัดการระบบสำหรับ Admin</div>
+              <!-- Description details -->
+              <div class="space-y-0.5">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-sm text-slate-100 group-hover:text-emerald-300 transition-colors">พนักงาน / ผู้แก้ไข / Admin</span>
+                  <span class="text-[8px] font-extrabold bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20 tracking-wider">OPERATOR & ADMIN</span>
+                </div>
+                <div class="text-[11px] text-slate-400/90 leading-relaxed font-light">
+                  รายงานการแก้ไขเคส, อัปเดตรูป After หรือจัดการระบบ Admin
+                </div>
               </div>
             </div>
-            <i class="fa-solid fa-chevron-right text-slate-500 group-hover:translate-x-1 transition-transform"></i>
+
+            <!-- Glass Arrow Button -->
+            <div class="w-8 h-8 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-slate-500 group-hover:text-emerald-400 group-hover:border-emerald-500/20 group-hover:bg-emerald-500/5 group-hover:translate-x-1 transition-all duration-300">
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </div>
           </button>
         </div>
 
-        <div class="text-center flex flex-col items-center justify-center space-y-3.5">
-          <!-- Install App Button (Visible only on PWA-supported mobile/desktop browsers) -->
-          <button id="pwa-install-btn" class="hidden inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-[11px] px-5 py-2.5 rounded-xl shadow-glow-green hover:opacity-90 transition transform active:scale-95 animate-pulse">
-            <i class="fa-solid fa-cloud-arrow-down"></i>
-            <span>ติดตั้งแอปนี้ลงบนมือถือ (Install Web App)</span>
+        <!-- PWA INSTALL BANNER & VERSION TAGS -->
+        <div class="text-center flex flex-col items-center justify-center space-y-4">
+          
+          <!-- Premium PWA Install Banner Card -->
+          <button id="pwa-install-btn" class="hidden w-full relative group overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/20 p-4 flex items-center justify-between text-left active:scale-[0.99] transition-all duration-200 shadow-lg">
+            <!-- Pulsing inside light glow -->
+            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/0 animate-pulse"></div>
+            
+            <div class="flex items-center space-x-3.5 relative z-10">
+              <!-- Glowing App Icon -->
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+                <i class="fa-solid fa-cloud-arrow-down text-lg animate-bounce"></i>
+              </div>
+              <!-- Banner Message -->
+              <div class="space-y-0.5">
+                <div class="text-xs font-black text-white">ติดตั้งแอป Safety Easy PRO</div>
+                <div class="text-[10px] text-emerald-300/80 font-normal">เพิ่มไว้บนหน้าจอหลักเพื่อความปลอดภัยสูงสุดและรวดเร็ว</div>
+              </div>
+            </div>
+            
+            <!-- Action Accent Button -->
+            <div class="px-3.5 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-[10px] rounded-lg shadow-glow-green tracking-wider relative z-10 transition-colors uppercase">
+              ติดตั้ง
+            </div>
           </button>
           
-          <span class="inline-block bg-white/5 border border-white/10 text-slate-400 text-[10px] font-bold px-3 py-1 rounded-full">
-            v4.0.0 Production PRO • ออฟไลน์สมบูรณ์แบบ
-          </span>
+          <!-- Clean, refined System Version Metadata Tag -->
+          <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
+            <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
+              <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>v4.0.0 Production PRO</span>
+              <span class="text-slate-600">•</span>
+              <span class="text-emerald-400/90 font-bold flex items-center">
+                <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
+              </span>
+            </span>
+            <p class="text-[9px] text-slate-600 font-light tracking-wide">ลิขสิทธิ์แท้พัฒนาเพื่อสนับสนุนอุตสาหกรรมยุค 4.0</p>
+          </div>
         </div>
+
       </div>
 
       <!-- ========================================== -->
       <!-- 2. SCREEN: USER SELECT & PIN LOGIN -->
       <!-- ========================================== -->
       <div id="screen-login" class="screen-transition p-6 hidden flex flex-col justify-between h-full min-h-[75vh]">
-        <div>
-          <button onclick="backToSplash()" class="flex items-center text-slate-400 hover:text-white font-semibold text-xs transition duration-200">
-            <i class="fa-solid fa-arrow-left mr-2"></i> ย้อนกลับ
-          </button>
-          
-          <div class="text-center my-6">
-            <div class="inline-flex p-3.5 bg-slate-900 rounded-2xl border border-white/10 mb-3 shadow-inner">
-              <i id="login-icon" class="fa-solid fa-lock text-safety-yellow text-2xl"></i>
-            </div>
-            <h2 class="text-xl font-bold text-white">ลงชื่อเข้าใช้งาน</h2>
-            <p id="login-subtitle" class="text-xs text-slate-400 mt-1">เลือกบัญชีผู้ใช้งานเพื่อทำรายการต่อ</p>
-          </div>
-
-          <div class="space-y-5" id="user-select-container">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-400 mb-2 tracking-wider">เลือกบัญชีผู้ใช้ของคุณ</label>
-              <select id="user-login-select" class="w-full p-4 bg-slate-900 border border-white/10 rounded-xl text-sm font-semibold text-slate-200 focus:outline-none focus:border-safety-green focus:ring-1 focus:ring-safety-green transition duration-200">
-                <!-- Will be populated dynamically based on role -->
-              </select>
-            </div>
-            
-            <button onclick="proceedToPin()" class="w-full bg-gradient-to-r from-emerald-500 to-safety-green text-white p-4 rounded-xl font-bold text-sm shadow-glow-green hover:opacity-95 transition-opacity">
-              ถัดไป <i class="fa-solid fa-arrow-right ml-1"></i>
-            </button>
-          </div>
-
-          <!-- Virtual Numeric PIN Pad Panel -->
-          <div id="pin-pad-container" class="hidden space-y-6">
-            <div class="text-center">
-              <div id="pin-profile-avatar" class="w-12 h-12 bg-emerald-500/10 text-safety-green border border-emerald-500/20 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-2">
-                UT
-              </div>
-              <div class="font-bold text-white text-sm" id="pin-user-name">ผู้ใช้งาน Demo</div>
-              <div class="text-[10px] text-slate-500 mt-0.5" id="pin-user-role">ผู้ดูแลระบบสูงสุด (Admin)</div>
-            </div>
-
-            <!-- PIN Input Dot Indicator -->
-            <div class="flex justify-center space-x-4 my-2" id="pin-dots-row">
-              <div class="w-4 h-4 rounded-full border-2 border-slate-600 bg-transparent transition-all duration-100" id="dot-0"></div>
-              <div class="w-4 h-4 rounded-full border-2 border-slate-600 bg-transparent transition-all duration-100" id="dot-1"></div>
-              <div class="w-4 h-4 rounded-full border-2 border-slate-600 bg-transparent transition-all duration-100" id="dot-2"></div>
-              <div class="w-4 h-4 rounded-full border-2 border-slate-600 bg-transparent transition-all duration-100" id="dot-3"></div>
-            </div>
-
-            <!-- Keyboard Layout -->
-            <div class="grid grid-cols-3 gap-y-3 gap-x-6 max-w-xs mx-auto">
-              <button onclick="pressKey('1')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">1</button>
-              <button onclick="pressKey('2')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">2</button>
-              <button onclick="pressKey('3')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">3</button>
-              <button onclick="pressKey('4')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">4</button>
-              <button onclick="pressKey('5')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">5</button>
-              <button onclick="pressKey('6')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">6</button>
-              <button onclick="pressKey('7')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">7</button>
-              <button onclick="pressKey('8')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">8</button>
-              <button onclick="pressKey('9')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">9</button>
-              <button onclick="clearPin()" class="key-btn w-16 h-16 rounded-full bg-slate-950 text-xs font-bold text-slate-400 flex items-center justify-center mx-auto">ล้าง</button>
-              <button onclick="pressKey('0')" class="key-btn w-16 h-16 rounded-full bg-slate-900 border border-white/5 text-xl font-bold text-white flex items-center justify-center mx-auto">0</button>
-              <button onclick="backspacePin()" class="key-btn w-16 h-16 rounded-full bg-slate-950 text-lg font-bold text-slate-400 flex items-center justify-center mx-auto"><i class="fa-solid fa-delete-left"></i></button>
-            </div>
-            
-            <div class="text-center">
-              <button onclick="cancelPin()" class="text-xs text-slate-400 hover:text-white underline font-semibold transition duration-200">
-                สลับผู้ใช้งานอื่น
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <!-- Header back navigation -->
+            <div class="flex justify-between items-center">
+              <button onclick="backToSplash()" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-400 hover:text-white transition-all hover:bg-white/10 active:scale-95">
+                <i class="fa-solid fa-chevron-left text-[9px]"></i>
+                <span class="font-bold">ย้อนกลับ</span>
               </button>
+              <span class="text-[9px] font-extrabold uppercase tracking-widest text-slate-600 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">Secure Login</span>
+            </div>
+            
+            <!-- Dynamic Icon Header -->
+            <div class="text-center my-6">
+              <div class="relative inline-flex items-center justify-center p-5 bg-gradient-to-br from-slate-950 to-slate-900 rounded-3xl border border-white/10 mb-4 shadow-2xl shadow-emerald-500/5 group">
+                <div class="absolute inset-0 bg-emerald-500/5 rounded-3xl blur-md"></div>
+                <i id="login-icon" class="fa-solid fa-lock text-safety-yellow text-3xl transition-transform duration-500 group-hover:rotate-12"></i>
+              </div>
+              <h2 class="text-2xl font-extrabold tracking-tight text-white bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">ยืนยันตัวตน</h2>
+              <p id="login-subtitle" class="text-xs text-slate-400 mt-1.5 font-medium tracking-wide">เลือกบัญชีผู้ใช้งานเพื่อเข้าสู่ระบบความปลอดภัย</p>
+            </div>
+
+            <!-- User Select Panel -->
+            <div class="space-y-5" id="user-select-container">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">เลือกบัญชีผู้ใช้ของคุณ</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-circle-user text-lg text-emerald-400"></i>
+                  </div>
+                  <select id="user-login-select" class="w-full pl-11 pr-10 py-4 bg-slate-950/60 border border-white/10 rounded-2xl text-sm font-bold text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300 appearance-none shadow-inner cursor-pointer hover:border-white/20">
+                    <!-- Will be populated dynamically based on role -->
+                  </select>
+                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <button onclick="proceedToPin()" class="w-full relative overflow-hidden group bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white py-4 px-6 rounded-2xl font-bold text-sm shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] active:scale-[0.98] transition-all duration-300 flex items-center justify-center space-x-2">
+                <span class="tracking-wider">ถัดไป</span>
+                <i class="fa-solid fa-chevron-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+              </button>
+            </div>
+
+            <!-- Virtual Numeric PIN Pad Panel -->
+            <div id="pin-pad-container" class="hidden space-y-6">
+              <div class="text-center">
+                <!-- Premium Avatar Badge Orb -->
+                <div class="relative w-20 h-20 mx-auto mb-3 group">
+                  <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 rounded-full blur-md opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                  <div id="pin-profile-avatar" class="relative w-full h-full bg-gradient-to-tr from-slate-900 via-slate-800 to-slate-950 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center justify-center font-extrabold text-2xl shadow-xl shadow-black/40 group-hover:border-emerald-500/60 transition-colors duration-300">
+                    UT
+                  </div>
+                  <div class="absolute -bottom-1 -right-1 bg-emerald-500 text-slate-950 w-6 h-6 rounded-full flex items-center justify-center border border-[#090d16] text-[10px] font-black shadow-lg shadow-emerald-500/25">
+                    <i class="fa-solid fa-shield-halved"></i>
+                  </div>
+                </div>
+                
+                <div class="font-extrabold text-white text-base tracking-wide" id="pin-user-name">ผู้ใช้งาน Demo</div>
+                <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 mt-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest" id="pin-user-role">ผู้ดูแลระบบสูงสุด (Admin)</span>
+                </div>
+              </div>
+
+              <!-- PIN Input Dot Indicator -->
+              <div class="flex justify-center space-x-5 py-2" id="pin-dots-row">
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900/60 transition-all duration-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]" id="dot-0"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900/60 transition-all duration-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]" id="dot-1"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900/60 transition-all duration-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]" id="dot-2"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 bg-slate-900/60 transition-all duration-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]" id="dot-3"></div>
+              </div>
+
+              <!-- Keyboard Layout Grid -->
+              <div class="grid grid-cols-3 gap-y-4 gap-x-8 max-w-xs mx-auto pb-2">
+                <!-- 1 -->
+                <button onclick="pressKey('1')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">1</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">&nbsp;</span>
+                </button>
+                <!-- 2 -->
+                <button onclick="pressKey('2')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">2</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">ABC</span>
+                </button>
+                <!-- 3 -->
+                <button onclick="pressKey('3')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">3</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">DEF</span>
+                </button>
+                <!-- 4 -->
+                <button onclick="pressKey('4')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">4</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">GHI</span>
+                </button>
+                <!-- 5 -->
+                <button onclick="pressKey('5')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">5</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">JKL</span>
+                </button>
+                <!-- 6 -->
+                <button onclick="pressKey('6')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">6</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">MNO</span>
+                </button>
+                <!-- 7 -->
+                <button onclick="pressKey('7')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">7</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">PQRS</span>
+                </button>
+                <!-- 8 -->
+                <button onclick="pressKey('8')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">8</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">TUV</span>
+                </button>
+                <!-- 9 -->
+                <button onclick="pressKey('9')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">9</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">WXYZ</span>
+                </button>
+                <!-- Clear -->
+                <button onclick="clearPin()" class="key-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950/40 text-xs font-bold text-slate-500 hover:text-rose-400 hover:border-rose-500/20 flex items-center justify-center mx-auto transition-all active:scale-90 duration-100">ล้าง</button>
+                <!-- 0 -->
+                <button onclick="pressKey('0')" class="key-btn group w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-slate-900/60 to-slate-950/80 border border-white/5 text-white flex flex-col items-center justify-center mx-auto hover:border-emerald-500/40 hover:bg-slate-900/80 focus:outline-none transition-all active:scale-90 active:from-slate-950 active:to-slate-900 duration-100">
+                  <span class="text-2xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">0</span>
+                  <span class="text-[8px] font-semibold text-slate-600 uppercase tracking-wider group-hover:text-emerald-500/50 transition-colors">+</span>
+                </button>
+                <!-- Backspace -->
+                <button onclick="backspacePin()" class="key-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950/40 text-lg font-bold text-slate-500 hover:text-emerald-400 hover:border-emerald-500/20 flex items-center justify-center mx-auto transition-all active:scale-90 duration-100">
+                  <i class="fa-solid fa-delete-left"></i>
+                </button>
+              </div>
+              
+              <div class="text-center pt-2">
+                <button onclick="cancelPin()" class="inline-flex items-center space-x-1.5 text-xs text-slate-500 hover:text-emerald-400 font-bold transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-emerald-500/5 active:scale-95">
+                  <i class="fa-solid fa-user-gear text-[10px]"></i>
+                  <span>สลับผู้ใช้งานอื่น</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -591,12 +761,28 @@
             </div>
           </div>
 
-          <!-- Bottom Recent list -->
+          <!-- Job List with Before/After Photos -->
           <div>
-            <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest mb-3"><i class="fa-solid fa-clock-rotate-left text-safety-yellow mr-2"></i>งานล่าสุดประเภทที่เลือก</h3>
-            <div id="dash-recent-list" class="space-y-3">
-              <!-- Recent cards dynamically -->
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-images text-safety-yellow mr-2"></i>รายการงาน Before / After</h3>
+              <span id="dash-job-count-badge" class="text-[10px] bg-slate-800 text-slate-400 font-bold px-2 py-1 rounded-lg border border-white/5">0 งาน</span>
             </div>
+            <div id="dash-recent-list" class="space-y-3">
+              <!-- Job cards dynamically -->
+            </div>
+            <button id="dash-show-all-btn" onclick="dashToggleShowAll()" class="hidden w-full mt-3 py-2.5 rounded-2xl border border-white/10 text-xs font-bold text-slate-400 hover:text-white hover:border-emerald-500/40 transition-all">
+              <i class="fa-solid fa-chevron-down mr-1"></i> ดูทั้งหมด
+            </button>
+          </div>
+        </div>
+
+        <!-- Lightbox Modal for full-screen photo view -->
+        <div id="dash-lightbox" onclick="closeDashLightbox()" class="hidden fixed inset-0 z-[999] bg-black/95 flex items-center justify-center p-4" style="backdrop-filter:blur(8px)">
+          <button class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center text-lg" onclick="closeDashLightbox()"><i class="fa-solid fa-xmark"></i></button>
+          <div class="text-center w-full max-w-sm">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2" id="dash-lightbox-label"></div>
+            <img id="dash-lightbox-img" src="" alt="" class="w-full rounded-2xl object-contain max-h-[75vh] shadow-2xl border border-white/10">
+            <div class="text-xs text-slate-500 mt-3 font-semibold" id="dash-lightbox-caption"></div>
           </div>
         </div>
       </div>
@@ -1323,9 +1509,9 @@
       for (let i = 0; i < 4; i++) {
         const dot = document.getElementById(`dot-${i}`);
         if (i < enteredPin.length) {
-          dot.className = "w-4 h-4 rounded-full border-2 border-emerald-500 bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green scale-110 transition-all duration-100";
+          dot.className = "w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 border border-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.85)] scale-125 transition-all duration-200";
         } else {
-          dot.className = "w-4 h-4 rounded-full border-2 border-slate-600 bg-transparent scale-100 transition-all duration-100";
+          dot.className = "w-3.5 h-3.5 rounded-full bg-slate-950/80 border-2 border-slate-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] scale-100 transition-all duration-200";
         }
       }
     }
@@ -2037,44 +2223,142 @@
         areaListContainer.appendChild(row);
       });
 
-      // Render recent activities
+      // Render jobs list with Before/After photos
       const recentListContainer = document.getElementById("dash-recent-list");
+      const showAllBtn = document.getElementById("dash-show-all-btn");
+      const countBadge = document.getElementById("dash-job-count-badge");
       recentListContainer.innerHTML = "";
-      
-      const recentJobs = [...filtered].reverse().slice(0, 5);
-      if (recentJobs.length === 0) {
+
+      const allJobsSorted = [...filtered].reverse();
+      countBadge.textContent = `${allJobsSorted.length} งาน`;
+
+      if (allJobsSorted.length === 0) {
         recentListContainer.innerHTML = `
-          <div class="text-center py-6 text-xs text-slate-500 font-bold">
-            ไม่มีประวัติงานการตรวจตามที่เงื่อนไขเลือก
+          <div class="text-center py-8 text-xs text-slate-500 font-bold">
+            <i class="fa-solid fa-image-slash text-2xl mb-2 block"></i>
+            ไม่มีรายการงานตามที่เงื่อนไขเลือก
           </div>
         `;
+        showAllBtn.classList.add("hidden");
         return;
       }
 
-      recentJobs.forEach(job => {
-        const item = document.createElement("div");
-        item.className = "bg-slate-900 border border-white/5 rounded-2xl p-3.5 flex space-x-3 items-center shadow-md";
-        const isApp = job.status === "approved";
-        
-        let statText = `<span class="text-rose-400 font-extrabold">รอแก้ไข</span>`;
-        if (job.status === "resolved") statText = `<span class="text-safety-yellow font-extrabold">รอยืนยัน</span>`;
-        if (isApp) statText = `<span class="text-emerald-400 font-extrabold">สำเร็จ</span>`;
+      // Store for expand/collapse
+      window._dashAllJobs = allJobsSorted;
+      window._dashShowAll = false;
+      const INITIAL_COUNT = 8;
 
-        item.innerHTML = `
-          <div class="w-12 h-12 bg-slate-950 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-            ${renderSafeImage(job.photoBefore, 'ภาพ Before', 'w-full h-full object-cover')}
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex justify-between items-center text-[9px] text-slate-500">
-              <span class="font-extrabold text-slate-400">${job.area} • ${job.id.slice(3,11)}</span>
-              <span>${statText}</span>
+      function renderDashJobCards(jobs) {
+        recentListContainer.innerHTML = "";
+        jobs.forEach(job => {
+          const isApp = job.status === "approved";
+          const isResolved = job.status === "resolved";
+          let statColor = "bg-rose-500/10 text-rose-400 border-rose-500/20";
+          let statText = "รอแก้ไข";
+          let statIcon = "fa-clock";
+          if (isResolved) { statColor = "bg-amber-500/10 text-amber-400 border-amber-500/20"; statText = "รอยืนยัน"; statIcon = "fa-hourglass-half"; }
+          if (isApp)      { statColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"; statText = "สำเร็จ"; statIcon = "fa-circle-check"; }
+
+          const hasBefore = job.photoBefore && normalizePhotoSource(job.photoBefore);
+          const hasAfter  = job.photoAfter  && normalizePhotoSource(job.photoAfter);
+
+          const beforeHtml = hasBefore
+            ? `<div class="w-full h-full cursor-pointer" onclick="openDashLightbox('${normalizePhotoSource(job.photoBefore)}','Before','${(job.issue||'').replace(/'/g,"'")}')">${renderSafeImage(job.photoBefore, 'Before', 'w-full h-full object-cover')}</div>`
+            : `<div class="w-full h-full bg-slate-950 flex flex-col items-center justify-center text-slate-600 text-[8px] font-bold"><i class="fa-solid fa-image text-lg mb-1"></i>ไม่มีรูป</div>`;
+
+          const afterHtml = hasAfter
+            ? `<div class="w-full h-full cursor-pointer" onclick="openDashLightbox('${normalizePhotoSource(job.photoAfter)}','After','${(job.issue||'').replace(/'/g,"'")}')">${renderSafeImage(job.photoAfter, 'After', 'w-full h-full object-cover')}</div>`
+            : `<div class="w-full h-full bg-slate-950 flex flex-col items-center justify-center text-slate-600 text-[8px] font-bold"><i class="fa-solid fa-image text-lg mb-1"></i>ยังไม่มีรูป</div>`;
+
+          const card = document.createElement("div");
+          card.className = "bg-slate-900 border border-white/5 rounded-2xl overflow-hidden shadow-md";
+          card.innerHTML = `
+            <!-- Header -->
+            <div class="flex items-center justify-between px-3.5 pt-3 pb-2">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[9px] font-extrabold text-emerald-400 uppercase tracking-wider">${job.area}</span>
+                  <span class="text-[8px] text-slate-600">•</span>
+                  <span class="text-[9px] text-slate-500 font-mono">${job.id.slice(3,11)}</span>
+                </div>
+                <div class="font-bold text-xs text-slate-200 truncate mt-0.5">${job.issue || '-'}</div>
+                <div class="text-[9px] text-slate-500 mt-0.5">ผู้แก้ไข: <span class="text-slate-400 font-semibold">${job.assignee || '-'}</span></div>
+              </div>
+              <span class="flex-shrink-0 ml-2 text-[9px] font-extrabold px-2 py-1 rounded-lg border ${statColor}">
+                <i class="fa-solid ${statIcon} mr-1"></i>${statText}
+              </span>
             </div>
-            <div class="font-bold text-xs text-slate-200 truncate mt-0.5">${job.issue}</div>
-            <div class="text-[9px] text-slate-500 truncate mt-0.5">ผู้แก้: ${job.assignee}</div>
-          </div>
-        `;
-        recentListContainer.appendChild(item);
-      });
+            <!-- Before/After Photo Grid -->
+            <div class="grid grid-cols-2 gap-0 border-t border-white/5">
+              <div class="relative">
+                <div class="aspect-square overflow-hidden">${beforeHtml}</div>
+                <div class="absolute bottom-1.5 left-1.5 bg-slate-950/80 text-[8px] font-extrabold text-slate-300 px-1.5 py-0.5 rounded-md border border-white/10 backdrop-blur-sm">
+                  <i class="fa-solid fa-circle-minus text-rose-400 mr-0.5"></i>BEFORE
+                </div>
+              </div>
+              <div class="relative border-l border-white/5">
+                <div class="aspect-square overflow-hidden">${afterHtml}</div>
+                <div class="absolute bottom-1.5 left-1.5 bg-slate-950/80 text-[8px] font-extrabold text-slate-300 px-1.5 py-0.5 rounded-md border border-white/10 backdrop-blur-sm">
+                  <i class="fa-solid fa-circle-check text-emerald-400 mr-0.5"></i>AFTER
+                </div>
+                ${ hasBefore && hasAfter ? '<div class="absolute top-1.5 right-1.5 bg-emerald-500/20 text-[8px] font-extrabold text-emerald-400 px-1.5 py-0.5 rounded-md border border-emerald-500/30">✓ ครบ</div>' : '' }
+              </div>
+            </div>
+            <!-- Footer meta -->
+            <div class="px-3.5 py-2 flex items-center justify-between border-t border-white/5">
+              <span class="text-[9px] text-slate-600">
+                <i class="fa-regular fa-calendar mr-1"></i>${String(job.createdAt || '').slice(0,10) || '-'}
+              </span>
+              <span class="text-[9px] text-slate-600">
+                ประเภท: <span class="text-slate-400 font-semibold">${job.taskType === '5s' ? '5ส' : 'Safety'}</span>
+              </span>
+            </div>
+          `;
+          recentListContainer.appendChild(card);
+        });
+      }
+
+      // Initial render — first 8 jobs
+      const initialSlice = allJobsSorted.slice(0, INITIAL_COUNT);
+      renderDashJobCards(initialSlice);
+      window._renderDashJobCards = renderDashJobCards;
+
+      if (allJobsSorted.length > INITIAL_COUNT) {
+        showAllBtn.textContent = ``;
+        showAllBtn.innerHTML = `<i class="fa-solid fa-chevron-down mr-1"></i> ดูทั้งหมด ${allJobsSorted.length} รายการ`;
+        showAllBtn.classList.remove("hidden");
+      } else {
+        showAllBtn.classList.add("hidden");
+      }
+    }
+
+    function dashToggleShowAll() {
+      const btn = document.getElementById("dash-show-all-btn");
+      window._dashShowAll = !window._dashShowAll;
+      if (window._dashShowAll) {
+        window._renderDashJobCards(window._dashAllJobs);
+        btn.innerHTML = `<i class="fa-solid fa-chevron-up mr-1"></i> ย่อรายการ`;
+      } else {
+        window._renderDashJobCards(window._dashAllJobs.slice(0, 8));
+        btn.innerHTML = `<i class="fa-solid fa-chevron-down mr-1"></i> ดูทั้งหมด ${window._dashAllJobs.length} รายการ`;
+      }
+    }
+
+    function openDashLightbox(src, label, caption) {
+      const lb = document.getElementById("dash-lightbox");
+      document.getElementById("dash-lightbox-img").src = src;
+      document.getElementById("dash-lightbox-label").textContent = label === 'Before' ? '📷 ภาพก่อนแก้ไข (Before)' : '✅ ภาพหลังแก้ไข (After)';
+      document.getElementById("dash-lightbox-caption").textContent = caption;
+      lb.classList.remove("hidden");
+      lb.classList.add("flex");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeDashLightbox() {
+      const lb = document.getElementById("dash-lightbox");
+      lb.classList.add("hidden");
+      lb.classList.remove("flex");
+      document.body.style.overflow = "";
     }
 
     // ==========================================
