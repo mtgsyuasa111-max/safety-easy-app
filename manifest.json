@@ -2,7 +2,8 @@
   "name": "Safe Maint PRO - ซ่อมบำรุงปลอดภัย",
   "short_name": "Safe Maint",
   "description": "แอปพลิเคชันจัดการความปลอดภัย ซ่อมบำรุง สิ่งบกพร่องหน้างาน และกิจกรรม 5ส เชื่อมต่อ Google Sheets แบบ Real-time",
-  "start_url": "index.html",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0d1f3c",
   "theme_color": "#0d1f3c",
@@ -10,15 +11,27 @@
   "icons": [
     {
       "src": "icon-192.png",
-      "type": "image/jpeg",
-      "sizes": "any",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
     },
     {
       "src": "icon-512.png",
-      "type": "image/jpeg",
-      "sizes": "any",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ]
 }
