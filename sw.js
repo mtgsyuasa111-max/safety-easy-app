@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v15'; // v15: Premium PWA notifications — push event handler & notificationclick support
+const CACHE_NAME = 'safety-easy-pro-v16'; // v16: Sheets Connected fix — handles both array and {status,data} getJobs response formats
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
