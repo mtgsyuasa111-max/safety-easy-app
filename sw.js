@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v4'; // v4: photo upload fix (HEIC+fallback chain)
+const CACHE_NAME = 'safety-easy-pro-v5'; // v5: cloud-first upload flow & syntax fix
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
