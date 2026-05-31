@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v12'; // v12: Allow Supervisors to Resolve & Delete Jobs
+const CACHE_NAME = 'safety-easy-pro-v13'; // v13: Group completed jobs by day, background sync & real-time notification alerts
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

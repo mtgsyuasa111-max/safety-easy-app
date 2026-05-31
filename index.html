@@ -352,7 +352,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v12.0.0 Supervisor Controls PRO</span>
+              <span>v13.0.0 Real-time Alerts & Grouping PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -1769,6 +1769,7 @@
           Notification.requestPermission();
         }
         await loadAllJobsData();
+        startBackgroundSync(); // Poll background data
         
         // Show Navigation bar
         document.getElementById("app-nav-bar").classList.remove("hidden");
@@ -1799,6 +1800,7 @@
           localStorage.setItem("safety_easy_remembered_token", authToken);
           addAuditLog(currentUser.name, "เข้าสู่ระบบสำเร็จ (โหมดออฟไลน์สำรอง)");
           await loadAllJobsData();
+          startBackgroundSync(); // Poll background data
           document.getElementById("app-nav-bar").classList.remove("hidden");
           const navAdmin = document.getElementById("nav-admin");
           if (currentUser.role === "admin") navAdmin.classList.remove("hidden");
@@ -2043,9 +2045,28 @@
       if (doneJobs.length > 0) {
         const h2 = document.createElement("div");
         h2.className = "flex items-center gap-2 mt-5 mb-3";
-        h2.innerHTML = `<span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> เสร็จแล้ว — ${currentSupervisorWorkType === "5s" ? "งาน 5ส" : "Safety"} (${doneJobs.length})</span>`;
+        h2.innerHTML = `<span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> เสร็จสิ้นแล้ว — ${currentSupervisorWorkType === "5s" ? "งาน 5ส" : "Safety"} (${doneJobs.length} รายการ)</span>`;
         container.appendChild(h2);
-        doneJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
+
+        // Group approved jobs by day
+        const groups = {};
+        doneJobs.forEach(job => {
+          const dateLabel = getThaiDateLabel(job.approvedAt || job.resolvedAt || job.createdAt);
+          if (!groups[dateLabel]) groups[dateLabel] = [];
+          groups[dateLabel].push(job);
+        });
+
+        // Render each group chronologically/newest first
+        Object.keys(groups).forEach(dateLabel => {
+          const groupHeader = document.createElement("div");
+          groupHeader.className = "mt-4 mb-2 pl-2 border-l-2 border-emerald-500 text-xs font-bold text-slate-300 flex items-center gap-1.5";
+          groupHeader.innerHTML = `<i class="fa-regular fa-calendar text-emerald-400 text-[10px]"></i> ${dateLabel} (${groups[dateLabel].length} งาน)`;
+          container.appendChild(groupHeader);
+
+          groups[dateLabel].forEach(job => {
+            container.appendChild(createTimelineJobCard(job));
+          });
+        });
       }
     }
 
@@ -2113,8 +2134,13 @@
       const container = document.getElementById("sb-jobs-list");
       container.innerHTML = "";
 
-      const activeJobs = [...filtered].reverse();
-      if (activeJobs.length === 0) {
+      let urgentFiltered = filtered.filter(j => j.status === "pending" || j.status === "resolved");
+      let doneFiltered   = filtered.filter(j => j.status === "approved");
+
+      const urgentJobs = urgentFiltered.reverse();
+      const doneJobs   = doneFiltered.reverse();
+
+      if (urgentJobs.length === 0 && doneJobs.length === 0) {
         container.innerHTML = `
           <div class="glass-card rounded-2xl p-8 border border-white/5 text-center text-xs text-slate-500">
             <i class="fa-solid fa-clipboard-check text-2xl text-emerald-500/20 mb-2 block animate-pulse"></i>
@@ -2124,9 +2150,39 @@
         return;
       }
 
-      activeJobs.forEach(job => {
-        container.appendChild(createTimelineJobCard(job));
-      });
+      if (urgentJobs.length > 0) {
+        const h1 = document.createElement("div");
+        h1.className = "flex items-center gap-2 mb-3";
+        h1.innerHTML = `<span class="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation animate-pulse"></i> งานที่ต้องดำเนินการ (${urgentJobs.length} รายการ)</span>`;
+        container.appendChild(h1);
+        urgentJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
+      }
+
+      if (doneJobs.length > 0) {
+        const h2 = document.createElement("div");
+        h2.className = "flex items-center gap-2 mt-5 mb-3";
+        h2.innerHTML = `<span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> งานเสร็จสมบูรณ์แล้ว (${doneJobs.length} รายการ)</span>`;
+        container.appendChild(h2);
+
+        // Group approved jobs by day
+        const groups = {};
+        doneJobs.forEach(job => {
+          const dateLabel = getThaiDateLabel(job.approvedAt || job.resolvedAt || job.createdAt);
+          if (!groups[dateLabel]) groups[dateLabel] = [];
+          groups[dateLabel].push(job);
+        });
+
+        Object.keys(groups).forEach(dateLabel => {
+          const groupHeader = document.createElement("div");
+          groupHeader.className = "mt-4 mb-2 pl-2 border-l-2 border-emerald-500 text-xs font-bold text-slate-300 flex items-center gap-1.5";
+          groupHeader.innerHTML = `<i class="fa-regular fa-calendar text-emerald-400 text-[10px]"></i> ${dateLabel} (${groups[dateLabel].length} งาน)`;
+          container.appendChild(groupHeader);
+
+          groups[dateLabel].forEach(job => {
+            container.appendChild(createTimelineJobCard(job));
+          });
+        });
+      }
     }
 
     // ==========================================
@@ -2971,12 +3027,112 @@
     // ==========================================
     // Google Sheets Online Sync Functions
     // ==========================================
+    let previousJobsCache = [];
+    let syncIntervalId = null;
+
+    function getThaiDateLabel(dateTimeStr) {
+      if (!dateTimeStr) return "ไม่ระบุวันที่";
+      const datePart = dateTimeStr.split(" ")[0]; // YYYY-MM-DD
+      const parts = datePart.split("-");
+      if (parts.length !== 3) return datePart;
+      const year = parseInt(parts[0]);
+      const month = parseInt(parts[1]);
+      const day = parseInt(parts[2]);
+      
+      const monthsThai = [
+        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+      ];
+      const BE = year + 543;
+      return `${day} ${monthsThai[month - 1]} ${BE}`;
+    }
+
+    function detectJobsChanges(freshJobs, oldJobs) {
+      if (!oldJobs || oldJobs.length === 0) return;
+      const oldMap = new Map(oldJobs.map(j => [j.id, j]));
+      
+      freshJobs.forEach(job => {
+        const oldJob = oldMap.get(job.id);
+        if (!oldJob) {
+          // New job reported! Only notify if not reported by current user
+          if (job.reporter !== currentUser?.name) {
+            showToast("📌 แจ้งเหตุไม่ปลอดภัยใหม่!", `พบปัญหาใหม่ที่พื้นที่ ${job.area}: ${job.issue} (ผู้แจ้ง: ${job.reporter})`, "fa-triangle-exclamation", "bg-[#e11d48] shadow-glow-red animate-bounce");
+            triggerNativeNotification("📌 แจ้งเหตุไม่ปลอดภัยใหม่!", `พบปัญหาที่พื้นที่ ${job.area}: ${job.issue} (มอบหมายงานให้คุณ ${job.assignee})`);
+          }
+        } else {
+          // Check status changes
+          if (oldJob.status === "pending" && job.status === "resolved") {
+            if (job.resolvedBy !== currentUser?.name) {
+              showToast("🔧 ปฏิบัติงานแก้ไขเสร็จสิ้น!", `ใบงาน ${job.id} ได้รับการแก้ไขแล้วโดย ${job.resolvedBy || job.assignee}`, "fa-wrench", "bg-amber-600 shadow-glow-amber");
+              triggerNativeNotification("🔧 รายงานผลการแก้ไขเสร็จสิ้น!", `ใบงานหมายเลข ${job.id} ได้รับการแก้ไขโดย ${job.resolvedBy || job.assignee} รอการอนุมัติครับ`);
+            }
+          } else if (oldJob.status === "resolved" && job.status === "approved") {
+            if (job.approvedBy !== currentUser?.name) {
+              showToast("✅ ตรวจสอบและปิดงานสำเร็จ!", `ใบงาน ${job.id} ได้รับการอนุมัติและปิดงานแล้วโดย ${job.approvedBy}`, "fa-circle-check", "bg-emerald-600 shadow-glow-green");
+              triggerNativeNotification("✅ อนุมัติการแก้ไขสำเร็จ!", `ใบงานหมายเลข ${job.id} ได้รับการปิดงานเรียบร้อยแล้ว ขอบคุณที่ให้ความร่วมมือครับ`);
+            }
+          }
+        }
+      });
+    }
+
+    async function loadAllJobsDataSilent() {
+      if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED") && authToken) {
+        try {
+          const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs&token=${encodeURIComponent(authToken)}`);
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            if (previousJobsCache && previousJobsCache.length > 0) {
+              detectJobsChanges(data, previousJobsCache);
+            }
+            previousJobsCache = JSON.parse(JSON.stringify(data));
+            
+            jobs = mergeJobs(data, readLocalJobs());
+            saveToLocalStore();
+            updateCloudStatus(true);
+            
+            if (currentUser) {
+              if (currentUser.role === "admin" || currentUser.role === "supervisor") {
+                renderSupervisorJobs();
+              } else {
+                renderSubordinateJobs();
+              }
+              if (!document.getElementById("screen-jobs").classList.contains("hidden")) {
+                renderMasterJobsList();
+              }
+              if (!document.getElementById("screen-dashboard").classList.contains("hidden")) {
+                renderWebDashboard();
+              }
+            }
+          }
+        } catch (error) {
+          console.warn("[Sync] Silent background sync failed:", error);
+        }
+      }
+    }
+
+    function startBackgroundSync() {
+      if (syncIntervalId) clearInterval(syncIntervalId);
+      syncIntervalId = setInterval(async () => {
+        if (currentUser && GOOGLE_SCRIPT_URL) {
+          await loadAllJobsDataSilent();
+        }
+      }, 30000);
+    }
+
     async function loadAllJobsData() {
       if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED") && authToken) {
         try {
           const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs&token=${encodeURIComponent(authToken)}`);
           const data = await response.json();
           if (Array.isArray(data)) {
+            // Initialize previousJobsCache on first load
+            if (!previousJobsCache || previousJobsCache.length === 0) {
+              previousJobsCache = JSON.parse(JSON.stringify(data));
+            } else {
+              detectJobsChanges(data, previousJobsCache);
+              previousJobsCache = JSON.parse(JSON.stringify(data));
+            }
             // Merge remote sheet with local storage
             jobs = mergeJobs(data, readLocalJobs());
             saveToLocalStore();
@@ -4183,6 +4339,7 @@
           }
           
           await loadAllJobsData();
+          startBackgroundSync(); // Start background interval on auto-login
           
           // Show Navigation bar
           document.getElementById("app-nav-bar").classList.remove("hidden");
