@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v5'; // v5: cloud-first upload flow & syntax fix
+const CACHE_NAME = 'safety-easy-pro-v6'; // v6: premium Light/Dark switcher & native push notifications
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

@@ -19,6 +19,7 @@
   <!-- Tailwind Config for Production-Grade UI -->
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -66,17 +67,31 @@
     }
     
     .glass-card {
-      background: rgba(30, 41, 59, 0.7);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      color: #0f172a;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+      transition: background 0.3s, border 0.3s, color 0.3s;
+    }
+    .dark .glass-card {
+      background: rgba(30, 41, 59, 0.65);
       border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f1f5f9;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
     
     .glass-input {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(15, 23, 42, 0.15);
+      color: #0f172a;
+      transition: all 0.2s ease;
+    }
+    .dark .glass-input {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: white;
-      transition: all 0.2s ease;
     }
     
     .glass-input:focus {
@@ -148,27 +163,30 @@
     }
   </style>
 </head>
-<body class="bg-[radial-gradient(circle_at_top_left,#064e3b_0,#0f172a_38%,#020617_100%)] flex justify-center items-center min-h-screen text-slate-100 p-0 sm:p-4">
+<body class="bg-gradient-to-tr from-slate-100 via-teal-50/20 to-slate-200 dark:bg-[radial-gradient(circle_at_top_left,#064e3b_0,#0f172a_38%,#020617_100%)] flex justify-center items-center min-h-screen text-slate-800 dark:text-slate-100 p-0 sm:p-4 transition-colors duration-300">
 
   <!-- Smart Phone Mobile Container Frame -->
-  <div class="w-full max-w-md bg-[#090d16] h-screen sm:h-[90vh] md:h-[880px] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col relative border border-white/5 shadow-glass">
+  <div id="phone-container" class="w-full max-w-md bg-slate-50 dark:bg-[#090d16] h-screen sm:h-[90vh] md:h-[880px] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col relative border border-slate-200/80 dark:border-white/5 shadow-glass transition-colors duration-300">
     
     <!-- Phone Top Status Bar Mockup -->
-    <div class="bg-slate-950/80 backdrop-blur-md text-slate-300 px-6 pt-3 pb-2 flex justify-between items-center text-xs font-semibold z-40 border-b border-white/5">
+    <div class="bg-white/90 dark:bg-slate-950/80 backdrop-blur-md text-slate-700 dark:text-slate-300 px-6 pt-3 pb-2 flex justify-between items-center text-xs font-semibold z-40 border-b border-slate-200 dark:border-white/5 transition-all duration-300">
       <div class="flex items-center space-x-1.5">
         <i class="fa-solid fa-shield-halved text-safety-green animate-pulse"></i> 
-        <span class="tracking-wider text-[10px] font-bold text-slate-200">SAFETY EASY <span class="text-safety-yellow">PRO</span></span>
+        <span class="tracking-wider text-[10px] font-bold text-slate-800 dark:text-slate-200">SAFETY EASY <span class="text-safety-yellow">PRO</span></span>
       </div>
       <div class="flex items-center space-x-2.5">
-        <span id="cloud-sync-status" class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
+        <button id="theme-toggle-btn" class="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:scale-105 active:scale-95 transition-all duration-150 flex items-center justify-center" title="สลับโหมด มืด/สว่าง">
+          <i id="theme-toggle-icon" class="fa-solid fa-moon text-xs"></i>
+        </button>
+        <span id="cloud-sync-status" class="text-[9px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 transition-all">
           <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Local Mode
         </span>
-        <span id="live-time" class="text-slate-400 font-mono">08:00</span>
+        <span id="live-time" class="text-slate-600 dark:text-slate-400 font-mono">08:00</span>
       </div>
     </div>
 
     <!-- MAIN INTERACTIVE APP VIEWPORT -->
-    <div class="flex-1 overflow-y-auto no-scrollbar pb-20 relative bg-[#090d16]">
+    <div id="screen-container" class="flex-1 overflow-y-auto no-scrollbar pb-20 relative bg-slate-50 dark:bg-[#090d16] transition-colors duration-300">
       
       <!-- ========================================== -->
       <!-- 1. SCREEN: ROLE SELECT (SPLASH) -->
@@ -178,25 +196,16 @@
         <!-- BRAND HEADER SECTION -->
         <div class="mt-6 text-center">
           
-          <!-- Neon Glowing Shield Badge -->
+          <!-- Neon Glowing shield real branded logo -->
           <div class="relative inline-flex items-center justify-center mb-5">
-            <!-- Outer Glowing Halo -->
             <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/25 to-teal-500/25 rounded-full blur-2xl scale-150 animate-pulse"></div>
             
-            <!-- Premium Glass/Metal Badge Rim -->
             <div class="relative p-0.5 rounded-[2.5rem] bg-gradient-to-b from-white/20 via-white/5 to-white/0 shadow-[0_0_30px_rgba(16,185,129,0.25)]">
-              <!-- Glassmorphic Inner Shield Container -->
-              <div class="p-6 bg-gradient-to-br from-slate-900/95 via-slate-800/80 to-slate-950/95 rounded-[2.4rem] backdrop-blur-xl border border-white/5 flex items-center justify-center relative overflow-hidden group">
-                
-                <!-- Subtle Radial Internal Flare -->
+              <div class="p-4 bg-slate-900/90 rounded-[2.4rem] backdrop-blur-xl border border-white/5 flex items-center justify-center relative overflow-hidden group">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.2),transparent_70%)]"></div>
                 
-                <!-- Glowing Green Shield Icon & Gradient -->
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-emerald-400 flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] relative z-10 transform group-hover:scale-105 transition-transform duration-300">
-                  <!-- Sleek SVG Shield Icon -->
-                  <svg class="w-9 h-9 filter drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                  </svg>
+                <div class="w-20 h-20 rounded-3xl bg-slate-950 flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] relative z-10 transform group-hover:scale-105 active:scale-95 transition-all duration-300 overflow-hidden border border-white/10">
+                  <img src="./icon-192.png" class="w-full h-full object-cover">
                 </div>
               </div>
             </div>
@@ -311,7 +320,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v5.0.0 Cloud-First PRO</span>
+              <span>v6.0.0 Premium & Push PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -1664,6 +1673,11 @@
         authToken = result.token;
         sessionStorage.setItem("safety_easy_auth_token", authToken);
         addAuditLog(currentUser.name, "ลงชื่อเข้าใช้งานเข้าสู่ระบบสิทธิสำเร็จ");
+        
+        // Request mobile push notification permission upon successful login
+        if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+          Notification.requestPermission();
+        }
         await loadAllJobsData();
         
         // Show Navigation bar
@@ -2209,6 +2223,9 @@
       saveToLocalStore();
       addAuditLog(currentUser.name, `ตรวจสอบงานความเห็นชอบให้เคสและปิดใบงาน ID: ${jobId} สำเร็จ`);
       
+      // Dynamic mobile push notification
+      triggerNativeNotification("✅ อนุมัติการแก้ไขสำเร็จ!", `ใบงานหมายเลข ${jobId} ได้รับการปิดงานเรียบร้อยแล้ว ขอบคุณที่ให้ความร่วมมือครับ`);
+      
       // Attempt syncing to cloud Google Sheet
       const isSynced = await sendToGoogleSheet("update", {
         id: jobId,
@@ -2440,14 +2457,14 @@
 
           const beforeHtml = hasBefore
             ? `<div class="w-full h-full cursor-pointer" onclick="openDashLightbox('${normalizePhotoSource(job.photoBefore)}','Before','${(job.issue||'').replace(/'/g,"'")}')">${renderSafeImage(job.photoBefore, 'Before', 'w-full h-full object-cover')}</div>`
-            : `<div class="w-full h-full bg-slate-950 flex flex-col items-center justify-center text-slate-600 text-[8px] font-bold"><i class="fa-solid fa-image text-lg mb-1"></i>ไม่มีรูป</div>`;
+            : `<div class="w-full h-full bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 text-[8px] font-bold"><i class="fa-solid fa-image text-lg mb-1"></i>ไม่มีรูป</div>`;
 
           const afterHtml = hasAfter
             ? `<div class="w-full h-full cursor-pointer" onclick="openDashLightbox('${normalizePhotoSource(job.photoAfter)}','After','${(job.issue||'').replace(/'/g,"'")}')">${renderSafeImage(job.photoAfter, 'After', 'w-full h-full object-cover')}</div>`
-            : `<div class="w-full h-full bg-slate-950 flex flex-col items-center justify-center text-slate-600 text-[8px] font-bold"><i class="fa-solid fa-image text-lg mb-1"></i>ยังไม่มีรูป</div>`;
+            : `<div class="w-full h-full bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 text-[8px] font-bold"><i class="fa-solid fa-image text-lg mb-1"></i>ยังไม่มีรูป</div>`;
 
           const card = document.createElement("div");
-          card.className = "bg-slate-900 border border-white/5 rounded-2xl overflow-hidden shadow-md";
+          card.className = "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-white/5 rounded-2xl overflow-hidden shadow-md dark:shadow-glass text-slate-800 dark:text-slate-100 transition-colors duration-200";
           card.innerHTML = `
             <!-- Header -->
             <div class="flex items-center justify-between px-3.5 pt-3 pb-2">
@@ -2455,24 +2472,24 @@
                 <div class="flex items-center gap-2 flex-wrap">
                   <span class="text-[9px] font-extrabold text-emerald-400 uppercase tracking-wider">${job.area}</span>
                   <span class="text-[8px] text-slate-600">•</span>
-                  <span class="text-[9px] text-slate-500 font-mono">${job.id.slice(3,11)}</span>
+                  <span class="text-[9px] text-slate-500 font-mono dark:text-slate-400">${job.id.slice(3,11)}</span>
                 </div>
-                <div class="font-bold text-xs text-slate-200 truncate mt-0.5">${job.issue || '-'}</div>
-                <div class="text-[9px] text-slate-500 mt-0.5">ผู้แก้ไข: <span class="text-slate-400 font-semibold">${job.assignee || '-'}</span></div>
+                <div class="font-bold text-xs text-slate-800 dark:text-slate-200 truncate mt-0.5">${job.issue || '-'}</div>
+                <div class="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5">ผู้แก้ไข: <span class="text-slate-600 dark:text-slate-300 font-semibold">${job.assignee || '-'}</span></div>
               </div>
               <span class="flex-shrink-0 ml-2 text-[9px] font-extrabold px-2 py-1 rounded-lg border ${statColor}">
                 <i class="fa-solid ${statIcon} mr-1"></i>${statText}
               </span>
             </div>
             <!-- Before/After Photo Grid -->
-            <div class="grid grid-cols-2 gap-0 border-t border-white/5">
+            <div class="grid grid-cols-2 gap-0 border-t border-slate-200 dark:border-white/5">
               <div class="relative">
                 <div class="aspect-square overflow-hidden">${beforeHtml}</div>
                 <div class="absolute bottom-1.5 left-1.5 bg-slate-950/80 text-[8px] font-extrabold text-slate-300 px-1.5 py-0.5 rounded-md border border-white/10 backdrop-blur-sm">
                   <i class="fa-solid fa-circle-minus text-rose-400 mr-0.5"></i>BEFORE
                 </div>
               </div>
-              <div class="relative border-l border-white/5">
+              <div class="relative border-l border-slate-200 dark:border-white/5">
                 <div class="aspect-square overflow-hidden">${afterHtml}</div>
                 <div class="absolute bottom-1.5 left-1.5 bg-slate-950/80 text-[8px] font-extrabold text-slate-300 px-1.5 py-0.5 rounded-md border border-white/10 backdrop-blur-sm">
                   <i class="fa-solid fa-circle-check text-emerald-400 mr-0.5"></i>AFTER
@@ -2481,12 +2498,12 @@
               </div>
             </div>
             <!-- Footer meta -->
-            <div class="px-3.5 py-2 flex items-center justify-between border-t border-white/5">
-              <span class="text-[9px] text-slate-600">
+            <div class="px-3.5 py-2 flex items-center justify-between border-t border-slate-200 dark:border-white/5">
+              <span class="text-[9px] text-slate-500 dark:text-slate-600">
                 <i class="fa-regular fa-calendar mr-1"></i>${String(job.createdAt || '').slice(0,10) || '-'}
               </span>
-              <span class="text-[9px] text-slate-600">
-                ประเภท: <span class="text-slate-400 font-semibold">${job.taskType === '5s' ? '5ส' : 'Safety'}</span>
+              <span class="text-[9px] text-slate-500 dark:text-slate-600">
+                ประเภท: <span class="text-slate-600 dark:text-slate-400 font-semibold">${job.taskType === '5s' ? '5ส' : 'Safety'}</span>
               </span>
             </div>
           `;
@@ -3567,6 +3584,9 @@
       saveToLocalStore();
       
       addAuditLog(currentUser.name, `เปิดใบงานแจ้งเหตุชำรุดใหม่ ID: ${caseId} (${area})`);
+      
+      // Dynamic mobile push notification
+      triggerNativeNotification("📌 แจ้งเหตุไม่ปลอดภัยใหม่!", `พบปัญหาที่พื้นที่ ${area}: ${issue} (มอบหมายงานให้คุณ ${assignee})`);
 
       btn.disabled = false;
       txt.innerText = "บันทึกข้อมูลและรายงานระบบ";
@@ -3623,6 +3643,9 @@
       }
       saveToLocalStore();
       addAuditLog(currentUser.name, `ส่งรายงานผลการแก้ไขใบงาน ID: ${activeJobForResolve.id}`);
+      
+      // Dynamic mobile push notification
+      triggerNativeNotification("🔧 รายงานผลการแก้ไขเสร็จสิ้น!", `ใบงานหมายเลข ${activeJobForResolve.id} ได้รับการแก้ไขแล้ว รอการอนุมัติครับ`);
 
       btn.disabled = false;
       btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
@@ -3915,12 +3938,81 @@
     });
 
     // ==========================================
+    // Light/Dark Theme Manager
+    // ==========================================
+    let currentTheme = localStorage.getItem("safety_easy_theme") || "dark";
+    
+    function applyTheme(theme) {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById("theme-toggle-icon");
+      const phoneContainer = document.getElementById("phone-container");
+      
+      if (theme === "dark") {
+        html.classList.add("dark");
+        if (themeIcon) themeIcon.className = "fa-solid fa-sun text-xs text-amber-400 animate-pulse";
+        if (phoneContainer) {
+          phoneContainer.classList.add("dark:bg-[#090d16]", "dark:border-white/5");
+          phoneContainer.classList.remove("bg-slate-50", "border-slate-200/80");
+        }
+      } else {
+        html.classList.remove("dark");
+        if (themeIcon) themeIcon.className = "fa-solid fa-moon text-xs text-slate-500 hover:text-slate-700";
+        if (phoneContainer) {
+          phoneContainer.classList.add("bg-slate-50", "border-slate-200/80");
+          phoneContainer.classList.remove("dark:bg-[#090d16]", "dark:border-white/5");
+        }
+      }
+      localStorage.setItem("safety_easy_theme", theme);
+    }
+    
+    function toggleTheme() {
+      currentTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(currentTheme);
+      showToast("เปลี่ยนสไตล์สำเร็จ", `เปิดใช้งาน ${currentTheme === 'dark' ? 'โหมดมืด (Dark Mode)' : 'โหมดสว่าง (Light Mode)'} เรียบร้อยแล้ว`, "fa-circle-half-stroke", "bg-safety-green shadow-glow-green");
+    }
+
+    // ==========================================
+    // Native PWA Push Notification System
+    // ==========================================
+    function triggerNativeNotification(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+          navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification(title, {
+              body: body,
+              icon: './icon-192.png',
+              badge: './icon-192.png',
+              vibrate: [150, 80, 150],
+              tag: 'safety-audit-alert',
+              renotify: true,
+              data: {
+                clickUrl: window.location.href
+              }
+            });
+          }).catch(err => {
+            console.warn('[PWA Notification] Failed using SW ready state:', err);
+            new Notification(title, { body: body, icon: './icon-192.png' });
+          });
+        } else {
+          new Notification(title, { body: body, icon: './icon-192.png' });
+        }
+      }
+    }
+
+    // ==========================================
     // ON APP LAUNCH (WINDOW LOAD)
     // ==========================================
     window.onload = async function() {
       initDatabase();
       hideAllScreens();
       document.getElementById("screen-splash").classList.remove("hidden");
+      
+      // Initialize theme toggle button
+      const themeBtn = document.getElementById("theme-toggle-btn");
+      if (themeBtn) {
+        themeBtn.onclick = toggleTheme;
+      }
+      applyTheme(currentTheme);
       
       // Load public user choices. Jobs are loaded only after successful login.
       await loadAllUsersData();
