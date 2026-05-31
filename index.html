@@ -3177,33 +3177,48 @@
         showToast("บีบอัดภาพสำเร็จ", `ภาพ ${(dataUrlBytes(compressed)/1024).toFixed(0)} KB พร้อมอัปโหลด`, "fa-image", "bg-safety-green shadow-glow-green");
         return;
       } catch (e1) {
-        // Step 2: Canvas failed (e.g. HEIC on some browsers) - try FileReader as raw base64
-        console.warn('[Photo] Canvas compress failed, trying FileReader:', e1);
+        // Step 2: Canvas failed (e.g. HEIC on some browsers) - try FileReader as raw      const newJob = {
+        id: caseId,
+        area: area,
+        reporter: currentUser.name,
+        assignee: assignee,
+        issue: issue,
+        suggestion: suggestion,
+        taskType: currentSupervisorWorkType,
+        status: "pending",
+        photoBefore: selectedBeforePhoto,
+        photoAfter: "",
+        createdAt: dateStr,
+        resolvedAt: "",
+        resolvedBy: "",
+        notes: "",
+        approvedAt: "",
+        approvedBy: ""
+      };
+
+      // ☁️ Cloud-First: ส่งขึ้น Google Sheet ก่อน
+      btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up fa-bounce mr-1"></i> กำลังอัปโหลดขึ้น Google Sheet...`;
+      const isSynced = await sendToGoogleSheet("create", newJob);
+
+      btn.disabled = false;
+      btn.innerHTML = `บันทึกข้อมูลและรายงานระบบ`;
+
+      if (!isSynced) {
+        // Upload failed — keep modal open, let user retry
+        showToast("อัปโหลดไม่สำเร็จ", `ไม่สามารถส่งข้อมูลได้: ${lastSheetError || 'ตรวจสอบอินเทอร์เน็ต'}`, "fa-triangle-exclamation", "bg-rose-700");
+        return; // ไม่ปิด modal
       }
 
-      // Step 2: FileReader fallback (works for most formats including HEIC on Safari)
-      try {
-        const dataUrl = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.onerror = (e) => reject(e);
-          reader.readAsDataURL(file);
-        });
-        applyPreviewPhoto(target, dataUrl);
-        showToast("เพิ่มรูปสำเร็จ", `รูป ${(file.size/1024).toFixed(0)} KB พร้อมใช้งาน`, "fa-check", "bg-safety-green");
-        return;
-      } catch (e2) {
-        console.warn('[Photo] FileReader also failed:', e2);
-      }
+      // ✅ Cloud OK → บันทึก local + ปิด modal
+      // อัปเดต URL รูปจาก server response (ถ้ามี)
+      jobs.push(newJob);
+      saveToLocalStore();
+      addAuditLog(currentUser.name, `เปิดใบงานใหม่ ID: ${caseId} (${area})`);
 
-      // Step 3: Last resort - object URL (temporary, lost on page refresh)
-      try {
-        const objectUrl = URL.createObjectURL(file);
-        applyPreviewPhoto(target, objectUrl);
-        showToast("เพิ่มรูปชั่วคราว", "รูปใช้งานได้เฉพาะทดสอบ ไม่บันทึกลง Drive", "fa-exclamation-triangle", "bg-amber-600");
-        return;
-      } catch(e3) {
-        console.error('[Photo] All methods failed:', e3);
+      closeNewAuditModal();
+      navigateTo('home');
+      showToast("อัปโหลดสำเร็จ", "บันทึกและส่งรูปขึ้น Google Sheet เรียบร้อยแล้ว", "fa-cloud-arrow-up", "bg-safety-green shadow-glow-green");
+    }e.error('[Photo] All methods failed:', e3);
       }
 
       // All failed
@@ -3539,7 +3554,7 @@
 
       const btn = document.getElementById("btn-save-resolve");
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังอัปเดตข้อมูลขึ้นระบบออนไลน์...`;
+      btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up fa-bounce mr-1"></i> กำลังอัปโหลดรูป + ส่งข้อมูลขึ้น Sheet...`;
 
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} น.`;
@@ -3553,6 +3568,18 @@
         notes: notes || "แก้ไขความปลอดภัยหน้างานเรียบร้อย"
       };
 
+      // ☁️ Cloud-First: ส่งรูปและข้อมูลขึ้น Google Sheet ก่อนเลย
+      const isSynced = await sendToGoogleSheet("update", updatedPayload);
+
+      if (!isSynced) {
+        // ล้มเหลว — คืน button ให้ user กดใหม่ได้ ไม่ปิด modal
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
+        showToast("อัปโหลดไม่สำเร็จ", `ไม่สามารถส่งรูปได้: ${lastSheetError || 'ตรวจสอบอินเทอร์เน็ตและลองใหม่'}`, "fa-triangle-exclamation", "bg-rose-700");
+        return; // ไม่ปิด modal ให้ retry
+      }
+
+      // ✅ Cloud OK → อัปเดต local state
       const idx = jobs.findIndex(j => j.id === activeJobForResolve.id);
       if (idx !== -1) {
         jobs[idx].status = "resolved";
@@ -3561,24 +3588,13 @@
         jobs[idx].resolvedBy = currentUser.name;
         jobs[idx].notes = notes || "แก้ไขความปลอดภัยหน้างานเรียบร้อย";
       }
-
-      saveToLocalStore();
       addAuditLog(currentUser.name, `ส่งรายงานผลการแก้ไขใบงาน ID: ${activeJobForResolve.id}`);
 
-      // Sync Cloud
-      const isSynced = await sendToGoogleSheet("update", updatedPayload);
-
       btn.disabled = false;
-      btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข (Send & Wait Verification)</span>`;
-
+      btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
       closeResolveModal();
       navigateTo('home');
-
-      if (isSynced && GOOGLE_SCRIPT_URL) {
-        showToast("อัปเดตสำเร็จ", "ส่งผลงานแก้ไขและบันทึกอัปเดตบน Google Sheet เรียบร้อย", "fa-check-double", "bg-safety-green shadow-glow-green");
-      } else {
-        showToast("เซฟประวัติในตัวเครื่อง", "อัปเดตในเครื่องรอส่งขึ้นคลาวด์ทีหลัง", "fa-floppy-disk", "bg-slate-700");
-      }
+      showToast("อัปเดตสำเร็จ", "ส่งรูป + ผลงานขึ้น Google Sheet เรียบร้อยแล้ว", "fa-check-double", "bg-safety-green shadow-glow-green");
     }
 
     // ==========================================
