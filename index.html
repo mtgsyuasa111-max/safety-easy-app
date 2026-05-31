@@ -352,7 +352,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v9.0.0 Remember Me PRO</span>
+              <span>v10.0.0 Name Alignment PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -1392,18 +1392,18 @@
     // Users and PIN hashes are loaded from Google Sheets through Apps Script.
     // Emergency fallback for local/offline login when Apps Script is unavailable.
     const DEFAULT_USERS = [
-      { id: "U001", name: "ผู้ดูแลระบบ", role: "admin", area: "ทุกพื้นที่", pin: "0001" },
+      { id: "U001", name: "ผู้ดูแลระบบ", role: "admin", area: "ทุกพื้นที่", pin: "9999" },
       { id: "U002", name: "หัวหน้างาน", role: "supervisor", area: "ทุกพื้นที่", pin: "0002" },
-      { id: "U003", name: "วิทยา เทพศิริ", role: "subordinate", area: "D", pin: "0003" },
-      { id: "U004", name: "ศิริชัย แสงวงศ์", role: "subordinate", area: "G", pin: "0002" },
-      { id: "U005", name: "สมยศ วงศ์สิทธิ์โช", role: "subordinate", area: "F", pin: "0005" },
-      { id: "U006", name: "ออปซี่ หล่อภัทรา", role: "subordinate", area: "B", pin: "0006" },
-      { id: "U007", name: "สกิม รอดยิ้ม", role: "subordinate", area: "C", pin: "0007" },
-      { id: "U008", name: "กิตติยา เทพทิพพ์นิม", role: "subordinate", area: "H", pin: "0008" },
-      { id: "U009", name: "พิเชษทล พลอยสังข์", role: "subordinate", area: "J", pin: "0009" },
-      { id: "U010", name: "สมชาย งามวา", role: "subordinate", area: "A", pin: "0010" },
-      { id: "U011", name: "ณัฐพงษ์ ยะอ้วย", role: "subordinate", area: "K", pin: "0011" },
-      { id: "U012", name: "วันชนะ เทพศิริ", role: "subordinate", area: "I", pin: "0012" }
+      { id: "U003", name: "วิทยา แพงศรี", role: "subordinate", area: "D", pin: "0003" },
+      { id: "U004", name: "ศิริชัย แสงวงค์", role: "subordinate", area: "G", pin: "0002" },
+      { id: "U005", name: "สนธยา วงค์สีทธิไช", role: "subordinate", area: "F", pin: "0005" },
+      { id: "U006", name: "อุดมชัย ทศรักษา", role: "subordinate", area: "B", pin: "0006" },
+      { id: "U007", name: "สุทิน รอดยิ้ม", role: "subordinate", area: "C", pin: "0007" },
+      { id: "U008", name: "ภิพัทยา แพทพีพัฒน์", role: "subordinate", area: "H", pin: "0008" },
+      { id: "U009", name: "พิพัฒน์พล ทอยสังข์", role: "subordinate", area: "J", pin: "0009" },
+      { id: "U010", name: "สมชาย วงษา", role: "subordinate", area: "A", pin: "0010" },
+      { id: "U011", name: "ณัฐพงษ์ ยะล้อม", role: "subordinate", area: "K", pin: "0011" },
+      { id: "U012", name: "วันชนะ แพงศรี", role: "subordinate", area: "I", pin: "0012" }
     ];
 
     // AREA OWNER MAPPING FOR AUTO-ASSIGNMENT

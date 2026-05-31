@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v9'; // v9: Remember Me & User Grid Selection Buttons
+const CACHE_NAME = 'safety-easy-pro-v10'; // v10: Name Alignment for Subordinate Resolving
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
