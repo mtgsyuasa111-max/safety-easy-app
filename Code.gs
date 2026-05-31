@@ -6,7 +6,7 @@
 
 const SHEET_ID = "18fG-3MpRqiDe2EjJcdqqG_i6BdCEYFjdUqS4uYi6F3k"; // Target Sheet ID
 const SHEET_NAME = "Jobs"; // Using target tab name
-const DEFAULT_DRIVE_FOLDER_ID = "1QrFgi7Yh-LJjpnSdqLxgPYxuPYz_-3Z7"; // SafeMaint - รูปภาพความปลอดภัย
+const DEFAULT_DRIVE_FOLDER_ID = "12FzCcoLz2w7ETwHwFuL4h278vkbKd0WB"; // รูปการลา — owned by mt.gs.yuasa111@gmail.com
 
 // Handle GET requests (For fetching jobs)
 function doGet(e) {
@@ -203,9 +203,11 @@ function doPost(e) {
         ""  // approvedBy
       ]);
       
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", id: rawData.id }))
-        .setMimeType(ContentService.MimeType.JSON);
-        
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success", id: rawData.id,
+        photoBeforeUrl: beforeUrl || null
+      })).setMimeType(ContentService.MimeType.JSON);
+
     } else if (action === "update") {
       var allData = sheet.getDataRange().getValues();
       var rowIndex = -1;
@@ -302,11 +304,12 @@ function doPost(e) {
 // Helper: Decode Base64 and upload to Google Drive
 function uploadBase64ToDrive(base64Data, baseFileName, folderId) {
   try {
+    var targetFolder = folderId || DEFAULT_DRIVE_FOLDER_ID;
     var parts = base64Data.split(",");
     var mimeType = "image/jpeg";
     var ext = "jpg";
     var b64Data = parts[0];
-    
+
     if (parts.length > 1) {
       b64Data = parts[1];
       var matches = parts[0].match(/data:(.*?);/);
@@ -316,11 +319,11 @@ function uploadBase64ToDrive(base64Data, baseFileName, folderId) {
         else if (mimeType.indexOf("webp") !== -1) ext = "webp";
       }
     }
-    
+
     var decoded = Utilities.base64Decode(b64Data);
     var blob = Utilities.newBlob(decoded, mimeType, baseFileName + "." + ext);
-    
-    var folder = DriveApp.getFolderById(folderId || DEFAULT_DRIVE_FOLDER_ID);
+
+    var folder = DriveApp.getFolderById(targetFolder);
     var file = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
     
@@ -328,6 +331,7 @@ function uploadBase64ToDrive(base64Data, baseFileName, folderId) {
     return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w800";
   } catch (ex) {
     Logger.log("Drive upload fail: " + ex.toString());
-    return "";
+    // Return error marker so caller can detect and report back
+    return "ERROR:" + ex.toString().slice(0, 120);
   }
 }
