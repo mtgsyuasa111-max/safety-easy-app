@@ -175,12 +175,10 @@ function doPost(e) {
     }
     
     if (action === "create") {
-      // Process Before image: try Drive upload, fallback to inline base64
+      // Process Before image: try Drive upload, auto-fallback to inline base64 on failure
       var beforeUrl = "";
       if (rawData.photoBefore && rawData.photoBefore.indexOf("data:image/") === 0) {
-        var driveUrl = uploadBase64ToDrive(rawData.photoBefore, "BEFORE_" + rawData.id, folderId);
-        // Use Drive URL if upload succeeded, otherwise store compressed base64 directly
-        beforeUrl = (driveUrl && driveUrl.indexOf("ERROR:") !== 0) ? driveUrl : rawData.photoBefore;
+        beforeUrl = uploadBase64ToDrive(rawData.photoBefore, "BEFORE_" + rawData.id, folderId);
       } else {
         beforeUrl = rawData.photoBefore || "";
       }
@@ -231,9 +229,7 @@ function doPost(e) {
       if (rawData.status === "resolved") {
         var afterUrl = "";
         if (rawData.photoAfter && rawData.photoAfter.indexOf("data:image/") === 0) {
-          var driveAfterUrl = uploadBase64ToDrive(rawData.photoAfter, "AFTER_" + rawData.id, folderId);
-          // Use Drive URL if upload succeeded, otherwise store compressed base64 directly
-          afterUrl = (driveAfterUrl && driveAfterUrl.indexOf("ERROR:") !== 0) ? driveAfterUrl : rawData.photoAfter;
+          afterUrl = uploadBase64ToDrive(rawData.photoAfter, "AFTER_" + rawData.id, folderId);
         } else {
           afterUrl = rawData.photoAfter || "";
         }
@@ -335,7 +331,7 @@ function uploadBase64ToDrive(base64Data, baseFileName, folderId) {
     return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w800";
   } catch (ex) {
     Logger.log("Drive upload fail: " + ex.toString());
-    // Return error marker so caller can detect and report back
-    return "ERROR:" + ex.toString().slice(0, 120);
+    // Drive failed — return the base64 data directly so caller stores it in cell
+    return base64Data;
   }
 }
