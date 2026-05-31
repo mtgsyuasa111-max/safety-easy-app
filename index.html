@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -2065,6 +2065,23 @@
               `}
             </div>
           </div>
+        </div>
+      `;
+
+      card.innerHTML = `
+        <div class="flex justify-between items-start mb-2">
+          <div class="space-y-1">
+            <div class="flex items-center space-x-2">
+              <span class="inline-flex items-center border text-[9px] font-bold px-2 py-0.5 rounded-lg ${taskBadgeColor}">
+                <i class="fa-solid ${taskIcon} mr-1"></i>${taskLabel}
+              </span>
+              <span class="inline-flex bg-slate-900 border border-white/5 text-slate-300 text-[9px] font-bold px-2 py-0.5 rounded-lg">
+                ${job.area}
+              </span>
+            </div>
+            <div class="text-[9px] text-slate-500 font-bold font-mono">CASE ID: ${job.id}</div>
+          </div>
+          ${statusBadge}
         </div>
 
         ${timelineHtml}
