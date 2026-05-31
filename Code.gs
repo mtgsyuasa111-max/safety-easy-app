@@ -6,7 +6,7 @@
 
 const SHEET_ID = "18fG-3MpRqiDe2EjJcdqqG_i6BdCEYFjdUqS4uYi6F3k"; // Target Sheet ID
 const SHEET_NAME = "Jobs"; // Using target tab name
-const DEFAULT_DRIVE_FOLDER_ID = "12FzCcoLz2w7ETwHwFuL4h278vkbKd0WB"; // Default Drive Folder for Image Uploads
+const DEFAULT_DRIVE_FOLDER_ID = "1QrFgi7Yh-LJjpnSdqLxgPYxuPYz_-3Z7"; // SafeMaint - รูปภาพความปลอดภัย
 
 // Handle GET requests (For fetching jobs)
 function doGet(e) {
