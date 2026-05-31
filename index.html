@@ -352,7 +352,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v11.0.0 Assignee Guard PRO</span>
+              <span>v12.0.0 Supervisor Controls PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -2280,15 +2280,15 @@
 
         ${timelineHtml}
 
-        ${(isPending && currentUser.role === "subordinate" && currentUser.name === job.assignee) ? `
+        ${(isPending && (currentUser.role === "admin" || currentUser.role === "supervisor" || (currentUser.role === "subordinate" && currentUser.name === job.assignee))) ? `
           <button onclick="openResolveModal('${job.id}')" class="w-full bg-gradient-to-r from-emerald-500 to-safety-green text-white py-2.5 rounded-xl font-bold text-xs shadow-glow-green hover:opacity-95 flex items-center justify-center space-x-1.5 transition">
             <i class="fa-solid fa-camera"></i>
             <span>ส่งรูป After เพื่อปิดงานแก้ไข</span>
           </button>
         ` : ""}
         
-        ${(currentUser.role === "admin") ? `
-          <!-- Admin: Edit Area inline -->
+        ${(currentUser.role === "admin" || currentUser.role === "supervisor") ? `
+          <!-- Admin & Supervisor: Edit Area inline -->
           <div id="area-edit-row-${job.id}" class="flex items-center gap-2">
             <select id="area-edit-select-${job.id}" class="flex-1 bg-slate-950 border border-white/10 rounded-xl p-2 text-xs text-white font-bold focus:outline-none focus:border-emerald-500/50">
               ${Object.keys(AREA_REPRESENTATIVES).sort().map(a =>
@@ -2301,7 +2301,7 @@
           </div>
           <button onclick="deleteJob('${job.id}')" class="w-full bg-rose-500/10 text-rose-400 border border-rose-500/20 py-2 rounded-xl font-extrabold text-[10px] flex items-center justify-center space-x-1 hover:bg-rose-500/25 transition">
             <i class="fa-solid fa-trash-can"></i>
-            <span>ลบใบงานนี้อย่างถาวร (Admin)</span>
+            <span>ลบใบงานนี้อย่างถาวร</span>
           </button>
         ` : ""}
       `;
@@ -3071,9 +3071,9 @@
       }
     }
 
-    // Admin: change the area field of an existing job
+    // Admin & Supervisor: change the area field of an existing job
     async function adminChangeJobArea(jobId) {
-      if (currentUser.role !== "admin") return;
+      if (currentUser.role !== "admin" && currentUser.role !== "supervisor") return;
       const selectEl = document.getElementById(`area-edit-select-${jobId}`);
       if (!selectEl) return;
       const newArea = selectEl.value.trim();
@@ -3083,7 +3083,7 @@
       if (!job) return;
       const oldArea = job.area;
       if (oldArea === newArea) {
-        showToast("\u0e44\u0e21\u0e48\u0e21\u0e35\u0e01\u0e32\u0e23\u0e40\u0e1b\u0e25\u0e35\u0e48\u0e22\u0e19\u0e41\u0e1b\u0e25\u0e07", "\u0e1e\u0e37\u0e49\u0e19\u0e17\u0e35\u0e48\u0e22\u0e31\u0e07\u0e04\u0e07\u0e40\u0e14\u0e34\u0e21\u0e2d\u0e22\u0e39\u0e48", "fa-info-circle", "bg-slate-700");
+        showToast("ไม่มีการเปลี่ยนแปลง", "พื้นที่ยังคงเดิมอยู่", "fa-info-circle", "bg-slate-700");
         return;
       }
 
@@ -3091,8 +3091,8 @@
       // Auto-assign new responsible person if mapping exists
       if (AREA_REPRESENTATIVES[newArea]) job.assignee = AREA_REPRESENTATIVES[newArea];
       saveToLocalStore();
-      addAuditLog(currentUser.name, `\u0e41\u0e01\u0e49\u0e44\u0e02\u0e1e\u0e37\u0e49\u0e19\u0e17\u0e35\u0e48\u0e43\u0e1a\u0e07\u0e32\u0e19 ${jobId}: ${oldArea} \u2192 ${newArea}`);
-      showToast("\u0e40\u0e1b\u0e25\u0e35\u0e48\u0e22\u0e19\u0e1e\u0e37\u0e49\u0e19\u0e17\u0e35\u0e48\u0e41\u0e25\u0e49\u0e27", `\u0e43\u0e1a\u0e07\u0e32\u0e19 ${jobId}: ${oldArea} \u2192 ${newArea}`, "fa-map-location-dot", "bg-emerald-600 shadow-glow-green");
+      addAuditLog(currentUser.name, `แก้ไขพื้นที่ใบงาน ${jobId}: ${oldArea} → ${newArea}`);
+      showToast("เปลี่ยนพื้นที่แล้ว", `ใบงาน ${jobId}: ${oldArea} → ${newArea}`, "fa-map-location-dot", "bg-emerald-600 shadow-glow-green");
 
       // Sync updated job to Google Sheets
       try { await sendToGoogleSheet("update", job); } catch(e) { console.warn("Sync area change failed:", e); }
@@ -3107,8 +3107,8 @@
     }
 
     async function deleteJob(jobId) {
-      if (currentUser.role !== "admin") {
-        showToast("สิทธิ์ถูกปฏิเสธ", "เฉพาะผู้ควบคุมระบบระดับสูงถึงจะมีสิทธิ์ลบข้อมูลงานความปลอดภัย", "fa-lock", "bg-safety-red shadow-glow-red");
+      if (currentUser.role !== "admin" && currentUser.role !== "supervisor") {
+        showToast("สิทธิ์ถูกปฏิเสธ", "เฉพาะหัวหน้างานหรือผู้ควบคุมระบบระดับสูงถึงจะมีสิทธิ์ลบข้อมูลงานความปลอดภัย", "fa-lock", "bg-safety-red shadow-glow-red");
         return;
       }
 

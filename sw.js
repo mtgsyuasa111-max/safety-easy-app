@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v11'; // v11: Enforce Subordinate Assignee Validation UI Guard
+const CACHE_NAME = 'safety-easy-pro-v12'; // v12: Allow Supervisors to Resolve & Delete Jobs
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
