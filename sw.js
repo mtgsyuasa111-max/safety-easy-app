@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v38'; // v38: Allow Drive photo uploads up to 90 seconds
+const CACHE_NAME = 'safety-easy-pro-v39'; // v39: Reject photo formats the Drive backend cannot upload
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

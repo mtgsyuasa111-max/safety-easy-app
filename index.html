@@ -1340,7 +1340,7 @@
             </div>
             <!-- hidden inputs: one for camera, one for gallery -->
             <input type="file" id="before-camera-input" accept="image/*" capture="environment" class="hidden" onchange="previewBeforePhoto(this)">
-            <input type="file" id="before-gallery-input" accept="image/*" class="hidden" onchange="previewBeforePhoto(this)">
+            <input type="file" id="before-gallery-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewBeforePhoto(this)">
           </div>
 
           <!-- Problem description -->
@@ -1462,7 +1462,7 @@
             </div>
             <!-- hidden inputs: one for camera, one for gallery -->
             <input type="file" id="after-camera-input" accept="image/*" capture="environment" class="hidden" onchange="previewAfterPhoto(this)">
-            <input type="file" id="after-gallery-input" accept="image/*" class="hidden" onchange="previewAfterPhoto(this)">
+            <input type="file" id="after-gallery-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewAfterPhoto(this)">
           </div>
 
           <!-- Completion remarks -->
@@ -4396,8 +4396,18 @@
         console.warn('[Photo] Canvas compress failed, trying FileReader:', e1);
       }
 
-      // Step 2: FileReader fallback (works for most formats including HEIC on Safari)
+      // Step 2: FileReader fallback for formats accepted by the Drive backend.
       try {
+        const supportedTypes = ["image/jpeg", "image/png", "image/webp"];
+        if (!supportedTypes.includes(file.type.toLowerCase())) {
+          showCustomAlert(
+            "รูปแบบไฟล์ไม่รองรับ",
+            "รูปจากมือถือเป็น HEIC หรือรูปแบบที่ระบบยังส่งขึ้น Google Drive ไม่ได้ กรุณาเลือก JPG, PNG, WEBP หรือใช้ภาพแคปหน้าจอแทน",
+            "warning"
+          );
+          return;
+        }
+
         const fileInMB = file.size / 1024 / 1024;
         if (file.size > 2.5 * 1024 * 1024) {
           showToast("ไฟล์รูปภาพใหญ่เกินไป", `รูปภาพดิบมีขนาด ${fileInMB.toFixed(1)}MB ใหญ่เกิน 2.5MB และไม่สามารถบีบอัดได้ กรุณาลดความละเอียด/แคปหน้าจอก่อนอัปโหลด`, "fa-triangle-exclamation", "bg-rose-700");
@@ -4417,17 +4427,7 @@
         console.warn('[Photo] FileReader also failed:', e2);
       }
 
-      // Step 3: Last resort - object URL (temporary, lost on page refresh)
-      try {
-        const objectUrl = URL.createObjectURL(file);
-        applyPreviewPhoto(target, objectUrl);
-        showToast("เพิ่มรูปชั่วคราว", "รูปใช้งานได้เฉพาะทดสอบ ไม่บันทึกลง Drive", "fa-exclamation-triangle", "bg-amber-600");
-        return;
-      } catch(e3) {
-        console.error('[Photo] All methods failed:', e3);
-      }
-
-      // All failed
+      // A blob URL can be previewed locally but cannot be uploaded by Apps Script.
       showToast("รูปไม่รองรับ", `ไม่สามารถโหลดรูปได้ (นามสกุล: ${file.name}) ลองเปลี่ยนเป็น JPG/PNG`, "fa-times-circle", "bg-rose-700");
     }
 
