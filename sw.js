@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v35'; // v35: Name Spelling Normalization & Expired Session Redirection
+const CACHE_NAME = 'safety-easy-pro-v36'; // v36: Require Sheets login while online
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

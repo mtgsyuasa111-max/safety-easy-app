@@ -2142,6 +2142,7 @@
         sessionStorage.setItem("safety_easy_auth_token", authToken);
         localStorage.setItem("safety_easy_remembered_user", JSON.stringify(currentUser));
         localStorage.setItem("safety_easy_remembered_token", authToken);
+        updateCloudStatus(true);
         addAuditLog(currentUser.name, "ลงชื่อเข้าใช้งานเข้าสู่ระบบสิทธิสำเร็จ");
         
         // Request mobile push notification permission upon successful login
@@ -2167,7 +2168,7 @@
         showToast("สำเร็จเรียบร้อย", `ยินดีต้อนรับคุณ ${currentUser.name}`, "fa-circle-check", "bg-safety-green shadow-glow-green");
       } catch (error) {
         const localPin = String(selectedUserToLogin.pin || "").trim();
-        if (localPin && enteredPin === localPin) {
+        if (!navigator.onLine && localPin && enteredPin === localPin) {
           currentUser = {
             id: selectedUserToLogin.id,
             name: selectedUserToLogin.name,
