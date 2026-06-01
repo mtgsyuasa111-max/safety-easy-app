@@ -388,7 +388,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v15.0.0 Premium PWA Notifications & UI PRO</span>
+              <span>v16.0.0 Premium PWA Reject Job Capability</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -1005,6 +1005,8 @@
               </button>
             </div>
 
+            </div>
+
             <!-- Force Sync Panel for Admin -->
             <div class="glass-card p-4 rounded-2xl border border-white/5 space-y-2.5">
               <div class="text-[10px] text-slate-400 leading-relaxed font-bold">
@@ -1014,6 +1016,17 @@
                 <i class="fa-solid fa-cloud-arrow-up"></i>
                 <span>ซิงก์ส่งข้อมูลในเครื่องไป Google Sheets</span>
               </button>
+
+              <!-- Hard Reset from Sheet -->
+              <div class="border-t border-white/5 pt-2.5 mt-1">
+                <div class="text-[10px] text-slate-500 leading-relaxed font-bold mb-2">
+                  <i class="fa-solid fa-rotate text-rose-400 mr-1"></i> รีเซ็ตแคชทั้งหมดและโหลดข้อมูลสดจาก Google Sheets (ใช้เมื่อมีข้อมูลทดสอบค้างในเครื่อง):
+                </div>
+                <button onclick="hardResetFromSheet()" class="w-full bg-gradient-to-r from-rose-600 to-rose-700 text-white py-3 rounded-xl font-extrabold text-xs hover:opacity-95 transition flex items-center justify-center space-x-1.5 border border-rose-500/30">
+                  <i class="fa-solid fa-trash-can-arrow-up"></i>
+                  <span>ล้างแคชและดึงข้อมูลจาก Sheet ใหม่ทั้งหมด</span>
+                </button>
+              </div>
             </div>
 
             <div id="admin-jobs-list" class="space-y-3">
@@ -2438,10 +2451,18 @@
                   <p class="leading-relaxed"><i class="fa-solid fa-circle-info text-safety-yellow mr-1 text-[11px] animate-pulse"></i>${(currentUser.role === "subordinate" && currentUser.name === job.assignee) ? "คุณรายงานแก้ไขเรียบร้อยแล้ว กดปิดใบงานได้เลย" : "พนักงานรายงานแก้ไขเรียบร้อย รอหัวหน้าอนุมัติผลการประเมิน"}</p>
                   
                   ${(currentUser.role === "admin" || currentUser.role === "supervisor" || (currentUser.role === "subordinate" && currentUser.name === job.assignee)) ? `
-                    <button onclick="approveJobResolution('${job.id}')" class="mt-2.5 w-full bg-gradient-to-r from-emerald-500 to-safety-green text-white py-1.5 rounded-lg text-[9px] font-extrabold shadow-glow-green hover:opacity-95 flex items-center justify-center space-x-1">
-                      <i class="fa-solid fa-check-double"></i>
-                      <span>${currentUser.role === "subordinate" ? "ยืนยันแก้ไขสำเร็จ & ปิดใบงานนี้" : "ตรวจสอบผ่าน & ปิดใบงานนี้ (Verify & Close)"}</span>
-                    </button>
+                    <div class="flex flex-col sm:flex-row gap-2 mt-2.5">
+                      <button onclick="approveJobResolution('${job.id}')" class="flex-1 bg-gradient-to-r from-emerald-500 to-safety-green text-white py-1.5 rounded-lg text-[9px] font-extrabold shadow-glow-green hover:opacity-95 flex items-center justify-center space-x-1 transition active:scale-[0.98]">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span>${currentUser.role === "subordinate" ? "ยืนยันแก้ไขสำเร็จ & ปิดใบงานนี้" : "ตรวจสอบผ่าน & ปิดใบงานนี้ (Verify & Close)"}</span>
+                      </button>
+                      ${(currentUser.role === "admin" || currentUser.role === "supervisor") ? `
+                        <button onclick="rejectJobResolution('${job.id}')" class="flex-1 bg-gradient-to-r from-rose-500 to-red-600 text-white py-1.5 rounded-lg text-[9px] font-extrabold shadow-glow-red hover:opacity-95 flex items-center justify-center space-x-1 transition active:scale-[0.98]">
+                          <i class="fa-solid fa-circle-xmark animate-pulse"></i>
+                          <span>ตีกลับเพื่อแก้ไขใหม่ (Reject & Rework)</span>
+                        </button>
+                      ` : ""}
+                    </div>
                   ` : ""}
                 </div>
               ` : `
@@ -2541,8 +2562,50 @@
         navigateTo('home');
       }
 
-      if (isSynced && GOOGLE_SCRIPT_URL) {
+      if (isSynced?.status === "success" && GOOGLE_SCRIPT_URL) {
         showToast("ยืนยันสำเร็จ", "อัปเดตสถานะและปิดงานบน Google Sheet สำเร็จแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
+      } else {
+        showToast("บันทึกเรียบร้อย", "เซฟประวัติในตัวเครื่องรอการเชื่อมต่อซิงก์ภายหลัง", "fa-floppy-disk", "bg-slate-700");
+      }
+    }
+
+    async function rejectJobResolution(jobId) {
+      const reason = prompt("ระบุเหตุผลที่ต้องการตีกลับใบงานนี้เพื่อให้แก้ไขใหม่:");
+      if (reason === null) return; // User clicked Cancel
+
+      const finalReason = reason.trim() || "ไม่ผ่านการตรวจสอบ กรุณาตรวจสอบและดำเนินการแก้ไขใหม่อีกครั้ง";
+      
+      const idx = jobs.findIndex(j => j.id === jobId);
+      if (idx === -1) return;
+
+      // Update local state
+      jobs[idx].status = "pending";
+      jobs[idx].photoAfter = "";
+      jobs[idx].resolvedAt = "";
+      jobs[idx].resolvedBy = "";
+      jobs[idx].notes = "❌ ตีกลับ: " + finalReason;
+
+      saveToLocalStore();
+      addAuditLog(currentUser.name, `ตีกลับใบงาน ID: ${jobId} ด้วยเหตุผล: ${finalReason}`);
+      
+      // Local push notification feedback
+      triggerNativeNotification("❌ ตีกลับใบงานแก้ไขใหม่", `ใบงานหมายเลข ${jobId} ถูกตีกลับ: ${finalReason}`);
+      
+      // Attempt syncing to cloud Google Sheet
+      const isSynced = await sendToGoogleSheet("update", {
+        id: jobId,
+        status: "rejected",
+        rejectionReason: finalReason
+      });
+
+      if (currentUser.role === "admin" && document.getElementById("screen-admin").classList.contains("hidden") === false) {
+        setupAdminPanel();
+      } else {
+        navigateTo('home');
+      }
+
+      if (isSynced?.status === "success" && GOOGLE_SCRIPT_URL) {
+        showToast("ตีกลับงานสำเร็จ", "อัปเดตสถานะการตีกลับงานบน Google Sheet สำเร็จแล้ว", "fa-circle-check", "bg-rose-600 shadow-glow-red");
       } else {
         showToast("บันทึกเรียบร้อย", "เซฟประวัติในตัวเครื่องรอการเชื่อมต่อซิงก์ภายหลัง", "fa-floppy-disk", "bg-slate-700");
       }
@@ -3277,6 +3340,48 @@
       showToast("เคลียร์ Log แล้ว", "ล้างบันทึกความปลอดภัยเรียบร้อย", "fa-trash-can", "bg-slate-700");
     }
 
+    async function hardResetFromSheet() {
+      const confirmed = confirm(
+        "⚠️ ยืนยันล้างข้อมูลในเครื่องทั้งหมดและโหลดใหม่จาก Google Sheets?\n\n" +
+        "• ข้อมูลใบงานในเครื่องจะถูกลบทิ้ง\n" +
+        "• ระบบจะดึงข้อมูลสดจาก Sheets มาแทน\n" +
+        "• ใช้เมื่อมีข้อมูลทดสอบค้างอยู่ในเครื่องเท่านั้น"
+      );
+      if (!confirmed) return;
+
+      showToast("กำลังรีเซ็ต...", "ล้างแคชและดึงข้อมูลสดจาก Sheet", "fa-rotate", "bg-rose-700");
+
+      // 1. Clear local job cache (keep login session & users)
+      localStorage.removeItem("safety_jobs_data_production_v1");
+      jobs = [];
+      previousJobsCache = null;
+
+      // 2. Force fresh load from Google Sheets (no merge with local)
+      if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED") && authToken) {
+        try {
+          const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs&token=${encodeURIComponent(authToken)}`);
+          const raw = await response.json();
+          const data = Array.isArray(raw) ? raw : (raw?.status === "success" && Array.isArray(raw?.data) ? raw.data : null);
+
+          if (data) {
+            jobs = data;  // ← Sheet wins completely, no local merge
+            saveToLocalStore();
+            previousJobsCache = JSON.parse(JSON.stringify(data));
+            updateCloudStatus(true);
+            renderAreaFilterChips();
+            setupAdminPanel();
+            showToast("รีเซ็ตสำเร็จ! ✅", `โหลดข้อมูล ${data.length} รายการจาก Google Sheets เรียบร้อย`, "fa-circle-check", "bg-safety-green shadow-glow-green");
+          } else {
+            showToast("โหลดไม่สำเร็จ", "ไม่ได้รับข้อมูลจาก Sheet กรุณาลองใหม่", "fa-triangle-exclamation", "bg-safety-red");
+          }
+        } catch (err) {
+          showToast("เชื่อมต่อไม่ได้", "ตรวจสอบอินเทอร์เน็ตและลองใหม่: " + err.message, "fa-wifi-slash", "bg-rose-700");
+        }
+      } else {
+        showToast("ไม่มี URL", "กรุณาตั้งค่า Google Script URL ก่อน", "fa-exclamation", "bg-safety-red");
+      }
+    }
+
     async function syncOfflineJobsToSheets() {
       if (!GOOGLE_SCRIPT_URL) {
         showToast("ซิงก์ไม่ได้", "กรุณาตั้งค่า GOOGLE_SCRIPT_URL ก่อน", "fa-exclamation-triangle", "bg-safety-red");
@@ -3297,7 +3402,7 @@
       for (const job of jobs) {
         try {
           const isSynced = await sendToGoogleSheet("create", job);
-          if (isSynced) {
+          if (isSynced?.status === "success") {
             successCount++;
           } else {
             failCount++;
@@ -3368,6 +3473,9 @@
               showToast("✅ ตรวจสอบและปิดงานสำเร็จ!", `ใบงาน ${job.id} ได้รับการอนุมัติและปิดงานแล้วโดย ${job.approvedBy}`, "fa-circle-check", "bg-emerald-600 shadow-glow-green");
               triggerNativeNotification("✅ อนุมัติการแก้ไขสำเร็จ!", `ใบงานหมายเลข ${job.id} ได้รับการปิดงานเรียบร้อยแล้ว ขอบคุณที่ให้ความร่วมมือครับ`);
             }
+          } else if (oldJob.status === "resolved" && job.status === "pending") {
+            showToast("❌ ใบงานถูกตีกลับ!", `ใบงาน ${job.id} ถูกตีกลับโดยหัวหน้างาน: ${job.notes || "-"}`, "fa-circle-xmark", "bg-rose-600 shadow-glow-red animate-bounce");
+            triggerNativeNotification("❌ ใบงานถูกตีกลับ!", `ใบงานหมายเลข ${job.id} ไม่ผ่านการประเมินและถูกตีกลับ กรุณาดำเนินการแก้ไขและส่งตรวจสอบใหม่`);
           }
         }
       });
@@ -3495,7 +3603,7 @@
     }
 
     async function sendToGoogleSheet(actionType, jobPayload) {
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED")) return false;
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED")) return { status: "error", message: "No URL" };
 
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -3521,11 +3629,11 @@
         }
 
         lastSheetError = result.message || "";
-        return result.status === "success";
+        return result;   // ← return full result so callers can read photoAfterUrl etc.
       } catch (error) {
         console.error("Sheets sync error:", error);
         lastSheetError = error.message || String(error);
-        return false;
+        return { status: "error", message: lastSheetError };
       }
     }
 
@@ -3588,7 +3696,7 @@
         navigateTo('home');
       }
 
-      if (isSynced) {
+      if (isSynced?.status === "success") {
         showToast("ลบข้อมูลสำเร็จ", "ระบบถอดถอนและอัปเดตบน Google Sheet เรียบร้อยแล้ว", "fa-trash-can", "bg-safety-green shadow-glow-green");
       } else {
         showToast("ลบเรียบร้อยแล้ว", "ลบประวัติเฉพาะเครื่องสำเร็จ (Sheets ไม่ตอบรับ)", "fa-trash-can", "bg-slate-700");
@@ -4135,9 +4243,9 @@
       };
 
       // ☁️ Cloud-First: ส่งรูปแจ้งเหตุชำรุดขึ้น Google Sheet ก่อนเลยโดยตรง
-      const isSynced = await sendToGoogleSheet("create", newJob);
+      const createResult = await sendToGoogleSheet("create", newJob);
 
-      if (!isSynced) {
+      if (createResult?.status !== "success") {
         // ล้มเหลว — คืน button ให้ user กดใหม่ได้ ไม่เซฟลงเครื่อง และไม่ปิด modal
         btn.disabled = false;
         txt.innerText = "บันทึกข้อมูลและรายงานระบบ";
@@ -4145,7 +4253,8 @@
         return; // ไม่ปิด modal ให้ retry
       }
 
-      // ✅ Cloud OK → ค่อยบันทึก local + ปิด modal
+      // ✅ Cloud OK → ใช้ Drive URL ที่ได้กลับมา (หรือ base64 เป็น fallback)
+      if (createResult.photoBeforeUrl) newJob.photoBefore = createResult.photoBeforeUrl;
       jobs.push(newJob);
       saveToLocalStore();
       
@@ -4194,9 +4303,9 @@
       };
 
       // ☁️ Cloud-First: ส่งรูปและข้อมูลขึ้น Google Sheet ก่อนเลย
-      const isSynced = await sendToGoogleSheet("update", updatedPayload);
+      const syncResult = await sendToGoogleSheet("update", updatedPayload);
 
-      if (!isSynced) {
+      if (syncResult?.status !== "success") {
         // ล้มเหลว — คืน button ให้ user กดใหม่ได้ ไม่ปิด modal
         btn.disabled = false;
         btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
@@ -4204,11 +4313,12 @@
         return; // ไม่ปิด modal ให้ retry
       }
 
-      // ✅ Cloud OK → อัปเดต local state และจัดเก็บลงเครื่อง
+      // ✅ Cloud OK → อัปเดต local state ด้วย Drive URL (ถ้าได้กลับมา) หรือ base64 เป็น fallback
+      const finalAfterUrl = syncResult.photoAfterUrl || selectedAfterPhoto;
       const idx = jobs.findIndex(j => j.id === activeJobForResolve.id);
       if (idx !== -1) {
         jobs[idx].status = "resolved";
-        jobs[idx].photoAfter = selectedAfterPhoto;
+        jobs[idx].photoAfter = finalAfterUrl;   // ← Drive URL แทน base64
         jobs[idx].resolvedAt = dateStr;
         jobs[idx].resolvedBy = currentUser.name;
         jobs[idx].notes = notes || "แก้ไขความปลอดภัยหน้างานเรียบร้อย";

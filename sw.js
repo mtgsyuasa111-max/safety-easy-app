@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v16'; // v16: Sheets Connected fix — handles both array and {status,data} getJobs response formats
+const CACHE_NAME = 'safety-easy-pro-v19'; // v19: add reject job capability for supervisor/admin
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

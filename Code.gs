@@ -246,9 +246,21 @@ function doPost(e) {
         sheet.getRange(rowIndex, 8).setValue("approved");       // Column H (8): Status
         sheet.getRange(rowIndex, 15).setValue(rawData.approvedAt); // Column O (15): approvedAt
         sheet.getRange(rowIndex, 16).setValue(rawData.approvedBy || "Admin"); // Column P (16): approvedBy
+      } else if (rawData.status === "rejected") {
+        var reason = rawData.rejectionReason || "ไม่ผ่านการตรวจสอบ กรุณาตรวจสอบและดำเนินการแก้ไขใหม่อีกครั้ง";
+        sheet.getRange(rowIndex, 8).setValue("pending");       // Column H (8): Status -> pending
+        sheet.getRange(rowIndex, 10).setValue("");             // Column J (10): photoAfter -> empty
+        sheet.getRange(rowIndex, 12).setValue("");             // Column L (12): resolvedAt -> empty
+        sheet.getRange(rowIndex, 13).setValue("");             // Column M (13): resolvedBy -> empty
+        sheet.getRange(rowIndex, 14).setValue("❌ ตีกลับ: " + reason); // Column N (14): Notes -> Rejection Reason
       }
       
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", id: rawData.id }))
+      // Include photoAfterUrl in response so client can replace base64 with Drive link
+      var respObj = { status: "success", id: rawData.id };
+      if (rawData.status === "resolved" && afterUrl) {
+        respObj.photoAfterUrl = afterUrl;
+      }
+      return ContentService.createTextOutput(JSON.stringify(respObj))
         .setMimeType(ContentService.MimeType.JSON);
         
     } else if (action === "updateUser") {

@@ -13,7 +13,7 @@ login_payload = {
     "action": "login",
     "data": {
         "id": "U001",
-        "pin": "9999"
+        "pin": "5316"
     }
 }
 
