@@ -530,7 +530,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v16.7.0 Premium PWA Sync-Dashboard-Stats & Theme-Polish PRO</span>
+              <span>v16.8.0 Premium PWA Home-Reset-Filter & Startup-Loading-Fix PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -2323,6 +2323,9 @@
     // Supervisor Dashboard Setup
     // ==========================================
     function setupSupervisorDashboard() {
+      // Reset home filter to "ทั้งหมด" on entering
+      selectedHomeAreaFilter = "all";
+      
       // Profile details
       document.getElementById("sp-profile-name").innerText = currentUser.name;
       const initials = currentUser.name.split(" ").map(n => n.charAt(0)).join("").slice(0, 2);
@@ -2500,6 +2503,9 @@
     // Subordinate Dashboard Setup (Operator)
     // ==========================================
     function setupSubordinateDashboard() {
+      // Reset home filter to "ทั้งหมด" on entering
+      selectedHomeAreaFilter = "all";
+
       document.getElementById("sb-profile-name").innerText = currentUser.name;
       document.getElementById("sb-profile-area").innerText = currentUser.area;
       
@@ -3871,7 +3877,15 @@
             jobs = mergeJobs(data, readLocalJobs());
             saveToLocalStore();
             updateCloudStatus(true);
+            
             renderAreaFilterChips();
+            if (currentUser) {
+              if (currentUser.role === "supervisor" || currentUser.role === "admin") {
+                renderSupervisorJobs();
+              } else {
+                renderSubordinateJobs();
+              }
+            }
             return;
           }
         } catch (error) {
@@ -3881,6 +3895,15 @@
       }
       loadFromLocalStore();
       updateCloudStatus(false);
+      
+      renderAreaFilterChips();
+      if (currentUser) {
+        if (currentUser.role === "supervisor" || currentUser.role === "admin") {
+          renderSupervisorJobs();
+        } else {
+          renderSubordinateJobs();
+        }
+      }
     }
 
     function readLocalJobs() {

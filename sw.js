@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v32'; // v32: Synchronize analytics dashboard statuses and styles
+const CACHE_NAME = 'safety-easy-pro-v33'; // v33: Fix startup jobs list loading and default home area filter to all
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
