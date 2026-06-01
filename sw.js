@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v22'; // v22: desktop layout refinement
+const CACHE_NAME = 'safety-easy-pro-v23'; // v23: remove desktop grid heading slot
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
