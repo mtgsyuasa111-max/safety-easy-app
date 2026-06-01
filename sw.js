@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v34'; // v34: Optimize modal successful exit delay to 150ms
+const CACHE_NAME = 'safety-easy-pro-v35'; // v35: Name Spelling Normalization & Expired Session Redirection
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

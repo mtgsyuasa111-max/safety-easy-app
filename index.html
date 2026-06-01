@@ -530,7 +530,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v16.9.0 Premium PWA Immediate-Modal-Exit & Success-Bounce PRO</span>
+              <span>v17.0.0 Name Normalization & Active Session Expiration Recovery PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -2049,9 +2049,38 @@
       });
       const result = await response.json();
       if (result.status !== "success") {
-        throw new Error(result.message || "Google Apps Script ปฏิเสธคำขอ");
+        const msg = result.message || "";
+        if (msg.includes("เซสชันหมดอายุ") || msg.includes("เข้าสู่ระบบใหม่")) {
+          handleSessionExpired(msg);
+        }
+        throw new Error(msg || "Google Apps Script ปฏิเสธคำขอ");
       }
       return result;
+    }
+
+    function handleSessionExpired(message) {
+      console.warn("Session expired on Sheets backend:", message);
+      
+      // Clear all active sessions
+      authToken = "";
+      currentUser = null;
+      sessionStorage.removeItem("safety_easy_auth_token");
+      localStorage.removeItem("safety_easy_remembered_user");
+      localStorage.removeItem("safety_easy_remembered_token");
+      
+      // Hide navigation bar
+      const navBar = document.getElementById("app-nav-bar");
+      if (navBar) navBar.classList.add("hidden");
+      
+      // Redirect to login screen
+      navigateTo('login');
+      
+      // Clear typed PIN dots
+      clearPin();
+      
+      // Prompt warning
+      showToast("เซสชันหมดอายุ", "กรุณาเข้าสู่ระบบใหม่อีกครั้งเพื่อเชื่อมต่อระบบชีต", "fa-triangle-exclamation", "bg-rose-700 shadow-glow-red");
+      showCustomAlert("เซสชันหมดอายุ", message || "การเชื่อมต่อ Google Sheets หมดอายุหรือขัดข้อง กรุณาป้อนรหัส PIN เพื่อลงชื่อเข้าใช้งานใหม่อีกครั้งครับ", "warning");
     }
 
     async function loadAllUsersData() {
@@ -3864,6 +3893,10 @@
         try {
           const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getJobs&token=${encodeURIComponent(authToken)}`);
           const raw = await response.json();
+          if (raw?.status === "error" && (raw?.message?.includes("เซสชันหมดอายุ") || raw?.message?.includes("เข้าสู่ระบบใหม่"))) {
+            handleSessionExpired(raw.message);
+            return;
+          }
           const data = Array.isArray(raw) ? raw : (raw?.status === "success" && Array.isArray(raw?.data) ? raw.data : null);
           if (data) {
             // Initialize previousJobsCache on first load
@@ -3997,6 +4030,9 @@
         }
 
         lastSheetError = result.message || "";
+        if (result?.status === "error" && (result?.message?.includes("เซสชันหมดอายุ") || result?.message?.includes("เข้าสู่ระบบใหม่"))) {
+          handleSessionExpired(result.message);
+        }
         return result;   // ← return full result so callers can read photoAfterUrl etc.
       } catch (error) {
         clearTimeout(timeoutId);
@@ -5422,7 +5458,9 @@
       const rememberedUserStr = localStorage.getItem("safety_easy_remembered_user");
       const rememberedToken = localStorage.getItem("safety_easy_remembered_token");
       
-      if (rememberedUserStr && rememberedToken) {
+      const isOfflineToken = rememberedToken && rememberedToken.startsWith("OFFLINE_");
+      
+      if (rememberedUserStr && rememberedToken && (!isOfflineToken || !navigator.onLine)) {
         try {
           currentUser = JSON.parse(rememberedUserStr);
           authToken = rememberedToken;
@@ -5458,6 +5496,10 @@
           localStorage.removeItem("safety_easy_remembered_user");
           localStorage.removeItem("safety_easy_remembered_token");
         }
+      } else if (isOfflineToken && navigator.onLine) {
+        // Clear stale offline session to force secure online PIN login
+        localStorage.removeItem("safety_easy_remembered_user");
+        localStorage.removeItem("safety_easy_remembered_token");
       }
       
       // Fallback: If no auto-login, show splash screen as normal

@@ -261,7 +261,7 @@ function updateJob(sheet, rawData, currentUser) {
   if (rawData.status === "resolved") {
     requireRole(currentUser, ["admin", "supervisor", "subordinate"]);
     var assignedTo = String(sheet.getRange(rowIndex, 4).getValue() || "");
-    if (currentUser.role === "subordinate" && assignedTo !== currentUser.name) {
+    if (currentUser.role === "subordinate" && normalizeName(assignedTo) !== normalizeName(currentUser.name)) {
       throw new Error("คุณส่งผลการแก้ไขได้เฉพาะงานที่มอบหมายให้คุณ");
     }
     var afterUrl = persistPhoto(rawData.photoAfter, "AFTER_" + rawData.id);
@@ -274,7 +274,7 @@ function updateJob(sheet, rawData, currentUser) {
   } else if (rawData.status === "approved") {
     requireRole(currentUser, ["admin", "supervisor", "subordinate"]);
     var assignedToApprove = String(sheet.getRange(rowIndex, 4).getValue() || "");
-    if (currentUser.role === "subordinate" && assignedToApprove !== currentUser.name) {
+    if (currentUser.role === "subordinate" && normalizeName(assignedToApprove) !== normalizeName(currentUser.name)) {
       throw new Error("คุณปิดงานได้เฉพาะงานที่มอบหมายให้คุณ");
     }
     sheet.getRange(rowIndex, 8).setValue("approved");
@@ -383,6 +383,14 @@ function requireFields(data, fields) {
 function cleanText(value) {
   return String(value || "")
     .replace(/[<>&"'`]/g, "")
+    .trim();
+}
+
+function normalizeName(name) {
+  if (!name) return "";
+  return String(name)
+    .replace(/\s+/g, "")
+    .replace(/[ศ์ค์]/g, "")
     .trim();
 }
 
