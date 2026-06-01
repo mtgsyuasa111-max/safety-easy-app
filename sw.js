@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v20'; // v20: enforce reject explanation and rollback UI
+const CACHE_NAME = 'safety-easy-pro-v21'; // v21: refresh immediate modal-close behavior
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
