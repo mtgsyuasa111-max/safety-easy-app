@@ -1,349 +1,414 @@
 /**
- * PRODUCTION-READY GOOGLE APPS SCRIPT FOR SAFETY EASY APP
- * Deployed as: Web App (Execute as: Me, Who has access: Anyone)
- * Target Spreadsheet ID: 18fG-3MpRqiDe2EjJcdqqG_i6BdCEYFjdUqS4uYi6F3k
+ * Safety Easy backend.
+ * Deploy as a Web App: execute as owner, access allowed to anyone with the URL.
+ * Authorization is enforced by the application session token below.
  */
+const SHEET_ID = "18fG-3MpRqiDe2EjJcdqqG_i6BdCEYFjdUqS4uYi6F3k";
+const SHEET_NAME = "Jobs";
+const USERS_SHEET_NAME = "Users";
+const DEFAULT_DRIVE_FOLDER_ID = "12FzCcoLz2w7ETwHwFuL4h278vkbKd0WB";
+const SESSION_TTL_SECONDS = 21600;
 
-const SHEET_ID = "18fG-3MpRqiDe2EjJcdqqG_i6BdCEYFjdUqS4uYi6F3k"; // Target Sheet ID
-const SHEET_NAME = "Jobs"; // Using target tab name
-const DEFAULT_DRIVE_FOLDER_ID = "12FzCcoLz2w7ETwHwFuL4h278vkbKd0WB"; // รูปการลา — owned by mt.gs.yuasa111@gmail.com
-
-// Handle GET requests (For fetching jobs)
 function doGet(e) {
   try {
-    var action = e.parameter.action;
+    var action = String((e && e.parameter && e.parameter.action) || "");
+    var token = String((e && e.parameter && e.parameter.token) || "");
     var ss = SpreadsheetApp.openById(SHEET_ID);
-    
-    // Auto-detect or fetch Users
+
     if (action === "getUsers") {
-      var userSheet = ss.getSheetByName("Users") || ss.getSheets()[0];
-      var userData = userSheet.getDataRange().getValues();
-      var users = [];
-      for (var i = 1; i < userData.length; i++) {
-        var row = userData[i];
-        if (!row[0]) continue;
-        users.push({
-          id: String(row[0]),
-          name: String(row[1] || ""),
-          role: String(row[2] || "subordinate"),
-          area: String(row[3] || ""),
-          pinHash: String(row[4] || "")
-        });
-      }
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", data: users }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    if (action === "getJobs") {
-      var sheet = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
-      var data = sheet.getDataRange().getValues();
-      var jobs = [];
-      
-      for (var i = 1; i < data.length; i++) {
-        var row = data[i];
-        if (!row[0]) continue;
-        
-        var job = {
-          id: String(row[0]),
-          area: String(row[1] || ""),
-          reporter: String(row[2] || ""),
-          assignee: String(row[3] || ""),
-          issue: String(row[4] || ""),
-          suggestion: String(row[5] || ""),
-          taskType: String(row[6] || "safety"),
-          status: String(row[7] || "pending"),
-          photoBefore: String(row[8] || ""),
-          photoAfter: String(row[9] || ""),
-          createdAt: String(row[10] || ""),
-          resolvedAt: String(row[11] || ""),
-          resolvedBy: String(row[12] || ""),
-          notes: String(row[13] || ""),
-          approvedAt: String(row[14] || ""),
-          approvedBy: String(row[15] || "")
-        };
-        jobs.push(job);
-      }
-      
-      // Return plain array so app's Array.isArray() check passes
-      return ContentService.createTextOutput(JSON.stringify(jobs))
-        .setMimeType(ContentService.MimeType.JSON);
+      return jsonSuccess({ data: getPublicUsers(ss) });
     }
 
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Invalid GET action" }))
-      .setMimeType(ContentService.MimeType.JSON);
+    if (action === "getJobs") {
+      requireSession(token);
+      return jsonOutput(readJobs(ss));
+    }
+
+    return jsonError("Invalid GET action");
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonError(error.message || String(error));
   }
 }
 
-// Handle POST requests (Create, Update, Delete, Login)
 function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Empty request body" }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return jsonError("Empty request body");
     }
-    
+
     var payload = JSON.parse(e.postData.contents);
-    var action = payload.action;
-    var rawData = payload.data;
-    var folderId = payload.imageFolderId || DEFAULT_DRIVE_FOLDER_ID;
-    
+    var action = String(payload.action || "");
+    var rawData = payload.data || {};
     var ss = SpreadsheetApp.openById(SHEET_ID);
-    var sheet = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
-    
-    // Auth Validation Mock (Allows seamless connection)
+
     if (action === "login") {
-      var userSheet = ss.getSheetByName("Users");
-      var userData = userSheet.getDataRange().getValues();
-      var enteredPin = String(rawData.pin || "").trim();
-      // Compute SHA-256 of entered PIN for hash comparison (Rhino + V8 compatible)
-      var enteredPinHash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, enteredPin)
-        .map(function(b) { var h = (b < 0 ? b + 256 : b).toString(16); return h.length < 2 ? '0' + h : h; }).join('');
-      for (var i = 1; i < userData.length; i++) {
-        var storedId  = String(userData[i][0] || "").trim();
-        var storedPin = String(userData[i][4] || "").trim();
-        if (storedId !== String(rawData.id || "").trim()) continue;
-        // Accept: plain PIN match (≤8 chars) OR SHA-256 hash match (64 chars)
-        var isPlain = storedPin.length <= 8;
-        var matched = isPlain ? (storedPin === enteredPin) : (storedPin === enteredPinHash);
-        if (matched) {
-          return ContentService.createTextOutput(JSON.stringify({
-            status: "success",
-            token: "AUTH_" + Utilities.getUuid(),
-            user: {
-              id: String(userData[i][0]),
-              name: String(userData[i][1]),
-              role: String(userData[i][2]),
-              area: String(userData[i][3])
-            }
-          })).setMimeType(ContentService.MimeType.JSON);
-        }
-      }
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "ชื่อผู้ใช้หรือรหัส PIN ไม่ถูกต้อง" }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return login(ss, rawData);
     }
-    
+
     if (action === "getUsers") {
-      var userSheet = ss.getSheetByName("Users");
-      var userData = userSheet.getDataRange().getValues();
-      var users = [];
-      for (var i = 1; i < userData.length; i++) {
-        if (!userData[i][0]) continue;
-        users.push({
-          id:      String(userData[i][0]),
-          name:    String(userData[i][1] || ""),
-          role:    String(userData[i][2] || "subordinate"),
-          area:    String(userData[i][3] || ""),
-          pinHash: String(userData[i][4] || "")
-        });
-      }
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", data: users }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return jsonSuccess({ data: getPublicUsers(ss) });
     }
+
+    if (action === "verifySession") {
+      var verifiedUser = requireSession(payload.token);
+      return jsonSuccess({ user: verifiedUser });
+    }
+
+    var currentUser = requireSession(payload.token);
+    var sheet = getJobsSheet(ss);
 
     if (action === "getJobs") {
-      // Allow loading jobs via POST as fallback
-      var sheet = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
-      var data = sheet.getDataRange().getValues();
-      var jobs = [];
-      for (var i = 1; i < data.length; i++) {
-        var row = data[i];
-        if (!row[0]) continue;
-        jobs.push({
-          id: String(row[0]),
-          area: String(row[1] || ""),
-          reporter: String(row[2] || ""),
-          assignee: String(row[3] || ""),
-          issue: String(row[4] || ""),
-          suggestion: String(row[5] || ""),
-          taskType: String(row[6] || "safety"),
-          status: String(row[7] || "pending"),
-          photoBefore: String(row[8] || ""),
-          photoAfter: String(row[9] || ""),
-          createdAt: String(row[10] || ""),
-          resolvedAt: String(row[11] || ""),
-          resolvedBy: String(row[12] || ""),
-          notes: String(row[13] || ""),
-          approvedAt: String(row[14] || ""),
-          approvedBy: String(row[15] || "")
-        });
-      }
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", data: jobs }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return jsonSuccess({ data: readJobs(ss) });
     }
-    
+
     if (action === "create") {
-      // Process Before image: try Drive upload, auto-fallback to inline base64 on failure
-      var beforeUrl = "";
-      if (rawData.photoBefore && rawData.photoBefore.indexOf("data:image/") === 0) {
-        beforeUrl = uploadBase64ToDrive(rawData.photoBefore, "BEFORE_" + rawData.id, folderId);
-      } else {
-        beforeUrl = rawData.photoBefore || "";
-      }
-      
-      // Append row in exact order matching headers
-      sheet.appendRow([
-        rawData.id,
-        rawData.area,
-        rawData.reporter,
-        rawData.assignee,
-        rawData.issue,
-        rawData.suggestion,
-        rawData.taskType || "safety",
-        rawData.status || "pending",
-        beforeUrl,
-        "", // photoAfter (empty on create)
-        rawData.createdAt,
-        "", // resolvedAt
-        "", // resolvedBy
-        "", // notes
-        "", // approvedAt
-        ""  // approvedBy
-      ]);
-      
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success", id: rawData.id,
-        photoBeforeUrl: beforeUrl || null
-      })).setMimeType(ContentService.MimeType.JSON);
-
-    } else if (action === "update") {
-      var allData = sheet.getDataRange().getValues();
-      var rowIndex = -1;
-      
-      // Fast lookup matching ID in Column A
-      for (var i = 1; i < allData.length; i++) {
-        if (String(allData[i][0]) === String(rawData.id)) {
-          rowIndex = i + 1; // 1-based index including header
-          break;
-        }
-      }
-      
-      if (rowIndex === -1) {
-        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Case ID not found in sheet: " + rawData.id }))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
-      
-      // Update fields based on status
-      if (rawData.status === "resolved") {
-        var afterUrl = "";
-        if (rawData.photoAfter && rawData.photoAfter.indexOf("data:image/") === 0) {
-          afterUrl = uploadBase64ToDrive(rawData.photoAfter, "AFTER_" + rawData.id, folderId);
-        } else {
-          afterUrl = rawData.photoAfter || "";
-        }
-
-        sheet.getRange(rowIndex, 8).setValue("resolved");       // Column H (8): Status
-        if (afterUrl) {
-          sheet.getRange(rowIndex, 10).setValue(afterUrl);      // Column J (10): photoAfter
-        }
-        sheet.getRange(rowIndex, 12).setValue(rawData.resolvedAt); // Column L (12): resolvedAt
-        sheet.getRange(rowIndex, 13).setValue(rawData.resolvedBy || "Operator"); // Column M (13): resolvedBy
-        sheet.getRange(rowIndex, 14).setValue(rawData.notes || "แก้ไขความปลอดภัยหน้างานเรียบร้อย"); // Column N (14): Notes
-        
-      } else if (rawData.status === "approved") {
-        sheet.getRange(rowIndex, 8).setValue("approved");       // Column H (8): Status
-        sheet.getRange(rowIndex, 15).setValue(rawData.approvedAt); // Column O (15): approvedAt
-        sheet.getRange(rowIndex, 16).setValue(rawData.approvedBy || "Admin"); // Column P (16): approvedBy
-      } else if (rawData.status === "rejected") {
-        var reason = rawData.rejectionReason || "ไม่ผ่านการตรวจสอบ กรุณาตรวจสอบและดำเนินการแก้ไขใหม่อีกครั้ง";
-        sheet.getRange(rowIndex, 8).setValue("pending");       // Column H (8): Status -> pending
-        sheet.getRange(rowIndex, 10).setValue("");             // Column J (10): photoAfter -> empty
-        sheet.getRange(rowIndex, 12).setValue("");             // Column L (12): resolvedAt -> empty
-        sheet.getRange(rowIndex, 13).setValue("");             // Column M (13): resolvedBy -> empty
-        sheet.getRange(rowIndex, 14).setValue("❌ ตีกลับ: " + reason); // Column N (14): Notes -> Rejection Reason
-      }
-      
-      // Include photoAfterUrl in response so client can replace base64 with Drive link
-      var respObj = { status: "success", id: rawData.id };
-      if (rawData.status === "resolved" && afterUrl) {
-        respObj.photoAfterUrl = afterUrl;
-      }
-      return ContentService.createTextOutput(JSON.stringify(respObj))
-        .setMimeType(ContentService.MimeType.JSON);
-        
-    } else if (action === "updateUser") {
-      var userSheet = ss.getSheetByName("Users") || ss.getSheets()[0];
-      var userData = userSheet.getDataRange().getValues();
-      var rowIndex = -1;
-      
-      for (var i = 1; i < userData.length; i++) {
-        if (String(userData[i][0]) === String(rawData.id)) {
-          rowIndex = i + 1; // 1-based index including header
-          break;
-        }
-      }
-      
-      if (rowIndex === -1) {
-        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "User ID not found: " + rawData.id }))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
-      
-      // Update Column 4 (D): Area and Column 5 (E): PIN
-      if (rawData.area !== undefined) {
-        userSheet.getRange(rowIndex, 4).setValue(rawData.area);
-      }
-      if (rawData.pin !== undefined) {
-        userSheet.getRange(rowIndex, 5).setValue(String(rawData.pin));
-      }
-      
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "User updated successfully" }))
-        .setMimeType(ContentService.MimeType.JSON);
-        
-    } else if (action === "delete") {
-      var allData = sheet.getDataRange().getValues();
-      for (var i = 1; i < allData.length; i++) {
-        if (String(allData[i][0]) === String(rawData.id)) {
-          sheet.deleteRow(i + 1);
-          return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Deleted row" }))
-            .setMimeType(ContentService.MimeType.JSON);
-        }
-      }
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "ID not found to delete" }))
-        .setMimeType(ContentService.MimeType.JSON);
+      requireRole(currentUser, ["admin", "supervisor"]);
+      return createJob(sheet, rawData);
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Unsupported action" }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
+
+    if (action === "update") {
+      return updateJob(sheet, rawData, currentUser);
+    }
+
+    if (action === "updateUser") {
+      requireRole(currentUser, ["admin"]);
+      return updateUser(ss, rawData);
+    }
+
+    if (action === "createUser") {
+      requireRole(currentUser, ["admin"]);
+      return createUser(ss, rawData);
+    }
+
+    if (action === "deleteUser") {
+      requireRole(currentUser, ["admin"]);
+      return deleteUser(ss, rawData);
+    }
+
+    if (action === "delete") {
+      requireRole(currentUser, ["admin", "supervisor"]);
+      return deleteJob(sheet, rawData);
+    }
+
+    return jsonError("Unsupported action");
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonError(error.message || String(error));
   }
 }
 
-// Helper: Decode Base64 and upload to Google Drive
-function uploadBase64ToDrive(base64Data, baseFileName, folderId) {
-  try {
-    var targetFolder = folderId || DEFAULT_DRIVE_FOLDER_ID;
-    var parts = base64Data.split(",");
-    var mimeType = "image/jpeg";
-    var ext = "jpg";
-    var b64Data = parts[0];
+function login(ss, rawData) {
+  var userSheet = getUsersSheet(ss);
+  var userData = userSheet.getDataRange().getValues();
+  var enteredId = String(rawData.id || "").trim();
+  var enteredPin = String(rawData.pin || "").trim();
+  var enteredPinHash = hashPin(enteredPin);
 
-    if (parts.length > 1) {
-      b64Data = parts[1];
-      var matches = parts[0].match(/data:(.*?);/);
-      if (matches) {
-        mimeType = matches[1];
-        if (mimeType.indexOf("png") !== -1) ext = "png";
-        else if (mimeType.indexOf("webp") !== -1) ext = "webp";
-      }
+  for (var i = 1; i < userData.length; i++) {
+    var storedId = String(userData[i][0] || "").trim();
+    var storedPin = String(userData[i][4] || "").trim();
+    if (storedId !== enteredId) continue;
+    if (userData[i][5] === false) break;
+
+    var isLegacyPlainPin = storedPin.length > 0 && storedPin.length <= 8;
+    var matched = isLegacyPlainPin ? storedPin === enteredPin : storedPin === enteredPinHash;
+    if (!matched) break;
+
+    // Transparently migrate legacy plain-text PINs on successful login.
+    if (isLegacyPlainPin) {
+      userSheet.getRange(i + 1, 5).setValue(enteredPinHash);
     }
 
-    var decoded = Utilities.base64Decode(b64Data);
-    var blob = Utilities.newBlob(decoded, mimeType, baseFileName + "." + ext);
-
-    var folder = DriveApp.getFolderById(targetFolder);
-    var file = folder.createFile(blob);
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    
-    // Returns previewable direct link matching client requirements
-    return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w800";
-  } catch (ex) {
-    Logger.log("Drive upload fail: " + ex.toString());
-    // Drive failed — return the base64 data directly so caller stores it in cell
-    return base64Data;
+    var user = {
+      id: storedId,
+      name: String(userData[i][1] || ""),
+      role: String(userData[i][2] || "subordinate"),
+      area: String(userData[i][3] || "")
+    };
+    var token = "AUTH_" + Utilities.getUuid();
+    CacheService.getScriptCache().put(sessionKey(token), JSON.stringify(user), SESSION_TTL_SECONDS);
+    return jsonSuccess({ token: token, user: user });
   }
+
+  return jsonError("ชื่อผู้ใช้หรือรหัส PIN ไม่ถูกต้อง");
+}
+
+function requireSession(token) {
+  var cleanToken = String(token || "").trim();
+  if (!cleanToken) throw new Error("กรุณาเข้าสู่ระบบใหม่");
+
+  var cache = CacheService.getScriptCache();
+  var value = cache.get(sessionKey(cleanToken));
+  if (!value) throw new Error("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+
+  // Sliding expiry while the user is active.
+  cache.put(sessionKey(cleanToken), value, SESSION_TTL_SECONDS);
+  return JSON.parse(value);
+}
+
+function requireRole(user, allowedRoles) {
+  if (!user || allowedRoles.indexOf(user.role) === -1) {
+    throw new Error("คุณไม่มีสิทธิ์ดำเนินการนี้");
+  }
+}
+
+function sessionKey(token) {
+  return "SESSION_" + token;
+}
+
+function hashPin(pin) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(pin || ""))
+    .map(function(b) {
+      var hex = (b < 0 ? b + 256 : b).toString(16);
+      return hex.length < 2 ? "0" + hex : hex;
+    })
+    .join("");
+}
+
+function getPublicUsers(ss) {
+  var data = getUsersSheet(ss).getDataRange().getValues();
+  var users = [];
+  for (var i = 1; i < data.length; i++) {
+    if (!data[i][0] || data[i][5] === false) continue;
+    users.push({
+      id: String(data[i][0]),
+      name: cleanText(data[i][1]),
+      role: String(data[i][2] || "subordinate"),
+      area: cleanText(data[i][3])
+    });
+  }
+  return users;
+}
+
+function readJobs(ss) {
+  var data = getJobsSheet(ss).getDataRange().getValues();
+  var jobs = [];
+  for (var i = 1; i < data.length; i++) {
+    if (!data[i][0]) continue;
+    jobs.push(rowToJob(data[i]));
+  }
+  return jobs;
+}
+
+function rowToJob(row) {
+  return {
+    id: String(row[0] || ""),
+    area: cleanText(row[1]),
+    reporter: cleanText(row[2]),
+    assignee: cleanText(row[3]),
+    issue: cleanText(row[4]),
+    suggestion: cleanText(row[5]),
+    taskType: String(row[6] || "safety"),
+    status: String(row[7] || "pending"),
+    photoBefore: String(row[8] || ""),
+    photoAfter: String(row[9] || ""),
+    createdAt: String(row[10] || ""),
+    resolvedAt: String(row[11] || ""),
+    resolvedBy: cleanText(row[12]),
+    notes: cleanText(row[13]),
+    approvedAt: String(row[14] || ""),
+    approvedBy: cleanText(row[15])
+  };
+}
+
+function createJob(sheet, rawData) {
+  requireFields(rawData, ["id", "area", "reporter", "assignee", "issue", "suggestion", "createdAt"]);
+  var existingRow = findRowById(sheet, rawData.id);
+  if (existingRow !== -1) {
+    return jsonSuccess({ id: rawData.id, alreadyExists: true });
+  }
+
+  var beforeUrl = persistPhoto(rawData.photoBefore, "BEFORE_" + rawData.id);
+  sheet.appendRow([
+    rawData.id,
+    cleanText(rawData.area),
+    cleanText(rawData.reporter),
+    cleanText(rawData.assignee),
+    cleanText(rawData.issue),
+    cleanText(rawData.suggestion),
+    rawData.taskType || "safety",
+    rawData.status || "pending",
+    beforeUrl,
+    "",
+    rawData.createdAt,
+    "",
+    "",
+    "",
+    "",
+    ""
+  ]);
+  return jsonSuccess({ id: rawData.id, photoBeforeUrl: beforeUrl });
+}
+
+function updateJob(sheet, rawData, currentUser) {
+  requireFields(rawData, ["id"]);
+  var rowIndex = findRowById(sheet, rawData.id);
+  if (rowIndex === -1) throw new Error("Case ID not found in sheet: " + rawData.id);
+
+  if (rawData.taskType !== undefined) {
+    requireRole(currentUser, ["admin"]);
+    var taskType = String(rawData.taskType);
+    if (taskType !== "safety" && taskType !== "5s") throw new Error("Invalid taskType");
+    sheet.getRange(rowIndex, 7).setValue(taskType);
+  }
+
+  if (rawData.area !== undefined || rawData.assignee !== undefined) {
+    requireRole(currentUser, ["admin", "supervisor"]);
+    if (rawData.area !== undefined) sheet.getRange(rowIndex, 2).setValue(cleanText(rawData.area));
+    if (rawData.assignee !== undefined) sheet.getRange(rowIndex, 4).setValue(cleanText(rawData.assignee));
+  }
+
+  var response = { id: rawData.id };
+  if (rawData.status === "resolved") {
+    requireRole(currentUser, ["admin", "supervisor", "subordinate"]);
+    var assignedTo = String(sheet.getRange(rowIndex, 4).getValue() || "");
+    if (currentUser.role === "subordinate" && assignedTo !== currentUser.name) {
+      throw new Error("คุณส่งผลการแก้ไขได้เฉพาะงานที่มอบหมายให้คุณ");
+    }
+    var afterUrl = persistPhoto(rawData.photoAfter, "AFTER_" + rawData.id);
+    sheet.getRange(rowIndex, 8).setValue("resolved");
+    sheet.getRange(rowIndex, 10).setValue(afterUrl);
+    sheet.getRange(rowIndex, 12).setValue(rawData.resolvedAt || "");
+    sheet.getRange(rowIndex, 13).setValue(rawData.resolvedBy || currentUser.name);
+    sheet.getRange(rowIndex, 14).setValue(cleanText(rawData.notes || "แก้ไขความปลอดภัยหน้างานเรียบร้อย"));
+    response.photoAfterUrl = afterUrl;
+  } else if (rawData.status === "approved") {
+    requireRole(currentUser, ["admin", "supervisor", "subordinate"]);
+    var assignedToApprove = String(sheet.getRange(rowIndex, 4).getValue() || "");
+    if (currentUser.role === "subordinate" && assignedToApprove !== currentUser.name) {
+      throw new Error("คุณปิดงานได้เฉพาะงานที่มอบหมายให้คุณ");
+    }
+    sheet.getRange(rowIndex, 8).setValue("approved");
+    sheet.getRange(rowIndex, 15).setValue(rawData.approvedAt || "");
+    sheet.getRange(rowIndex, 16).setValue(rawData.approvedBy || currentUser.name);
+  } else if (rawData.status === "rejected") {
+    requireRole(currentUser, ["admin", "supervisor"]);
+    var reason = String(rawData.rejectionReason || "").trim();
+    if (!reason) throw new Error("กรุณาระบุเหตุผลที่ตีกลับงาน");
+    sheet.getRange(rowIndex, 8).setValue("pending");
+    sheet.getRange(rowIndex, 10).setValue("");
+    sheet.getRange(rowIndex, 12).setValue("");
+    sheet.getRange(rowIndex, 13).setValue("");
+    sheet.getRange(rowIndex, 14).setValue("ตีกลับ: " + cleanText(reason));
+    sheet.getRange(rowIndex, 15).setValue("");
+    sheet.getRange(rowIndex, 16).setValue("");
+  }
+  return jsonSuccess(response);
+}
+
+function updateUser(ss, rawData) {
+  requireFields(rawData, ["id"]);
+  var sheet = getUsersSheet(ss);
+  var rowIndex = findRowById(sheet, rawData.id);
+  if (rowIndex === -1) throw new Error("User ID not found: " + rawData.id);
+
+  if (rawData.area !== undefined) sheet.getRange(rowIndex, 4).setValue(cleanText(rawData.area));
+  if (rawData.pin !== undefined) sheet.getRange(rowIndex, 5).setValue(hashPin(rawData.pin));
+  return jsonSuccess({ message: "User updated successfully" });
+}
+
+function createUser(ss, rawData) {
+  requireFields(rawData, ["id", "name", "role", "area", "pin"]);
+  var sheet = getUsersSheet(ss);
+  if (findRowById(sheet, rawData.id) !== -1) throw new Error("User ID already exists: " + rawData.id);
+  sheet.appendRow([rawData.id, cleanText(rawData.name), rawData.role, cleanText(rawData.area), hashPin(rawData.pin), true]);
+  return jsonSuccess({ id: rawData.id });
+}
+
+function deleteUser(ss, rawData) {
+  requireFields(rawData, ["id"]);
+  var sheet = getUsersSheet(ss);
+  var rowIndex = findRowById(sheet, rawData.id);
+  if (rowIndex === -1) throw new Error("User ID not found: " + rawData.id);
+  sheet.deleteRow(rowIndex);
+  return jsonSuccess({ message: "User deleted successfully" });
+}
+
+function deleteJob(sheet, rawData) {
+  requireFields(rawData, ["id"]);
+  var rowIndex = findRowById(sheet, rawData.id);
+  if (rowIndex === -1) throw new Error("ID not found to delete");
+  sheet.deleteRow(rowIndex);
+  return jsonSuccess({ message: "Deleted row" });
+}
+
+function persistPhoto(photoValue, baseFileName) {
+  var value = String(photoValue || "").trim();
+  if (!value) throw new Error("กรุณาแนบรูปภาพ");
+  if (value.indexOf("data:image/") === 0) return uploadBase64ToDrive(value, baseFileName);
+  if (/^https:\/\/drive\.google\.com\//i.test(value)) return value;
+  throw new Error("รูปภาพต้องอัปโหลดจากกล้องหรือเป็น URL จาก Google Drive");
+}
+
+function uploadBase64ToDrive(base64Data, baseFileName) {
+  var parts = String(base64Data || "").split(",");
+  if (parts.length !== 2) throw new Error("รูปภาพ Base64 ไม่ถูกต้อง");
+
+  var mimeMatch = parts[0].match(/^data:(image\/(?:jpeg|png|webp));base64$/i);
+  if (!mimeMatch) throw new Error("รองรับเฉพาะรูป JPG, PNG หรือ WEBP");
+
+  var mimeType = mimeMatch[1].toLowerCase();
+  var ext = mimeType.indexOf("png") !== -1 ? "png" : mimeType.indexOf("webp") !== -1 ? "webp" : "jpg";
+  var decoded = Utilities.base64Decode(parts[1]);
+  var blob = Utilities.newBlob(decoded, mimeType, baseFileName + "." + ext);
+  var file = DriveApp.getFolderById(DEFAULT_DRIVE_FOLDER_ID).createFile(blob);
+  try {
+    // Folder permissions are inherited by the new file. Avoid the slow
+    // per-file sharing update so the client receives its response promptly.
+  } catch (error) {
+    // Keep the Drive upload when Workspace policy blocks explicit public sharing.
+    Logger.log("Drive public sharing skipped: " + error.message);
+    return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w1200";
+    file.setTrashed(true);
+    throw new Error("อัปโหลดรูปได้แต่เปิดสิทธิ์ให้เครื่องอื่นดูไม่ได้: " + error.message);
+  }
+  return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w1200";
+}
+
+function findRowById(sheet, id) {
+  var values = sheet.getDataRange().getValues();
+  for (var i = 1; i < values.length; i++) {
+    if (String(values[i][0]) === String(id)) return i + 1;
+  }
+  return -1;
+}
+
+function requireFields(data, fields) {
+  fields.forEach(function(field) {
+    if (data[field] === undefined || data[field] === null || String(data[field]).trim() === "") {
+      throw new Error("Missing required field: " + field);
+    }
+  });
+}
+
+function cleanText(value) {
+  return String(value || "")
+    .replace(/[<>&"'`]/g, "")
+    .trim();
+}
+
+function getJobsSheet(ss) {
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) throw new Error("Jobs sheet not found");
+  return sheet;
+}
+
+function getUsersSheet(ss) {
+  var sheet = ss.getSheetByName(USERS_SHEET_NAME);
+  if (!sheet) throw new Error("Users sheet not found");
+  return sheet;
+}
+
+function jsonSuccess(extra) {
+  var result = { status: "success" };
+  Object.keys(extra || {}).forEach(function(key) { result[key] = extra[key]; });
+  return jsonOutput(result);
+}
+
+function jsonError(message) {
+  return jsonOutput({ status: "error", message: String(message || "Unknown error") });
+}
+
+function jsonOutput(value) {
+  return ContentService.createTextOutput(JSON.stringify(value))
+    .setMimeType(ContentService.MimeType.JSON);
 }

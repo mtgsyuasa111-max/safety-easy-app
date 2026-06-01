@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v25'; // v25: filter supervisor jobs by task type
+const CACHE_NAME = 'safety-easy-pro-v26'; // v26: admin task type metadata editing
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
