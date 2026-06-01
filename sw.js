@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v26'; // v26: admin task type metadata editing
+const CACHE_NAME = 'safety-easy-pro-v27'; // v27: premium photo submission loading overlays and exit animations
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

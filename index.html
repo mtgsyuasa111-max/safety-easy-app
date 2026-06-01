@@ -297,6 +297,57 @@
     @media (min-width: 1280px) {
       .lg-job-grid { grid-template-columns: repeat(3, 1fr); }
     }
+
+    /* Premium Animations & Modal Transitions */
+    @keyframes scale-up {
+      0% { transform: scale(0.95); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-scale-up {
+      animation: scale-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    
+    @keyframes success-pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-success-pop {
+      animation: success-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes rotate-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .animate-rotate-slow {
+      animation: rotate-slow 8s linear infinite;
+    }
+
+    @keyframes radial-pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
+      }
+      70% {
+        box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+    .radial-pulse-active {
+      animation: radial-pulse 1.8s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    }
+
+    @keyframes success-pop-bounce {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.15); opacity: 0.9; }
+      70% { transform: scale(0.95); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-success-pop-bounce {
+      animation: success-pop-bounce 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-tr from-slate-100 via-teal-50/20 to-slate-200 dark:bg-[radial-gradient(circle_at_top_left,#064e3b_0,#0f172a_38%,#020617_100%)] flex justify-center items-start lg:items-stretch min-h-screen text-slate-800 dark:text-slate-100 p-0 sm:p-4 lg:p-0 transition-colors duration-300">
@@ -1172,8 +1223,8 @@
     <!-- ============================================= -->
 
     <!-- MODAL 1: NEW SAFETY AUDIT FORM -->
-    <div id="modal-audit" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end lg:items-center lg:justify-center lg:p-6 hidden z-50 transition duration-300">
-      <div class="bg-[#090d16] rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:border lg:border-white/10 lg:max-w-2xl lg:w-full lg:my-auto lg:shadow-2xl p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl">
+    <div id="modal-audit" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end lg:items-center lg:justify-center lg:p-6 hidden z-50 transition-all duration-300 opacity-0 pointer-events-none">
+      <div id="modal-audit-dialog" class="relative bg-[#090d16] rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:border lg:border-white/10 lg:max-w-2xl lg:w-full lg:my-auto lg:shadow-2xl p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl transform transition-all duration-300 scale-95 opacity-0">
         
         <div class="flex justify-between items-center mb-5">
           <div class="flex items-center space-x-3">
@@ -1281,12 +1332,38 @@
           <span id="txt-btn-save">บันทึกข้อมูลและรายงานระบบ</span>
         </button>
 
+        <!-- Premium Loading & Success Overlay -->
+        <div id="audit-loading-overlay" class="absolute inset-0 bg-[#090d16]/95 backdrop-blur-md rounded-t-[2.5rem] lg:rounded-[2.5rem] z-[60] flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-500">
+          <!-- Spinner & Pulse Rings -->
+          <div class="relative flex items-center justify-center w-28 h-28 mb-6">
+            <!-- Outer Pulse Ring 1 -->
+            <div class="absolute inset-0 rounded-full bg-emerald-500/10 animate-ping opacity-75"></div>
+            <!-- Outer Pulse Ring 2 -->
+            <div class="absolute inset-2 rounded-full bg-emerald-500/20 animate-pulse"></div>
+            <!-- Glow effect -->
+            <div class="absolute inset-4 rounded-full bg-emerald-500/5 shadow-glow-green"></div>
+            <!-- Spinner Icon Container -->
+            <div id="audit-status-icon-container" class="relative z-10 w-16 h-16 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center shadow-lg">
+              <i id="audit-status-icon" class="fa-solid fa-cloud-arrow-up text-2xl text-emerald-400 animate-bounce"></i>
+            </div>
+          </div>
+          
+          <!-- Loading Text / Status -->
+          <h4 id="audit-loading-title" class="text-lg font-black text-white tracking-wide mb-2">กำลังส่งรายงาน...</h4>
+          <p id="audit-loading-subtitle" class="text-xs text-slate-400 text-center max-w-xs leading-relaxed">ระบบกำลังอัปโหลดรูปภาพความปลอดภัยและซิงก์ข้อมูลขึ้น Google Sheets</p>
+          
+          <!-- Animated Progress Bar -->
+          <div class="w-48 h-1.5 bg-slate-900 border border-white/5 rounded-full overflow-hidden mt-6">
+            <div id="audit-loading-bar" class="h-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green rounded-full transition-all duration-300" style="width: 15%"></div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <!-- MODAL 2: RESOLVE FORM (AFTER PHOTO & REMARKS) -->
-    <div id="modal-resolve" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end lg:items-center lg:justify-center lg:p-6 hidden z-50 transition duration-300">
-      <div class="bg-[#090d16] rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:border lg:border-white/10 lg:max-w-2xl lg:w-full lg:my-auto lg:shadow-2xl p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl">
+    <div id="modal-resolve" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end lg:items-center lg:justify-center lg:p-6 hidden z-50 transition-all duration-300 opacity-0 pointer-events-none">
+      <div id="modal-resolve-dialog" class="relative bg-[#090d16] rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:border lg:border-white/10 lg:max-w-2xl lg:w-full lg:my-auto lg:shadow-2xl p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl transform transition-all duration-300 scale-95 opacity-0">
         
         <div class="flex justify-between items-center mb-5">
           <div class="flex items-center space-x-3">
@@ -1366,6 +1443,32 @@
           <i class="fa-solid fa-circle-check"></i>
           <span>ส่งรายงานผลการแก้ไข (Send & Wait Verification)</span>
         </button>
+
+        <!-- Premium Loading & Success Overlay -->
+        <div id="resolve-loading-overlay" class="absolute inset-0 bg-[#090d16]/95 backdrop-blur-md rounded-t-[2.5rem] lg:rounded-[2.5rem] z-[60] flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-500">
+          <!-- Spinner & Pulse Rings -->
+          <div class="relative flex items-center justify-center w-28 h-28 mb-6">
+            <!-- Outer Pulse Ring 1 -->
+            <div class="absolute inset-0 rounded-full bg-emerald-500/10 animate-ping opacity-75"></div>
+            <!-- Outer Pulse Ring 2 -->
+            <div class="absolute inset-2 rounded-full bg-emerald-500/20 animate-pulse"></div>
+            <!-- Glow effect -->
+            <div class="absolute inset-4 rounded-full bg-emerald-500/5 shadow-glow-green"></div>
+            <!-- Spinner Icon Container -->
+            <div id="resolve-status-icon-container" class="relative z-10 w-16 h-16 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center shadow-lg">
+              <i id="resolve-status-icon" class="fa-solid fa-cloud-arrow-up text-2xl text-emerald-400 animate-bounce"></i>
+            </div>
+          </div>
+          
+          <!-- Loading Text / Status -->
+          <h4 id="resolve-loading-title" class="text-lg font-black text-white tracking-wide mb-2">กำลังส่งผลงานแก้ไข...</h4>
+          <p id="resolve-loading-subtitle" class="text-xs text-slate-400 text-center max-w-xs leading-relaxed">ระบบกำลังอัปโหลดภาพ After และปิดใบงานความปลอดภัย</p>
+          
+          <!-- Animated Progress Bar -->
+          <div class="w-48 h-1.5 bg-slate-900 border border-white/5 rounded-full overflow-hidden mt-6">
+            <div id="resolve-loading-bar" class="h-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green rounded-full transition-all duration-300" style="width: 15%"></div>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -4204,7 +4307,14 @@
 
     // Modal Control: Audit
     function openNewAuditModal() {
-      document.getElementById("modal-audit").classList.remove("hidden");
+      // Hide any previous loading overlay state
+      const overlay = document.getElementById("audit-loading-overlay");
+      overlay.classList.add("opacity-0", "pointer-events-none");
+      overlay.classList.remove("opacity-100", "pointer-events-auto");
+
+      const modal = document.getElementById("modal-audit");
+      const dialog = document.getElementById("modal-audit-dialog");
+      
       setAuditWorkType(currentSupervisorWorkType);
       autoSelectResponsiblePerson();
       
@@ -4213,11 +4323,40 @@
       document.getElementById("before-preview").classList.add("hidden");
       document.getElementById("before-placeholder").classList.remove("hidden");
       selectedBeforePhoto = null;
+
+      // Reset transition styles if modified by success close
+      dialog.style.transition = "";
+      modal.style.transition = "";
+
+      // Show outer modal with CSS transition
+      modal.classList.remove("hidden");
+      modal.offsetHeight; // Force reflow
+      
+      modal.classList.remove("opacity-0", "pointer-events-none");
+      modal.classList.add("opacity-100", "pointer-events-auto");
+      
+      // Animate inner dialog scale/fade in
+      dialog.classList.remove("scale-95", "scale-90", "opacity-0");
+      dialog.classList.add("scale-100", "opacity-100");
     }
 
     function closeNewAuditModal() {
       stopQRScanner();
-      document.getElementById("modal-audit").classList.add("hidden");
+      
+      const modal = document.getElementById("modal-audit");
+      const dialog = document.getElementById("modal-audit-dialog");
+      
+      // Animate out
+      modal.classList.remove("opacity-100", "pointer-events-auto");
+      modal.classList.add("opacity-0", "pointer-events-none");
+      
+      dialog.classList.remove("scale-100", "opacity-100");
+      dialog.classList.add("scale-95", "opacity-0");
+      
+      // Hide from display after transition completes
+      setTimeout(() => {
+        modal.classList.add("hidden");
+      }, 300);
     }
 
     function setAuditWorkType(type) {
@@ -4280,12 +4419,46 @@
       selectedAfterPhoto = null;
       currentPhotoTarget = 'after';
 
-      document.getElementById("modal-resolve").classList.remove("hidden");
+      // Hide any previous loading overlay state
+      const overlay = document.getElementById("resolve-loading-overlay");
+      overlay.classList.add("opacity-0", "pointer-events-none");
+      overlay.classList.remove("opacity-100", "pointer-events-auto");
+
+      const modal = document.getElementById("modal-resolve");
+      const dialog = document.getElementById("modal-resolve-dialog");
+
+      // Reset transition styles if modified by success close
+      dialog.style.transition = "";
+      modal.style.transition = "";
+
+      // Show outer modal with CSS transition
+      modal.classList.remove("hidden");
+      modal.offsetHeight; // Force reflow
+      
+      modal.classList.remove("opacity-0", "pointer-events-none");
+      modal.classList.add("opacity-100", "pointer-events-auto");
+      
+      // Animate inner dialog scale/fade in
+      dialog.classList.remove("scale-95", "scale-90", "opacity-0");
+      dialog.classList.add("scale-100", "opacity-100");
     }
 
     function closeResolveModal() {
-      document.getElementById("modal-resolve").classList.add("hidden");
-      activeJobForResolve = null;
+      const modal = document.getElementById("modal-resolve");
+      const dialog = document.getElementById("modal-resolve-dialog");
+      
+      // Animate out
+      modal.classList.remove("opacity-100", "pointer-events-auto");
+      modal.classList.add("opacity-0", "pointer-events-none");
+      
+      dialog.classList.remove("scale-100", "opacity-100");
+      dialog.classList.add("scale-95", "opacity-0");
+      
+      // Hide from display after transition completes
+      setTimeout(() => {
+        modal.classList.add("hidden");
+        activeJobForResolve = null;
+      }, 300);
     }
 
     // --- PHOTO NORMALIZATIONS ---
@@ -4364,10 +4537,42 @@
         return;
       }
 
+      // Show Premium Loading Overlay & animate
+      const overlay = document.getElementById("audit-loading-overlay");
+      const icon = document.getElementById("audit-status-icon");
+      const iconContainer = document.getElementById("audit-status-icon-container");
+      const title = document.getElementById("audit-loading-title");
+      const subtitle = document.getElementById("audit-loading-subtitle");
+      const bar = document.getElementById("audit-loading-bar");
+
+      overlay.classList.remove("opacity-0", "pointer-events-none");
+      overlay.classList.add("opacity-100", "pointer-events-auto");
+
+      // Reset loading overlay state to premium spinner
+      iconContainer.className = "relative z-10 w-16 h-16 rounded-full bg-slate-900 border border-emerald-500/30 flex items-center justify-center shadow-lg radial-pulse-active transition-all duration-300";
+      icon.className = "fa-solid fa-spinner text-2xl text-emerald-400 animate-spin";
+      
       const btn = document.getElementById("btn-save-audit");
       const txt = document.getElementById("txt-btn-save");
       btn.disabled = true;
-      txt.innerText = "กำลังอัปโหลดรูป + ส่งข้อมูลขึ้น Sheet...";
+      txt.innerText = "กำลังส่งข้อมูล...";
+
+      // Step 1: Photo Compression (บีบอัดรูปภาพ)
+      bar.style.width = "15%";
+      title.innerText = "บีบอัดรูปภาพความปลอดภัย...";
+      subtitle.innerText = "[1/3] กำลังเตรียมและบีบอัดรูปภาพก่อนแก้ไข (Before) เพื่อประสิทธิภาพสูงสุด...";
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      // Step 2: Upload to Cloud (อัปโหลดขึ้น Google Sheet)
+      bar.style.width = "45%";
+      title.innerText = "อัปโหลดภาพขึ้นระบบคลาวด์...";
+      subtitle.innerText = "[2/3] กำลังส่งรูปภาพเหตุชำรุดขึ้นระบบความปลอดภัยระบบคลาวด์...";
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      // Step 3: Database Sync (บันทึกข้อมูลและซิงก์ฐานข้อมูล)
+      bar.style.width = "75%";
+      title.innerText = "บันทึกและเชื่อมโยงใบงาน...";
+      subtitle.innerText = "[3/3] กำลังเปิดใบงานใหม่และซิงก์ข้อมูลลง Google Sheets...";
 
       // Case ID format: SF-YYYYMMDD-HHMMSS
       const now = new Date();
@@ -4403,6 +4608,11 @@
         // ล้มเหลว — คืน button ให้ user กดใหม่ได้ ไม่เซฟลงเครื่อง และไม่ปิด modal
         btn.disabled = false;
         txt.innerText = "บันทึกข้อมูลและรายงานระบบ";
+        
+        // Hide loading overlay smoothly
+        overlay.classList.remove("opacity-100", "pointer-events-auto");
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        
         showToast("อัปโหลดไม่สำเร็จ", `ไม่สามารถส่งข้อมูลได้: ${lastSheetError || 'ตรวจสอบอินเทอร์เน็ตและลองใหม่'}`, "fa-triangle-exclamation", "bg-rose-700");
         return; // ไม่ปิด modal ให้ retry
       }
@@ -4421,14 +4631,49 @@
       btn.classList.add("bg-emerald-600");
       txt.innerText = "✅ ส่งสำเร็จแล้ว!";
 
+      // Show Success State on Overlay: glowing success badge with pop/bounce micro-animations
+      iconContainer.className = "relative z-10 w-16 h-16 rounded-full bg-emerald-500 border border-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/50 animate-success-pop-bounce radial-pulse-active";
+      icon.className = "fa-solid fa-check text-2xl text-white";
+      title.innerText = "✅ เปิดใบงานสำเร็จ!";
+      subtitle.innerText = `ใบงาน ${caseId} ถูกส่งเข้า Google Sheet และมอบหมายงานเรียบร้อยแล้ว`;
+      bar.style.width = "100%";
+
       showToast("ส่งสำเร็จ!", "รูปภาพและข้อมูลใบงานถูกส่งขึ้น Google Sheet เรียบร้อยแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
 
+      // Wait 1.3 seconds to admire success state, then close with a beautiful shrink scale down and fade out transition
+      await new Promise(resolve => setTimeout(resolve, 1300));
+
+      btn.classList.remove("bg-emerald-600");
+      txt.innerText = "บันทึกข้อมูลและรายงานระบบ";
+      
+      const modal = document.getElementById("modal-audit");
+      const dialog = document.getElementById("modal-audit-dialog");
+
+      // Apply the 500ms ease-in-out shrink & fade transitions
+      dialog.style.transition = "transform 500ms ease-in-out, opacity 500ms ease-in-out";
+      modal.style.transition = "opacity 500ms ease-in-out";
+
+      // Animate dialog to scale-90 and opacity-0
+      dialog.classList.remove("scale-100", "opacity-100");
+      dialog.classList.add("scale-90", "opacity-0");
+
+      // Animate modal wrapper to opacity-0
+      modal.classList.remove("opacity-100", "pointer-events-auto");
+      modal.classList.add("opacity-0", "pointer-events-none");
+
+      // Hide from display after transition completes
       setTimeout(() => {
-        btn.classList.remove("bg-emerald-600");
-        txt.innerText = "บันทึกข้อมูลและรายงานระบบ";
-        closeNewAuditModal();
+        modal.classList.add("hidden");
+        // Reset styles for next opens
+        dialog.style.transition = "";
+        modal.style.transition = "";
+        
+        overlay.classList.remove("opacity-100", "pointer-events-auto");
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        
+        stopQRScanner();
         navigateTo('home');
-      }, 1200);
+      }, 500);
     }
 
     async function saveResolveJob() {
@@ -4440,9 +4685,41 @@
         return;
       }
 
+      // Show Premium Loading Overlay & animate
+      const overlay = document.getElementById("resolve-loading-overlay");
+      const icon = document.getElementById("resolve-status-icon");
+      const iconContainer = document.getElementById("resolve-status-icon-container");
+      const title = document.getElementById("resolve-loading-title");
+      const subtitle = document.getElementById("resolve-loading-subtitle");
+      const bar = document.getElementById("resolve-loading-bar");
+
+      overlay.classList.remove("opacity-0", "pointer-events-none");
+      overlay.classList.add("opacity-100", "pointer-events-auto");
+
+      // Reset loading overlay state to premium spinner
+      iconContainer.className = "relative z-10 w-16 h-16 rounded-full bg-slate-900 border border-emerald-500/30 flex items-center justify-center shadow-lg radial-pulse-active transition-all duration-300";
+      icon.className = "fa-solid fa-spinner text-2xl text-emerald-400 animate-spin";
+      
       const btn = document.getElementById("btn-save-resolve");
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up fa-bounce mr-1"></i> กำลังอัปโหลดรูป + ส่งข้อมูลขึ้น Sheet...`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังส่งข้อมูล...`;
+
+      // Step 1: Photo Compression (บีบอัดรูปภาพ After)
+      bar.style.width = "15%";
+      title.innerText = "บีบอัดรูปภาพการแก้ไข...";
+      subtitle.innerText = "[1/3] กำลังบีบอัดรูปภาพผลงานแก้ไข (After) เพื่อการอัปโหลดที่รวดเร็ว...";
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      // Step 2: Upload to Cloud (อัปโหลดรูปภาพ After)
+      bar.style.width = "45%";
+      title.innerText = "ส่งรูปภาพแก้ไขขึ้นระบบ...";
+      subtitle.innerText = "[2/3] กำลังอัปโหลดภาพผลงานหลังแก้ไขเสร็จสมบูรณ์ขึ้นระบบความปลอดภัย...";
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      // Step 3: Database Sync (บันทึกข้อมูลและซิงก์ฐานข้อมูล)
+      bar.style.width = "75%";
+      title.innerText = "บันทึกการแก้ไขและปิดใบงาน...";
+      subtitle.innerText = "[3/3] กำลังลงบันทึกเวลาแก้ไขและบันทึกประวัติลง Google Sheets...";
 
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} น.`;
@@ -4463,6 +4740,11 @@
         // ล้มเหลว — คืน button ให้ user กดใหม่ได้ ไม่ปิด modal
         btn.disabled = false;
         btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
+        
+        // Hide loading overlay smoothly
+        overlay.classList.remove("opacity-100", "pointer-events-auto");
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        
         showToast("อัปโหลดไม่สำเร็จ", `ไม่สามารถส่งรูปได้: ${lastSheetError || 'ตรวจสอบอินเทอร์เน็ตและลองใหม่'}`, "fa-triangle-exclamation", "bg-rose-700");
         return; // ไม่ปิด modal ให้ retry
       }
@@ -4487,14 +4769,49 @@
       btn.innerHTML = `<i class="fa-solid fa-circle-check text-white"></i> <span class="text-white font-black">✅ ส่งรูป After สำเร็จ!</span>`;
       btn.classList.add("from-emerald-400", "to-emerald-600");
 
+      // Show Success State on Overlay: glowing success badge with pop/bounce micro-animations
+      iconContainer.className = "relative z-10 w-16 h-16 rounded-full bg-emerald-500 border border-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/50 animate-success-pop-bounce radial-pulse-active";
+      icon.className = "fa-solid fa-check text-2xl text-white";
+      title.innerText = "✅ ส่งรายงานการแก้ไขสำเร็จ!";
+      subtitle.innerText = `ใบงาน ${activeJobForResolve.id} ได้บันทึกการแก้ไขใน Google Sheet เรียบร้อยแล้ว`;
+      bar.style.width = "100%";
+
       showToast("ส่งสำเร็จ!", "รูป After + ผลงานแก้ไขถูกส่งขึ้น Google Sheet เรียบร้อยแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
 
+      // Wait 1.3 seconds to admire success state, then close with a beautiful shrink scale down and fade out transition
+      await new Promise(resolve => setTimeout(resolve, 1300));
+
+      btn.classList.remove("from-emerald-400", "to-emerald-600");
+      btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
+      
+      const modal = document.getElementById("modal-resolve");
+      const dialog = document.getElementById("modal-resolve-dialog");
+
+      // Apply the 500ms ease-in-out shrink & fade transitions
+      dialog.style.transition = "transform 500ms ease-in-out, opacity 500ms ease-in-out";
+      modal.style.transition = "opacity 500ms ease-in-out";
+
+      // Animate dialog to scale-90 and opacity-0
+      dialog.classList.remove("scale-100", "opacity-100");
+      dialog.classList.add("scale-90", "opacity-0");
+
+      // Animate modal wrapper to opacity-0
+      modal.classList.remove("opacity-100", "pointer-events-auto");
+      modal.classList.add("opacity-0", "pointer-events-none");
+
+      // Hide from display after transition completes
       setTimeout(() => {
-        btn.classList.remove("from-emerald-400", "to-emerald-600");
-        btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
-        closeResolveModal();
+        modal.classList.add("hidden");
+        // Reset styles for next opens
+        dialog.style.transition = "";
+        modal.style.transition = "";
+        
+        overlay.classList.remove("opacity-100", "pointer-events-auto");
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        
+        activeJobForResolve = null;
         navigateTo('home');
-      }, 1200);
+      }, 500);
     }
 
     // ==========================================
