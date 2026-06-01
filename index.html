@@ -2338,6 +2338,7 @@
       
       // Update task badges globally
       updateNotificationBadges();
+      refreshJobsOnNavigation();
     }
 
     function updateNotificationBadges() {
@@ -2782,13 +2783,13 @@
                 <p class="text-[10px] text-emerald-400 font-bold mt-1"><i class="fa-solid fa-circle-check mr-1"></i>ใบงานปิดสมบูรณ์ ตรวจประเมินโดยคุณ ${job.approvedBy}</p>
               ` : isResolved ? `
                 <div class="mt-2 bg-amber-500/5 border border-amber-500/10 rounded-xl p-2.5 text-[10px] text-slate-400">
-                  <p class="leading-relaxed"><i class="fa-solid fa-circle-info text-safety-yellow mr-1 text-[11px] animate-pulse"></i>${(currentUser.role === "subordinate" && currentUser.name === job.assignee) ? "คุณรายงานแก้ไขเรียบร้อยแล้ว กดปิดใบงานได้เลย" : "พนักงานรายงานแก้ไขเรียบร้อย รอหัวหน้าอนุมัติผลการประเมิน"}</p>
+                  <p class="leading-relaxed"><i class="fa-solid fa-circle-info text-safety-yellow mr-1 text-[11px] animate-pulse"></i>พนักงานรายงานแก้ไขเรียบร้อย รอหัวหน้าอนุมัติผลการประเมิน</p>
                   
-                  ${(currentUser.role === "admin" || currentUser.role === "supervisor" || (currentUser.role === "subordinate" && currentUser.name === job.assignee)) ? `
+                  ${(currentUser.role === "admin" || currentUser.role === "supervisor") ? `
                     <div class="flex flex-col sm:flex-row gap-2 mt-2.5">
                       <button onclick="approveJobResolution('${job.id}')" class="flex-1 bg-gradient-to-r from-emerald-500 to-safety-green text-white py-1.5 rounded-lg text-[9px] font-extrabold shadow-glow-green hover:opacity-95 flex items-center justify-center space-x-1 transition active:scale-[0.98]">
                         <i class="fa-solid fa-check-double"></i>
-                        <span>${currentUser.role === "subordinate" ? "ยืนยันแก้ไขสำเร็จ & ปิดใบงานนี้" : "ตรวจสอบผ่าน & ปิดใบงานนี้ (Verify & Close)"}</span>
+                        <span>ตรวจสอบผ่าน & ปิดใบงานนี้ (Verify & Close)</span>
                       </button>
                       ${(currentUser.role === "admin" || currentUser.role === "supervisor") ? `
                         <button onclick="rejectJobResolution('${job.id}')" class="flex-1 bg-gradient-to-r from-rose-500 to-red-600 text-white py-1.5 rounded-lg text-[9px] font-extrabold shadow-glow-red hover:opacity-95 flex items-center justify-center space-x-1 transition active:scale-[0.98]">
@@ -2875,6 +2876,10 @@
     // Timeline Action: Verify & Close
     // ==========================================
     async function approveJobResolution(jobId) {
+      if (currentUser.role !== "admin" && currentUser.role !== "supervisor") {
+        showToast("สิทธิ์ถูกปฏิเสธ", "เฉพาะหัวหน้างานและ admin เท่านั้นที่ตรวจปิดงานได้", "fa-lock", "bg-safety-red");
+        return;
+      }
       const confirmed = confirm("ยืนยันให้ผ่านการตรวจสอบและกดปิดใบงานความปลอดภัยนี้อย่างสมบูรณ์ใช่หรือไม่?");
       if (!confirmed) return;
 
@@ -2884,17 +2889,7 @@
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} น.`;
 
-      jobs[idx].status = "approved";
-      jobs[idx].approvedAt = dateStr;
-      jobs[idx].approvedBy = currentUser.name;
-
-      saveToLocalStore();
-      addAuditLog(currentUser.name, `ตรวจสอบงานความเห็นชอบให้เคสและปิดใบงาน ID: ${jobId} สำเร็จ`);
-      
-      // Dynamic mobile push notification
-      triggerNativeNotification("✅ อนุมัติการแก้ไขสำเร็จ!", `ใบงานหมายเลข ${jobId} ได้รับการปิดงานเรียบร้อยแล้ว ขอบคุณที่ให้ความร่วมมือครับ`);
-      
-      // Attempt syncing to cloud Google Sheet
+      // Cloud-first: only update the UI after Sheets confirms the review.
       const isSynced = await sendToGoogleSheet("update", {
         id: jobId,
         status: "approved",
@@ -2902,20 +2897,29 @@
         approvedBy: currentUser.name
       });
 
+      if (isSynced?.status !== "success") {
+        showToast("ยืนยันไม่สำเร็จ", isSynced?.message || "ไม่สามารถบันทึกลง Google Sheet ได้", "fa-triangle-exclamation", "bg-rose-700");
+        return;
+      }
+
+      jobs[idx].status = "approved";
+      jobs[idx].approvedAt = dateStr;
+      jobs[idx].approvedBy = currentUser.name;
+      saveToLocalStore();
+      addAuditLog(currentUser.name, `ตรวจสอบงานความเห็นชอบให้เคสและปิดใบงาน ID: ${jobId} สำเร็จ`);
+      triggerNativeNotification("✅ อนุมัติการแก้ไขสำเร็จ!", `ใบงานหมายเลข ${jobId} ได้รับการปิดงานเรียบร้อยแล้ว ขอบคุณที่ให้ความร่วมมือครับ`);
+
       if (currentUser.role === "admin" && document.getElementById("screen-admin").classList.contains("hidden") === false) {
         setupAdminPanel();
       } else {
         navigateTo('home');
       }
 
-      if (isSynced?.status === "success" && GOOGLE_SCRIPT_URL) {
-        showToast("ยืนยันสำเร็จ", "อัปเดตสถานะและปิดงานบน Google Sheet สำเร็จแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
-      } else {
-        showToast("บันทึกเรียบร้อย", "เซฟประวัติในตัวเครื่องรอการเชื่อมต่อซิงก์ภายหลัง", "fa-floppy-disk", "bg-slate-700");
-      }
+      showToast("ยืนยันสำเร็จ", "อัปเดตสถานะและปิดงานบน Google Sheet สำเร็จแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
     }
 
     async function rejectJobResolution(jobId) {
+      if (currentUser.role !== "admin" && currentUser.role !== "supervisor") return;
       let reason = "";
       while (true) {
         reason = prompt("ระบุเหตุผลที่ต้องการตีกลับใบงานนี้เพื่อให้แก้ไขใหม่ (จำเป็นต้องระบุคำอธิบาย):");
@@ -2932,25 +2936,26 @@
       const idx = jobs.findIndex(j => j.id === jobId);
       if (idx === -1) return;
 
-      // Update local state
-      jobs[idx].status = "pending";
-      jobs[idx].photoAfter = "";
-      jobs[idx].resolvedAt = "";
-      jobs[idx].resolvedBy = "";
-      jobs[idx].notes = "❌ ตีกลับ: " + finalReason;
-
-      saveToLocalStore();
-      addAuditLog(currentUser.name, `ตีกลับใบงาน ID: ${jobId} ด้วยเหตุผล: ${finalReason}`);
-      
-      // Local push notification feedback
-      triggerNativeNotification("❌ ตีกลับใบงานแก้ไขใหม่", `ใบงานหมายเลข ${jobId} ถูกตีกลับ: ${finalReason}`);
-      
-      // Attempt syncing to cloud Google Sheet
+      // Cloud-first: only update the UI after Sheets confirms the rejection.
       const isSynced = await sendToGoogleSheet("update", {
         id: jobId,
         status: "rejected",
         rejectionReason: finalReason
       });
+
+      if (isSynced?.status !== "success") {
+        showToast("ตีกลับไม่สำเร็จ", isSynced?.message || "ไม่สามารถบันทึกลง Google Sheet ได้", "fa-triangle-exclamation", "bg-rose-700");
+        return;
+      }
+
+      jobs[idx].status = "pending";
+      jobs[idx].photoAfter = "";
+      jobs[idx].resolvedAt = "";
+      jobs[idx].resolvedBy = "";
+      jobs[idx].notes = "❌ ตีกลับ: " + finalReason;
+      saveToLocalStore();
+      addAuditLog(currentUser.name, `ตีกลับใบงาน ID: ${jobId} ด้วยเหตุผล: ${finalReason}`);
+      triggerNativeNotification("❌ ตีกลับใบงานแก้ไขใหม่", `ใบงานหมายเลข ${jobId} ถูกตีกลับ: ${finalReason}`);
 
       if (currentUser.role === "admin" && document.getElementById("screen-admin").classList.contains("hidden") === false) {
         setupAdminPanel();
@@ -2958,11 +2963,7 @@
         navigateTo('home');
       }
 
-      if (isSynced?.status === "success" && GOOGLE_SCRIPT_URL) {
-        showToast("ตีกลับงานสำเร็จ", "อัปเดตสถานะการตีกลับงานบน Google Sheet สำเร็จแล้ว", "fa-circle-check", "bg-rose-600 shadow-glow-red");
-      } else {
-        showToast("บันทึกเรียบร้อย", "เซฟประวัติในตัวเครื่องรอการเชื่อมต่อซิงก์ภายหลัง", "fa-floppy-disk", "bg-slate-700");
-      }
+      showToast("ตีกลับงานสำเร็จ", "อัปเดตสถานะการตีกลับงานบน Google Sheet สำเร็จแล้ว", "fa-circle-check", "bg-rose-600 shadow-glow-red");
     }
 
     // ==========================================
@@ -3803,6 +3804,25 @@
     // ==========================================
     let previousJobsCache = [];
     let syncIntervalId = null;
+    let lastNavigationSyncAt = 0;
+    let navigationSyncTimerId = null;
+    let navigationSyncInFlight = false;
+
+    function refreshJobsOnNavigation() {
+      if (!currentUser || !authToken || !GOOGLE_SCRIPT_URL) return;
+      if (navigationSyncInFlight) return;
+      if (Date.now() - lastNavigationSyncAt < 1500) return;
+      clearTimeout(navigationSyncTimerId);
+      navigationSyncTimerId = setTimeout(async () => {
+        lastNavigationSyncAt = Date.now();
+        navigationSyncInFlight = true;
+        try {
+          await loadAllJobsDataSilent();
+        } finally {
+          navigationSyncInFlight = false;
+        }
+      }, 50);
+    }
 
     function getThaiDateLabel(dateTimeStr) {
       if (!dateTimeStr) return "ไม่ระบุวันที่";
@@ -3898,7 +3918,7 @@
         if (currentUser && GOOGLE_SCRIPT_URL) {
           await loadAllJobsDataSilent();
         }
-      }, 30000);
+      }, 15000);
     }
 
     async function loadAllJobsData() {
@@ -3962,26 +3982,22 @@
     }
 
     function mergeJobs(remoteJobs, localJobs) {
-      const merged = new Map();
-      
-      (localJobs || []).forEach(job => {
-        if (job && job.id) merged.set(job.id, job);
-      });
+      const localById = new Map((localJobs || [])
+        .filter(job => job && job.id)
+        .map(job => [job.id, job]));
 
-      (remoteJobs || []).forEach(job => {
-        if (job && job.id) {
-          const localJob = merged.get(job.id);
-          merged.set(job.id, {
+      return (remoteJobs || [])
+        .filter(job => job && job.id)
+        .map(job => {
+          const localJob = localById.get(job.id);
+          return {
             ...(localJob || {}),
             ...job,
             taskType: job.taskType || localJob?.taskType || "safety",
-            photoBefore: job.photoBefore || localJob?.photoBefore || "",
-            photoAfter: job.photoAfter || localJob?.photoAfter || ""
-          });
-        }
-      });
-
-      return Array.from(merged.values());
+            photoBefore: job.photoBefore || "",
+            photoAfter: job.photoAfter || ""
+          };
+        });
     }
 
     function updateCloudStatus(isConnected) {

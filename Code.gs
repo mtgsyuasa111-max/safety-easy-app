@@ -273,11 +273,7 @@ function updateJob(sheet, rawData, currentUser) {
     sheet.getRange(rowIndex, 14).setValue(cleanText(rawData.notes || "แก้ไขความปลอดภัยหน้างานเรียบร้อย"));
     response.photoAfterUrl = afterUrl;
   } else if (rawData.status === "approved") {
-    requireRole(currentUser, ["admin", "supervisor", "subordinate"]);
-    var assignedToApprove = String(sheet.getRange(rowIndex, 4).getValue() || "");
-    if (currentUser.role === "subordinate" && normalizeName(assignedToApprove) !== normalizeName(currentUser.name)) {
-      throw new Error("คุณปิดงานได้เฉพาะงานที่มอบหมายให้คุณ");
-    }
+    requireRole(currentUser, ["admin", "supervisor"]);
     sheet.getRange(rowIndex, 8).setValue("approved");
     sheet.getRange(rowIndex, 15).setValue(rawData.approvedAt || "");
     sheet.getRange(rowIndex, 16).setValue(rawData.approvedBy || currentUser.name);

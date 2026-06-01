@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v39'; // v39: Reject photo formats the Drive backend cannot upload
+const CACHE_NAME = 'safety-easy-pro-v40'; // v40: Restrict reviews and refresh Sheet data faster
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
