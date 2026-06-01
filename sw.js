@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v30'; // v30: Skip-waiting update, manual abort cancel buttons, and 25s timeout for fast response
+const CACHE_NAME = 'safety-easy-pro-v31'; // v31: Supervisor home pending-resolved split and interactive status filter
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

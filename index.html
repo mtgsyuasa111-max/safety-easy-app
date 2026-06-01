@@ -530,7 +530,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v16.5.0 Premium PWA Resiliency & Manual Abort PRO</span>
+              <span>v16.6.0 Premium PWA Supervisor Priority-Grouping & Status-Filter PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -708,18 +708,22 @@
           </div>
 
           <!-- Total statistics -->
-          <div class="grid grid-cols-3 gap-3 mt-6">
-            <div class="glass-card p-3 rounded-2xl text-center border border-white/5">
-              <span class="block text-xl font-extrabold text-white" id="stat-total">0</span>
-              <span class="text-[9px] text-slate-400 font-bold">ทั้งหมด</span>
+          <div class="grid grid-cols-4 gap-2 mt-6">
+            <div onclick="setSupervisorStatusFilter('all')" class="glass-card p-2 rounded-2xl text-center border border-white/5 cursor-pointer hover:bg-white/[0.03] active:scale-95 transition-all duration-200" id="card-stat-all">
+              <span class="block text-lg font-extrabold text-slate-900 dark:text-white" id="stat-total">0</span>
+              <span class="text-[8px] text-slate-500 dark:text-slate-400 font-bold block truncate">ทั้งหมด</span>
             </div>
-            <div class="glass-card p-3 rounded-2xl text-center border border-rose-500/20 shadow-inner">
-              <span class="block text-xl font-extrabold text-rose-400" id="stat-pending">0</span>
-              <span class="text-[9px] text-rose-300/80 font-bold">รอการแก้ไข</span>
+            <div onclick="setSupervisorStatusFilter('pending')" class="glass-card p-2 rounded-2xl text-center border border-rose-500/20 shadow-inner cursor-pointer hover:bg-rose-500/5 active:scale-95 transition-all duration-200" id="card-stat-pending">
+              <span class="block text-lg font-extrabold text-rose-600 dark:text-rose-400" id="stat-pending">0</span>
+              <span class="text-[8px] text-rose-600/80 dark:text-rose-300/80 font-bold block truncate">รอแก้ไข</span>
             </div>
-            <div class="glass-card p-3 rounded-2xl text-center border border-emerald-500/20">
-              <span class="block text-xl font-extrabold text-emerald-400" id="stat-done">0</span>
-              <span class="text-[9px] text-emerald-300/80 font-bold">เสร็จสมบูรณ์</span>
+            <div onclick="setSupervisorStatusFilter('resolved')" class="glass-card p-2 rounded-2xl text-center border border-amber-500/20 cursor-pointer hover:bg-amber-500/5 active:scale-95 transition-all duration-200" id="card-stat-resolved">
+              <span class="block text-lg font-extrabold text-amber-600 dark:text-amber-400" id="stat-resolved">0</span>
+              <span class="text-[8px] text-amber-600/80 dark:text-amber-300/80 font-bold block truncate">รอตรวจ</span>
+            </div>
+            <div onclick="setSupervisorStatusFilter('approved')" class="glass-card p-2 rounded-2xl text-center border border-emerald-500/20 cursor-pointer hover:bg-emerald-500/5 active:scale-95 transition-all duration-200" id="card-stat-approved">
+              <span class="block text-lg font-extrabold text-emerald-600 dark:text-emerald-400" id="stat-done">0</span>
+              <span class="text-[8px] text-emerald-600/80 dark:text-emerald-300/80 font-bold block truncate">เสร็จสิ้น</span>
             </div>
           </div>
         </div>
@@ -2350,56 +2354,121 @@
         document.getElementById("sp-start-title").innerText = "เริ่มตรวจ Safety Leader";
       }
       
+      // Reset active style on stats card (which in turn triggers renderSupervisorJobs)
+      setSupervisorStatusFilter("all");
+    }
+
+    let currentSupervisorStatusFilter = "all";
+
+    function setSupervisorStatusFilter(status) {
+      currentSupervisorStatusFilter = status;
+      
+      // Update visual active states of cards
+      const cards = {
+        all: { id: 'card-stat-all', activeClass: 'border-slate-400/50 bg-slate-900/30 dark:border-white/20 dark:bg-white/[0.05]', normalClass: 'border-white/5' },
+        pending: { id: 'card-stat-pending', activeClass: 'border-rose-500 bg-rose-500/10 shadow-glow-red', normalClass: 'border-rose-500/20 shadow-inner' },
+        resolved: { id: 'card-stat-resolved', activeClass: 'border-amber-500 bg-amber-500/10 shadow-glow-amber', normalClass: 'border-amber-500/20' },
+        approved: { id: 'card-stat-approved', activeClass: 'border-emerald-500 bg-emerald-500/10 shadow-glow-green', normalClass: 'border-emerald-500/20' }
+      };
+
+      Object.keys(cards).forEach(key => {
+        const el = document.getElementById(cards[key].id);
+        if (!el) return;
+        
+        // Remove active classes
+        cards[key].activeClass.split(' ').forEach(cls => {
+          if (cls) el.classList.remove(cls);
+        });
+        
+        // Remove normal classes
+        el.classList.remove(cards[key].normalClass);
+
+        if (key === status) {
+          // Add active classes
+          cards[key].activeClass.split(' ').forEach(cls => {
+            if (cls) el.classList.add(cls);
+          });
+        } else {
+          // Add normal class
+          el.classList.add(cards[key].normalClass);
+        }
+      });
+
       renderSupervisorJobs();
     }
 
     function renderSupervisorJobs() {
       // Stats count ALL job types
       document.getElementById("stat-total").innerText = jobs.length;
-      document.getElementById("stat-pending").innerText = jobs.filter(j => j.status === "pending" || j.status === "resolved").length;
+      document.getElementById("stat-pending").innerText = jobs.filter(j => j.status === "pending").length;
+      document.getElementById("stat-resolved").innerText = jobs.filter(j => j.status === "resolved").length;
       document.getElementById("stat-done").innerText = jobs.filter(j => j.status === "approved").length;
 
       const container = document.getElementById("sp-jobs-list");
       container.innerHTML = "";
 
-      // Apply dynamic Area Filters on home menu lists
-      let urgentFiltered = [...jobs].filter(j =>
-        (j.status === "pending" || j.status === "resolved") &&
-        j.taskType === currentSupervisorWorkType
-      );
-      let doneFiltered   = [...jobs].filter(j => j.status === "approved" && j.taskType === currentSupervisorWorkType);
+      // Separate job status categories
+      let pendingFiltered  = [...jobs].filter(j => j.status === "pending" && j.taskType === currentSupervisorWorkType);
+      let resolvedFiltered = [...jobs].filter(j => j.status === "resolved" && j.taskType === currentSupervisorWorkType);
+      let doneFiltered     = [...jobs].filter(j => j.status === "approved" && j.taskType === currentSupervisorWorkType);
 
+      // Apply dynamic Area Filters on home menu lists
       if (selectedHomeAreaFilter !== "all") {
-        urgentFiltered = urgentFiltered.filter(j => j.area === selectedHomeAreaFilter);
-        doneFiltered   = doneFiltered.filter(j => j.area === selectedHomeAreaFilter);
+        pendingFiltered  = pendingFiltered.filter(j => j.area === selectedHomeAreaFilter);
+        resolvedFiltered = resolvedFiltered.filter(j => j.area === selectedHomeAreaFilter);
+        doneFiltered     = doneFiltered.filter(j => j.area === selectedHomeAreaFilter);
       }
 
-      const urgentJobs = urgentFiltered.reverse();
-      const doneJobs   = doneFiltered.reverse();
+      // Apply interactive status KPI card filter
+      if (currentSupervisorStatusFilter === "pending") {
+        resolvedFiltered = [];
+        doneFiltered = [];
+      } else if (currentSupervisorStatusFilter === "resolved") {
+        pendingFiltered = [];
+        doneFiltered = [];
+      } else if (currentSupervisorStatusFilter === "approved") {
+        pendingFiltered = [];
+        resolvedFiltered = [];
+      }
 
-      if (urgentJobs.length === 0 && doneJobs.length === 0) {
+      const pendingJobs  = pendingFiltered.reverse();
+      const resolvedJobs = resolvedFiltered.reverse();
+      const doneJobs     = doneFiltered.reverse();
+
+      if (pendingJobs.length === 0 && resolvedJobs.length === 0 && doneJobs.length === 0) {
         container.innerHTML = `
           <div class="glass-card rounded-2xl p-8 border border-white/5 text-center text-xs text-slate-500">
             <i class="fa-solid fa-clipboard-check text-2xl text-emerald-500/20 mb-2 block"></i>
-            ไม่มีงานค้างในระบบ — ทุกงานเสร็จสมบูรณ์แล้ว ✅
+            ไม่มีงานในหมวดหมู่นี้ — ทุกงานเรียบร้อยแล้ว ✅
           </div>
         `;
         return;
       }
 
-      if (urgentJobs.length > 0) {
-        const h1 = document.createElement("div");
-        h1.className = "desktop-job-section-heading flex items-center gap-2 mb-3";
-        h1.innerHTML = `<span class="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation animate-pulse"></i> งานรอดำเนินการ (${urgentJobs.length} รายการ)</span>`;
-        container.appendChild(h1);
-        urgentJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
+      // 1. Group: งานรอตรวจ (resolved) - HIGHEST PRIORITY for Supervisor
+      if (resolvedJobs.length > 0) {
+        const hRes = document.createElement("div");
+        hRes.className = "desktop-job-section-heading flex items-center gap-2 mb-3";
+        hRes.innerHTML = `<span class="text-[10px] font-extrabold text-amber-500 dark:text-amber-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-hourglass-half animate-pulse"></i> 📋 งานรอตรวจ / รอยืนยัน (${resolvedJobs.length} รายการ)</span>`;
+        container.appendChild(hRes);
+        resolvedJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
       }
 
+      // 2. Group: งานรอแก้ไข (pending)
+      if (pendingJobs.length > 0) {
+        const hPen = document.createElement("div");
+        hPen.className = "desktop-job-section-heading flex items-center gap-2 mt-5 mb-3";
+        hPen.innerHTML = `<span class="text-[10px] font-extrabold text-rose-500 dark:text-rose-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation animate-pulse"></i> 🛠️ งานรอช่างดำเนินการแก้ไข (${pendingJobs.length} รายการ)</span>`;
+        container.appendChild(hPen);
+        pendingJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
+      }
+
+      // 3. Group: งานเสร็จสิ้นแล้ว (approved)
       if (doneJobs.length > 0) {
-        const h2 = document.createElement("div");
-        h2.className = "desktop-job-section-heading flex items-center gap-2 mt-5 mb-3";
-        h2.innerHTML = `<span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> เสร็จสิ้นแล้ว — ${currentSupervisorWorkType === "5s" ? "งาน 5ส" : "Safety"} (${doneJobs.length} รายการ)</span>`;
-        container.appendChild(h2);
+        const hDone = document.createElement("div");
+        hDone.className = "desktop-job-section-heading flex items-center gap-2 mt-5 mb-3";
+        hDone.innerHTML = `<span class="text-[10px] font-extrabold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> ✅ เสร็จสิ้นแล้ว — ${currentSupervisorWorkType === "5s" ? "งาน 5ส" : "Safety"} (${doneJobs.length} รายการ)</span>`;
+        container.appendChild(hDone);
 
         // Group approved jobs by day
         const groups = {};
@@ -2412,8 +2481,8 @@
         // Render each group chronologically/newest first
         Object.keys(groups).forEach(dateLabel => {
           const groupHeader = document.createElement("div");
-          groupHeader.className = "mt-4 mb-2 pl-2 border-l-2 border-emerald-500 text-xs font-bold text-slate-300 flex items-center gap-1.5";
-          groupHeader.innerHTML = `<i class="fa-regular fa-calendar text-emerald-400 text-[10px]"></i> ${dateLabel} (${groups[dateLabel].length} งาน)`;
+          groupHeader.className = "mt-4 mb-2 pl-2 border-l-2 border-emerald-500 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5";
+          groupHeader.innerHTML = `<i class="fa-regular fa-calendar text-emerald-500 dark:text-emerald-400 text-[10px]"></i> ${dateLabel} (${groups[dateLabel].length} งาน)`;
           container.appendChild(groupHeader);
 
           groups[dateLabel].forEach(job => {
