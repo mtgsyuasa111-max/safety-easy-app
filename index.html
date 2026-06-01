@@ -103,26 +103,39 @@
     html:not(.dark) .text-white { color: #0f172a !important; }
     
     /* Retain high-contrast white text for colored backgrounds/buttons/badges in Light Mode */
-    html:not(.dark) .bg-gradient-to-r .text-white,
-    html:not(.dark) .bg-gradient-to-r span,
     html:not(.dark) button .text-white,
     html:not(.dark) button span,
-    html:not(.dark) .bg-emerald-500 .text-white,
-    html:not(.dark) .bg-emerald-500 span,
-    html:not(.dark) .bg-rose-700 .text-white,
-    html:not(.dark) .bg-rose-700 span,
-    html:not(.dark) .bg-amber-600 .text-white,
-    html:not(.dark) .bg-amber-600 span,
-    html:not(.dark) .work-chip.bg-slate-900 span,
-    html:not(.dark) .work-chip span,
-    html:not(.dark) .key-btn span,
-    html:not(.dark) #theme-toggle-btn i,
-    html:not(.dark) #pwa-update-btn span,
-    html:not(.dark) #pwa-install-btn span,
+    html:not(.dark) button i,
+    html:not(.dark) [class*="bg-emerald-"] .text-white,
+    html:not(.dark) [class*="bg-emerald-"] span,
+    html:not(.dark) [class*="bg-emerald-"] i,
+    html:not(.dark) [class*="bg-rose-"] .text-white,
+    html:not(.dark) [class*="bg-rose-"] span,
+    html:not(.dark) [class*="bg-rose-"] i,
+    html:not(.dark) [class*="bg-amber-"] .text-white,
+    html:not(.dark) [class*="bg-amber-"] span,
+    html:not(.dark) [class*="bg-amber-"] i,
+    html:not(.dark) [class*="bg-blue-"] .text-white,
+    html:not(.dark) [class*="bg-blue-"] span,
+    html:not(.dark) [class*="bg-blue-"] i,
+    html:not(.dark) [class*="bg-gradient-"] .text-white,
+    html:not(.dark) [class*="bg-gradient-"] span,
+    html:not(.dark) [class*="bg-gradient-"] i,
+    html:not(.dark) [class*="bg-safety-"] .text-white,
+    html:not(.dark) [class*="bg-safety-"] span,
+    html:not(.dark) [class*="bg-safety-"] i,
+    html:not(.dark) .bg-slate-950 .text-white,
+    html:not(.dark) .bg-slate-950 span,
+    html:not(.dark) .bg-slate-950 i,
+    html:not(.dark) .bg-slate-900 .text-white,
+    html:not(.dark) .bg-slate-900 span,
+    html:not(.dark) .bg-slate-900 i,
+    html:not(.dark) .bg-[#090d16] .text-white,
+    html:not(.dark) .bg-[#090d16] span,
+    html:not(.dark) .bg-[#090d16] i,
     html:not(.dark) #toast span,
     html:not(.dark) #toast p,
-    html:not(.dark) .bg-safety-green span,
-    html:not(.dark) .bg-safety-green p {
+    html:not(.dark) #toast i {
       color: #ffffff !important;
     }
     
@@ -215,13 +228,18 @@
         overflow: hidden;
         isolation: isolate;
       }
-      #screen-container { order: 1; }
-      #screen-container {
-        isolation: isolate;
+      #screen-container { order: 1; isolation: isolate; }
+      .dark #screen-container {
         background:
           radial-gradient(circle at 10% 22%, rgba(16, 185, 129, 0.08), transparent 26rem),
           radial-gradient(circle at 88% 82%, rgba(14, 165, 233, 0.06), transparent 30rem),
           #090d16;
+      }
+      html:not(.dark) #screen-container {
+        background:
+          radial-gradient(circle at 10% 22%, rgba(16, 185, 129, 0.04), transparent 26rem),
+          radial-gradient(circle at 88% 82%, rgba(14, 165, 233, 0.04), transparent 30rem),
+          #f8fafc;
       }
       #screen-container::before {
         content: "";
@@ -248,6 +266,9 @@
         font: 800 6rem/0.8 'Outfit', sans-serif;
         letter-spacing: -0.4rem;
         text-align: right;
+      }
+      html:not(.dark) #screen-container::after {
+        color: rgba(15, 23, 42, 0.035);
       }
       #app-nav-bar > * {
         position: relative;
@@ -423,7 +444,7 @@
           </p>
           
           <!-- Role Button: Supervisor / Inspector -->
-          <button onclick="selectRole('supervisor')" class="w-full relative group overflow-hidden rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent hover:from-white/[0.12] active:scale-[0.985] transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/5 hover:border-amber-500/30 text-left p-5 flex items-center justify-between">
+          <button onclick="selectRole('supervisor')" class="w-full relative group overflow-hidden rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 active:scale-[0.985] transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-amber-500/30 text-left p-5 flex items-center justify-between">
             <!-- Ambient Hover Glow Effect -->
             <div class="absolute inset-0 bg-gradient-to-r from-amber-500/0 via-amber-500/[0.02] to-amber-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             
@@ -451,7 +472,7 @@
           </button>
 
           <!-- Role Button: Operator / Employee & Admin -->
-          <button onclick="selectRole('subordinate')" class="w-full relative group overflow-hidden rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent hover:from-white/[0.12] active:scale-[0.985] transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/5 hover:border-emerald-500/30 text-left p-5 flex items-center justify-between">
+          <button onclick="selectRole('subordinate')" class="w-full relative group overflow-hidden rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 active:scale-[0.985] transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-emerald-500/30 text-left p-5 flex items-center justify-between">
             <!-- Ambient Hover Glow Effect -->
             <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/[0.02] to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -1224,7 +1245,7 @@
 
     <!-- MODAL 1: NEW SAFETY AUDIT FORM -->
     <div id="modal-audit" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end lg:items-center lg:justify-center lg:p-6 hidden z-50 transition-all duration-300 opacity-0 pointer-events-none">
-      <div id="modal-audit-dialog" class="relative bg-[#090d16] rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:border lg:border-white/10 lg:max-w-2xl lg:w-full lg:my-auto lg:shadow-2xl p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl transform transition-all duration-300 scale-95 opacity-0">
+      <div id="modal-audit-dialog" class="relative bg-white dark:bg-[#090d16] border border-slate-200 dark:border-white/10 shadow-2xl rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:max-w-2xl lg:w-full lg:my-auto p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col transform transition-all duration-300 scale-95 opacity-0">
         
         <div class="flex justify-between items-center mb-5">
           <div class="flex items-center space-x-3">
@@ -1233,7 +1254,7 @@
             </div>
             <h3 class="text-base font-extrabold text-white">รายงาน Safety ประจำจุด</h3>
           </div>
-          <button onclick="closeNewAuditModal()" class="w-8 h-8 bg-slate-900 border border-white/10 text-slate-400 hover:text-white rounded-full flex items-center justify-center transition">
+          <button onclick="closeNewAuditModal()" class="w-8 h-8 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-full flex items-center justify-center transition">
             <i class="fa-solid fa-xmark text-sm"></i>
           </button>
         </div>
@@ -1274,14 +1295,14 @@
             <div class="grid grid-cols-2 gap-3 pt-1">
               <div>
                 <label class="block text-[9px] text-slate-400 font-bold uppercase tracking-wider">พื้นที่</label>
-                <select id="audit-area" onchange="autoSelectResponsiblePerson()" class="w-full mt-1 p-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none">
+                <select id="audit-area" onchange="autoSelectResponsiblePerson()" class="w-full mt-1 p-2.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white text-xs font-semibold focus:outline-none">
                   <option value="">เลือกพื้นที่</option>
                 </select>
               </div>
 
               <div>
                 <label class="block text-[9px] text-slate-400 font-bold uppercase tracking-wider">ผู้รับผิดชอบหลัก (อัตโนมัติ)</label>
-              <input type="text" id="audit-assignee" class="w-full mt-1 p-2.5 bg-slate-800/80 border border-white/5 rounded-xl text-xs font-bold text-slate-400 cursor-not-allowed focus:outline-none" readonly value="พนักงาน พื้นที่ A">
+              <input type="text" id="audit-assignee" class="w-full mt-1 p-2.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white text-xs font-bold opacity-60 cursor-not-allowed focus:outline-none" readonly value="พนักงาน พื้นที่ A">
               </div>
             </div>
           </div>
@@ -1317,13 +1338,13 @@
           <!-- Problem description -->
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">หัวข้อ / จุดบกพร่องที่ชำรุด</label>
-            <input type="text" id="audit-issue" placeholder="เช่น ทางเดินถูกปิดกั้น, ถังดับเพลิงชำรุด..." class="w-full p-3.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-safety-green transition">
+            <input type="text" id="audit-issue" placeholder="เช่น ทางเดินถูกปิดกั้น, ถังดับเพลิงชำรุด..." class="w-full p-3.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white text-xs focus:outline-none focus:border-safety-green transition">
           </div>
 
           <!-- Safety recommendations -->
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">คำแนะนำแนวทางการแก้ไขปัญหา</label>
-            <textarea id="audit-suggestion" rows="3" placeholder="โปรดระบุแนวทางแก้ไขให้ละเอียดและกรอบเวลา..." class="w-full p-3.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-safety-green transition"></textarea>
+            <textarea id="audit-suggestion" rows="3" placeholder="โปรดระบุแนวทางแก้ไขให้ละเอียดและกรอบเวลา..." class="w-full p-3.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white text-xs focus:outline-none focus:border-safety-green transition"></textarea>
           </div>
         </div>
 
@@ -1333,7 +1354,7 @@
         </button>
 
         <!-- Premium Loading & Success Overlay -->
-        <div id="audit-loading-overlay" class="absolute inset-0 bg-[#090d16]/95 backdrop-blur-md rounded-t-[2.5rem] lg:rounded-[2.5rem] z-[60] flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-500">
+        <div id="audit-loading-overlay" class="absolute inset-0 bg-white/95 dark:bg-[#090d16]/95 backdrop-blur-md rounded-t-[2.5rem] lg:rounded-[2.5rem] z-[60] flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-500">
           <!-- Spinner & Pulse Rings -->
           <div class="relative flex items-center justify-center w-28 h-28 mb-6">
             <!-- Outer Pulse Ring 1 -->
@@ -1363,7 +1384,7 @@
 
     <!-- MODAL 2: RESOLVE FORM (AFTER PHOTO & REMARKS) -->
     <div id="modal-resolve" class="absolute inset-0 bg-slate-950/75 backdrop-blur-sm flex flex-col justify-end lg:items-center lg:justify-center lg:p-6 hidden z-50 transition-all duration-300 opacity-0 pointer-events-none">
-      <div id="modal-resolve-dialog" class="relative bg-[#090d16] rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:border lg:border-white/10 lg:max-w-2xl lg:w-full lg:my-auto lg:shadow-2xl p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col border-t border-white/10 shadow-2xl transform transition-all duration-300 scale-95 opacity-0">
+      <div id="modal-resolve-dialog" class="relative bg-white dark:bg-[#090d16] border border-slate-200 dark:border-white/10 shadow-2xl rounded-t-[2.5rem] lg:rounded-[2.5rem] lg:max-w-2xl lg:w-full lg:my-auto p-6 max-h-[92%] lg:max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col transform transition-all duration-300 scale-95 opacity-0">
         
         <div class="flex justify-between items-center mb-5">
           <div class="flex items-center space-x-3">
@@ -1372,7 +1393,7 @@
             </div>
             <h3 class="text-base font-extrabold text-white">จัดการแก้ไขหน้างาน</h3>
           </div>
-          <button onclick="closeResolveModal()" class="w-8 h-8 bg-slate-900 border border-white/10 text-slate-400 hover:text-white rounded-full flex items-center justify-center transition">
+          <button onclick="closeResolveModal()" class="w-8 h-8 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-full flex items-center justify-center transition">
             <i class="fa-solid fa-xmark text-sm"></i>
           </button>
         </div>
@@ -1435,7 +1456,7 @@
           <!-- Completion remarks -->
           <div>
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">หมายเหตุการปฏิบัติงานแก้ไข</label>
-            <textarea id="res-after-notes" rows="2" placeholder="ระบุสิ่งที่ได้ดำเนินการแก้ไขไป..." class="w-full p-3.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-safety-green transition"></textarea>
+            <textarea id="res-after-notes" rows="2" placeholder="ระบุสิ่งที่ได้ดำเนินการแก้ไขไป..." class="w-full p-3.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white text-xs focus:outline-none focus:border-safety-green transition"></textarea>
           </div>
         </div>
 
@@ -1445,7 +1466,7 @@
         </button>
 
         <!-- Premium Loading & Success Overlay -->
-        <div id="resolve-loading-overlay" class="absolute inset-0 bg-[#090d16]/95 backdrop-blur-md rounded-t-[2.5rem] lg:rounded-[2.5rem] z-[60] flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-500">
+        <div id="resolve-loading-overlay" class="absolute inset-0 bg-white/95 dark:bg-[#090d16]/95 backdrop-blur-md rounded-t-[2.5rem] lg:rounded-[2.5rem] z-[60] flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-500">
           <!-- Spinner & Pulse Rings -->
           <div class="relative flex items-center justify-center w-28 h-28 mb-6">
             <!-- Outer Pulse Ring 1 -->
@@ -1881,14 +1902,14 @@
             : "from-blue-400 to-indigo-600 text-white shadow-glow border-blue-400/20";
 
         const badgeColor = u.role === "admin"
-          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
           : u.role === "supervisor"
-            ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-            : "bg-blue-500/10 text-blue-400 border-blue-500/20";
+            ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+            : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
             
         const roleLabel = u.role === "admin" ? "Admin" : u.role === "supervisor" ? "Supervisor" : `พื้นที่ ${u.area}`;
 
-        btn.className = "w-full relative group overflow-hidden rounded-2xl bg-white/[0.04] dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 hover:border-emerald-500/30 dark:hover:border-emerald-500/30 text-left p-3.5 flex items-center justify-between transition-all duration-200 active:scale-[0.985] shadow-sm hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-950/80";
+        btn.className = "w-full relative group overflow-hidden rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 hover:border-emerald-500/30 dark:hover:border-emerald-500/30 text-left p-3.5 flex items-center justify-between transition-all duration-200 active:scale-[0.985] shadow-sm hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-950/80";
         
         btn.innerHTML = `
           <div class="flex items-center space-x-3.5 relative z-10">

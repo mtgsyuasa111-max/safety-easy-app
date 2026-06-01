@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v27'; // v27: premium photo submission loading overlays and exit animations
+const CACHE_NAME = 'safety-easy-pro-v28'; // v28: Light mode visual optimization and high contrast readability overrides
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
