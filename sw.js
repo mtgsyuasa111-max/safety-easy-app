@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v29'; // v29: High-res upload resiliency, timeouts, size limits, and notifications try-catch wrapper
+const CACHE_NAME = 'safety-easy-pro-v30'; // v30: Skip-waiting update, manual abort cancel buttons, and 25s timeout for fast response
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -16,6 +16,8 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[Service Worker] Pre-caching offline assets...');
       return cache.addAll(ASSETS_TO_CACHE);
+    }).then(() => {
+      return self.skipWaiting();
     })
   );
 });

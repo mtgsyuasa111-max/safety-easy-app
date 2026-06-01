@@ -530,7 +530,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v16.4.0 Premium PWA High-ResUpload Resilience PRO</span>
+              <span>v16.5.0 Premium PWA Resiliency & Manual Abort PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -1377,6 +1377,10 @@
           <div class="w-48 h-1.5 bg-slate-900 border border-white/5 rounded-full overflow-hidden mt-6">
             <div id="audit-loading-bar" class="h-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green rounded-full transition-all duration-300" style="width: 15%"></div>
           </div>
+          <button type="button" onclick="cancelActiveUpload()" class="mt-8 px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 hover:border-rose-500/35 text-rose-400 text-[10px] font-bold rounded-xl active:scale-95 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span>ยกเลิกการส่งและบันทึกใหม่</span>
+          </button>
         </div>
 
       </div>
@@ -1489,6 +1493,10 @@
           <div class="w-48 h-1.5 bg-slate-900 border border-white/5 rounded-full overflow-hidden mt-6">
             <div id="resolve-loading-bar" class="h-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green rounded-full transition-all duration-300" style="width: 15%"></div>
           </div>
+          <button type="button" onclick="cancelActiveUpload()" class="mt-8 px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 hover:border-rose-500/35 text-rose-400 text-[10px] font-bold rounded-xl active:scale-95 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span>ยกเลิกการส่งและบันทึกใหม่</span>
+          </button>
         </div>
 
       </div>
@@ -3827,17 +3835,33 @@
       }
     }
 
+    let activeUploadController = null;
+
+    function cancelActiveUpload() {
+      if (activeUploadController) {
+        activeUploadController.abort();
+        activeUploadController = null;
+        showToast("ยกเลิกการส่งข้อมูล", "ผู้ใช้ยกเลิกการอัปโหลดเรียบร้อยแล้ว", "fa-circle-xmark", "bg-slate-700");
+      }
+    }
+
     async function sendToGoogleSheet(actionType, jobPayload) {
       if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED")) return { status: "error", message: "No URL" };
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 35000); // 35 seconds timeout
+      // Set activeUploadController for manual/automatic timeouts
+      activeUploadController = new AbortController();
+      const signal = activeUploadController.signal;
+      const timeoutId = setTimeout(() => {
+        if (activeUploadController) {
+          activeUploadController.abort();
+        }
+      }, 25000); // 25 seconds timeout for faster response
 
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
           redirect: "follow",
           method: "POST",
-          signal: controller.signal,
+          signal: signal,
           body: JSON.stringify({
             action: actionType,
             token: authToken,
@@ -3864,11 +3888,13 @@
         clearTimeout(timeoutId);
         console.error("Sheets sync error:", error);
         if (error.name === 'AbortError') {
-          lastSheetError = "การเชื่อมต่อหมดเวลา (Timeout) ไฟล์ภาพใหญ่เกินไปหรืออินเทอร์เน็ตไม่เสถียร";
+          lastSheetError = "การเชื่อมต่อหมดเวลา (Timeout) หรือถูกยกเลิกโดยผู้ใช้งาน";
         } else {
           lastSheetError = error.message || String(error);
         }
         return { status: "error", message: lastSheetError };
+      } finally {
+        activeUploadController = null;
       }
     }
 
