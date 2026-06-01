@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v36'; // v36: Require Sheets login while online
+const CACHE_NAME = 'safety-easy-pro-v37'; // v37: Retry transient Sheets connection failures
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

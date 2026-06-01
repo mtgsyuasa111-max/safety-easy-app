@@ -387,8 +387,8 @@
           <button id="theme-toggle-btn" class="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:scale-105 active:scale-95 transition-all duration-150 flex items-center justify-center" title="สลับโหมด มืด/สว่าง">
             <i id="theme-toggle-icon" class="fa-solid fa-moon text-xs"></i>
           </button>
-          <span id="cloud-sync-status" class="text-[9px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 transition-all">
-            <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Local Mode
+          <span id="cloud-sync-status" class="text-[9px] bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20 transition-all">
+            <i class="fa-solid fa-spinner fa-spin mr-1"></i> Connecting Sheets...
           </span>
           <span id="live-time" class="text-slate-600 dark:text-slate-400 font-mono">08:00</span>
         </div>
@@ -2039,14 +2039,26 @@
         throw new Error("ยังไม่ได้ตั้งค่า Google Apps Script Web App URL");
       }
 
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        redirect: "follow",
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
+      let response;
+      let lastNetworkError;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          response = await fetch(GOOGLE_SCRIPT_URL, {
+            redirect: "follow",
+            method: "POST",
+            body: JSON.stringify(payload),
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8"
+            }
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          break;
+        } catch (error) {
+          lastNetworkError = error;
+          if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 700));
         }
-      });
+      }
+      if (!response) throw lastNetworkError || new Error("เชื่อมต่อ Google Sheets ไม่สำเร็จ");
       const result = await response.json();
       if (result.status !== "success") {
         const msg = result.message || "";
