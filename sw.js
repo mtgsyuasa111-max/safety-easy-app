@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v28'; // v28: Light mode visual optimization and high contrast readability overrides
+const CACHE_NAME = 'safety-easy-pro-v29'; // v29: High-res upload resiliency, timeouts, size limits, and notifications try-catch wrapper
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

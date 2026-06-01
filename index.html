@@ -530,7 +530,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v16.1.0 Premium PWA Enforced Rework Workflow</span>
+              <span>v16.4.0 Premium PWA High-ResUpload Resilience PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -3830,10 +3830,14 @@
     async function sendToGoogleSheet(actionType, jobPayload) {
       if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_DEPLOYED")) return { status: "error", message: "No URL" };
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 35000); // 35 seconds timeout
+
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
           redirect: "follow",
           method: "POST",
+          signal: controller.signal,
           body: JSON.stringify({
             action: actionType,
             token: authToken,
@@ -3844,6 +3848,7 @@
             "Content-Type": "text/plain;charset=utf-8"
           }
         });
+        clearTimeout(timeoutId);
         const responseText = await response.text();
         let result = {};
 
@@ -3856,8 +3861,13 @@
         lastSheetError = result.message || "";
         return result;   // ← return full result so callers can read photoAfterUrl etc.
       } catch (error) {
+        clearTimeout(timeoutId);
         console.error("Sheets sync error:", error);
-        lastSheetError = error.message || String(error);
+        if (error.name === 'AbortError') {
+          lastSheetError = "การเชื่อมต่อหมดเวลา (Timeout) ไฟล์ภาพใหญ่เกินไปหรืออินเทอร์เน็ตไม่เสถียร";
+        } else {
+          lastSheetError = error.message || String(error);
+        }
         return { status: "error", message: lastSheetError };
       }
     }
@@ -4197,6 +4207,12 @@
 
       // Step 2: FileReader fallback (works for most formats including HEIC on Safari)
       try {
+        const fileInMB = file.size / 1024 / 1024;
+        if (file.size > 2.5 * 1024 * 1024) {
+          showToast("ไฟล์รูปภาพใหญ่เกินไป", `รูปภาพดิบมีขนาด ${fileInMB.toFixed(1)}MB ใหญ่เกิน 2.5MB และไม่สามารถบีบอัดได้ กรุณาลดความละเอียด/แคปหน้าจอก่อนอัปโหลด`, "fa-triangle-exclamation", "bg-rose-700");
+          return;
+        }
+
         const dataUrl = await new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = (e) => resolve(e.target.result);
@@ -4558,6 +4574,13 @@
         return;
       }
 
+      // ตรวจสอบขนาดรูปภาพ (ต้องไม่เกิน 2.5MB)
+      const photoSizeInBytes = dataUrlBytes(selectedBeforePhoto);
+      if (photoSizeInBytes > 2.5 * 1024 * 1024) {
+        showToast("ขนาดรูปภาพใหญ่เกินไป", `ขนาดรูป ${(photoSizeInBytes/1024/1024).toFixed(1)}MB ใหญ่เกินกำหนด (สูงสุด 2.5MB) กรุณาแคปหน้าจอรูปนี้ หรือถ่ายภาพใหม่ด้วยความละเอียดที่ต่ำลง`, "fa-triangle-exclamation", "bg-rose-700");
+        return;
+      }
+
       // Show Premium Loading Overlay & animate
       const overlay = document.getElementById("audit-loading-overlay");
       const icon = document.getElementById("audit-status-icon");
@@ -4703,6 +4726,13 @@
       const notes = document.getElementById("res-after-notes").value.trim();
       if (!selectedAfterPhoto) {
         showToast("ต้องการรูปถ่าย", "กรุณาถ่ายรูปการปฏิบัติงานแก้ไข (After) เพื่อเทียบเปรียบเทียบ", "fa-camera", "bg-safety-red");
+        return;
+      }
+
+      // ตรวจสอบขนาดรูปภาพ (ต้องไม่เกิน 2.5MB)
+      const photoSizeInBytes = dataUrlBytes(selectedAfterPhoto);
+      if (photoSizeInBytes > 2.5 * 1024 * 1024) {
+        showToast("ขนาดรูปภาพใหญ่เกินไป", `ขนาดรูป ${(photoSizeInBytes/1024/1024).toFixed(1)}MB ใหญ่เกินกำหนด (สูงสุด 2.5MB) กรุณาแคปหน้าจอรูปนี้ หรือถ่ายภาพใหม่ด้วยความละเอียดที่ต่ำลง`, "fa-triangle-exclamation", "bg-rose-700");
         return;
       }
 
@@ -5209,21 +5239,25 @@
     // Native PWA Push Notification System
     // ==========================================
     function triggerNativeNotification(title, body) {
-      if (!('Notification' in window) || Notification.permission !== 'granted') return;
-      const options = {
-        body: body,
-        icon: './icon-192.png',
-        badge: './icon-192.png',
-        vibrate: [150, 80, 150],
-        tag: 'safety-audit-alert',
-        renotify: true,
-        data: { clickUrl: window.location.href }
-      };
-      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options))
-          .catch(() => new Notification(title, { body, icon: './icon-192.png' }));
-      } else {
-        try { new Notification(title, options); } catch(e) { new Notification(title, { body, icon: './icon-192.png' }); }
+      try {
+        if (!('Notification' in window) || Notification.permission !== 'granted') return;
+        const options = {
+          body: body,
+          icon: './icon-192.png',
+          badge: './icon-192.png',
+          vibrate: [150, 80, 150],
+          tag: 'safety-audit-alert',
+          renotify: true,
+          data: { clickUrl: window.location.href }
+        };
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options))
+            .catch(() => new Notification(title, { body, icon: './icon-192.png' }));
+        } else {
+          try { new Notification(title, options); } catch(e) { new Notification(title, { body, icon: './icon-192.png' }); }
+        }
+      } catch (err) {
+        console.warn("[Notification] trigger failed:", err);
       }
     }
 
