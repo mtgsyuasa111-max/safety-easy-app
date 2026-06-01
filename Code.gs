@@ -261,7 +261,8 @@ function updateJob(sheet, rawData, currentUser) {
   if (rawData.status === "resolved") {
     requireRole(currentUser, ["admin", "supervisor", "subordinate"]);
     var assignedTo = String(sheet.getRange(rowIndex, 4).getValue() || "");
-    if (currentUser.role === "subordinate" && normalizeName(assignedTo) !== normalizeName(currentUser.name)) {
+    var currentTaskType = String(sheet.getRange(rowIndex, 7).getValue() || "safety");
+    if (currentUser.role === "subordinate" && currentTaskType !== "safety" && normalizeName(assignedTo) !== normalizeName(currentUser.name)) {
       throw new Error("คุณส่งผลการแก้ไขได้เฉพาะงานที่มอบหมายให้คุณ");
     }
     var afterUrl = persistPhoto(rawData.photoAfter, "AFTER_" + rawData.id);
