@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v19'; // v19: add reject job capability for supervisor/admin
+const CACHE_NAME = 'safety-easy-pro-v20'; // v20: enforce reject explanation and rollback UI
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

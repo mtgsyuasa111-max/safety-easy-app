@@ -388,7 +388,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v16.0.0 Premium PWA Reject Job Capability</span>
+              <span>v16.1.0 Premium PWA Enforced Rework Workflow</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -2411,12 +2411,20 @@
                 ${job.resolvedAt ? `<span class="text-[8px] text-slate-500 font-mono">${job.resolvedAt}</span>` : ""}
               </div>
               
-              ${isPending ? `
+              ${isPending ? (job.notes && job.notes.includes("ตีกลับ") ? `
+                <div class="mt-1 bg-rose-500/10 border border-rose-500/20 text-rose-400 p-2.5 rounded-xl text-[10px] font-bold leading-relaxed space-y-1">
+                  <div class="flex items-center space-x-1.5">
+                    <i class="fa-solid fa-circle-xmark text-rose-500 text-xs animate-bounce"></i>
+                    <span class="text-rose-400">ใบงานถูกตีกลับเพื่อแก้ไขใหม่ (ผู้รับผิดชอบ: ${job.assignee})</span>
+                  </div>
+                  <div class="text-[9px] text-slate-400 font-medium pl-4.5">${job.notes}</div>
+                </div>
+              ` : `
                 <div class="mt-1 bg-rose-500/5 border border-rose-500/10 text-rose-300/80 p-2.5 rounded-xl text-[10px] font-semibold leading-relaxed flex items-center space-x-2">
                   <i class="fa-solid fa-spinner fa-spin text-rose-400 text-xs"></i>
                   <span>อยู่ระหว่างประสานงานพนักงาน (${job.assignee}) ตรวจแก้</span>
                 </div>
-              ` : `
+              `) : `
                 <div class="flex space-x-2.5 mt-2">
                   <button onclick="openImageViewer('${job.id}', 'after')" class="w-14 h-14 bg-slate-950 border border-white/10 rounded-xl overflow-hidden shadow-md active:scale-95 transition-transform flex-shrink-0">
                     ${renderSafeImage(job.photoAfter, 'ภาพ After', 'w-full h-full object-cover')}
@@ -2570,10 +2578,18 @@
     }
 
     async function rejectJobResolution(jobId) {
-      const reason = prompt("ระบุเหตุผลที่ต้องการตีกลับใบงานนี้เพื่อให้แก้ไขใหม่:");
-      if (reason === null) return; // User clicked Cancel
+      let reason = "";
+      while (true) {
+        reason = prompt("ระบุเหตุผลที่ต้องการตีกลับใบงานนี้เพื่อให้แก้ไขใหม่ (จำเป็นต้องระบุคำอธิบาย):");
+        if (reason === null) return; // User clicked Cancel
+        reason = reason.trim();
+        if (reason.length > 0) {
+          break;
+        }
+        alert("ข้อผิดพลาด: คุณจำเป็นต้องระบุคำอธิบายเหตุผลในการตีกลับงานเพื่อให้พนักงานตรวจสอบและดำเนินการแก้ไข!");
+      }
 
-      const finalReason = reason.trim() || "ไม่ผ่านการตรวจสอบ กรุณาตรวจสอบและดำเนินการแก้ไขใหม่อีกครั้ง";
+      const finalReason = reason;
       
       const idx = jobs.findIndex(j => j.id === jobId);
       if (idx === -1) return;
