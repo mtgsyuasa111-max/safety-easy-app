@@ -210,8 +210,13 @@
     @media (min-width: 1024px) {
       #app-nav-bar:not(.hidden) {
         display: flex !important;
+        order: -1;
       }
+      #screen-container { order: 1; }
       #app-nav-bar button span.text-\[9px\] {
+        display: none;
+      }
+      .desktop-job-section-heading {
         display: none;
       }
     }
@@ -2184,7 +2189,7 @@
 
       if (urgentJobs.length > 0) {
         const h1 = document.createElement("div");
-        h1.className = "flex items-center gap-2 mb-3";
+        h1.className = "desktop-job-section-heading flex items-center gap-2 mb-3";
         h1.innerHTML = `<span class="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation animate-pulse"></i> งานรอดำเนินการ (${urgentJobs.length} รายการ)</span>`;
         container.appendChild(h1);
         urgentJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
@@ -2192,7 +2197,7 @@
 
       if (doneJobs.length > 0) {
         const h2 = document.createElement("div");
-        h2.className = "flex items-center gap-2 mt-5 mb-3";
+        h2.className = "desktop-job-section-heading flex items-center gap-2 mt-5 mb-3";
         h2.innerHTML = `<span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> เสร็จสิ้นแล้ว — ${currentSupervisorWorkType === "5s" ? "งาน 5ส" : "Safety"} (${doneJobs.length} รายการ)</span>`;
         container.appendChild(h2);
 
@@ -2299,7 +2304,7 @@
 
       if (urgentJobs.length > 0) {
         const h1 = document.createElement("div");
-        h1.className = "flex items-center gap-2 mb-3";
+        h1.className = "desktop-job-section-heading flex items-center gap-2 mb-3";
         h1.innerHTML = `<span class="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation animate-pulse"></i> งานที่ต้องดำเนินการ (${urgentJobs.length} รายการ)</span>`;
         container.appendChild(h1);
         urgentJobs.forEach(job => container.appendChild(createTimelineJobCard(job)));
@@ -2307,7 +2312,7 @@
 
       if (doneJobs.length > 0) {
         const h2 = document.createElement("div");
-        h2.className = "flex items-center gap-2 mt-5 mb-3";
+        h2.className = "desktop-job-section-heading flex items-center gap-2 mt-5 mb-3";
         h2.innerHTML = `<span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> งานเสร็จสมบูรณ์แล้ว (${doneJobs.length} รายการ)</span>`;
         container.appendChild(h2);
 
@@ -2384,8 +2389,8 @@
                 <span class="text-[8px] text-slate-500 font-mono">${job.createdAt}</span>
               </div>
               <p class="text-xs font-bold mt-1 text-slate-800 dark:text-slate-200 leading-normal">${job.issue}</p>
-              <div class="flex space-x-2.5 mt-2">
-                <button onclick="openImageViewer('${job.id}', 'before')" class="w-14 h-14 bg-slate-950 border border-white/10 rounded-xl overflow-hidden shadow-md active:scale-95 transition-transform flex-shrink-0">
+              <div class="flex space-x-2.5 mt-2 lg:flex-col lg:space-x-0 lg:space-y-2">
+                <button onclick="openImageViewer('${job.id}', 'before')" class="w-14 h-14 lg:w-full lg:h-44 bg-slate-950 border border-white/10 rounded-xl overflow-hidden shadow-md active:scale-95 transition-transform flex-shrink-0">
                   ${renderSafeImage(job.photoBefore, 'ภาพ Before', 'w-full h-full object-cover')}
                 </button>
                 <div class="text-[9px] text-slate-500 flex flex-col justify-center">
@@ -2425,8 +2430,8 @@
                   <span>อยู่ระหว่างประสานงานพนักงาน (${job.assignee}) ตรวจแก้</span>
                 </div>
               `) : `
-                <div class="flex space-x-2.5 mt-2">
-                  <button onclick="openImageViewer('${job.id}', 'after')" class="w-14 h-14 bg-slate-950 border border-white/10 rounded-xl overflow-hidden shadow-md active:scale-95 transition-transform flex-shrink-0">
+                <div class="flex space-x-2.5 mt-2 lg:flex-col lg:space-x-0 lg:space-y-2">
+                  <button onclick="openImageViewer('${job.id}', 'after')" class="w-14 h-14 lg:w-full lg:h-44 bg-slate-950 border border-white/10 rounded-xl overflow-hidden shadow-md active:scale-95 transition-transform flex-shrink-0">
                     ${renderSafeImage(job.photoAfter, 'ภาพ After', 'w-full h-full object-cover')}
                   </button>
                   <div class="text-[9px] text-slate-500 flex flex-col justify-center">

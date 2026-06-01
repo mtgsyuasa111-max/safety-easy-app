@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v21'; // v21: refresh immediate modal-close behavior
+const CACHE_NAME = 'safety-easy-pro-v22'; // v22: desktop layout refinement
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
