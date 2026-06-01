@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v37'; // v37: Retry transient Sheets connection failures
+const CACHE_NAME = 'safety-easy-pro-v38'; // v38: Allow Drive photo uploads up to 90 seconds
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

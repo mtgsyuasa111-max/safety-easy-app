@@ -4011,11 +4011,13 @@
       // Set activeUploadController for manual/automatic timeouts
       activeUploadController = new AbortController();
       const signal = activeUploadController.signal;
+      const hasPhotoUpload = Boolean(jobPayload?.photoBefore || jobPayload?.photoAfter);
+      const requestTimeoutMs = hasPhotoUpload ? 90000 : 25000;
       const timeoutId = setTimeout(() => {
         if (activeUploadController) {
           activeUploadController.abort();
         }
-      }, 25000); // 25 seconds timeout for faster response
+      }, requestTimeoutMs);
 
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
