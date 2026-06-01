@@ -211,8 +211,61 @@
       #app-nav-bar:not(.hidden) {
         display: flex !important;
         order: -1;
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
       }
       #screen-container { order: 1; }
+      #screen-container {
+        isolation: isolate;
+        background:
+          radial-gradient(circle at 10% 22%, rgba(16, 185, 129, 0.08), transparent 26rem),
+          radial-gradient(circle at 88% 82%, rgba(14, 165, 233, 0.06), transparent 30rem),
+          #090d16;
+      }
+      #screen-container::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        opacity: 0.36;
+        background-image:
+          linear-gradient(rgba(148, 163, 184, 0.055) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.055) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(to bottom, transparent 3%, black 38%, black 100%);
+      }
+      #screen-container::after {
+        content: "SAFE\A MAINT\A PRO";
+        position: fixed;
+        right: 3rem;
+        bottom: 2.25rem;
+        z-index: -1;
+        pointer-events: none;
+        white-space: pre;
+        color: rgba(16, 185, 129, 0.045);
+        font: 800 6rem/0.8 'Outfit', sans-serif;
+        letter-spacing: -0.4rem;
+        text-align: right;
+      }
+      #app-nav-bar > * {
+        position: relative;
+        z-index: 1;
+      }
+      #app-nav-bar::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 52%;
+        z-index: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at 30% 72%, rgba(16, 185, 129, 0.22), transparent 46%),
+          linear-gradient(145deg, rgba(16, 185, 129, 0.11), transparent 58%),
+          repeating-linear-gradient(135deg, rgba(148, 163, 184, 0.045) 0 1px, transparent 1px 13px);
+        border-top: 1px solid rgba(16, 185, 129, 0.12);
+      }
       #app-nav-bar button span.text-\[9px\] {
         display: none;
       }
@@ -223,6 +276,18 @@
     @media (min-width: 1280px) {
       #app-nav-bar button span.text-\[9px\] {
         display: block;
+      }
+      #app-nav-bar::before {
+        content: "SAFETY FIRST\A\A ZERO ACCIDENT\A MAINTENANCE CONTROL";
+        position: absolute;
+        left: 1.25rem;
+        bottom: 2rem;
+        z-index: 1;
+        pointer-events: none;
+        white-space: pre;
+        color: rgba(148, 163, 184, 0.38);
+        font: 700 0.56rem/1.45 'Outfit', sans-serif;
+        letter-spacing: 0.16rem;
       }
     }
     /* Desktop job grid */

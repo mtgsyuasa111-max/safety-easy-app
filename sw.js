@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v23'; // v23: remove desktop grid heading slot
+const CACHE_NAME = 'safety-easy-pro-v24'; // v24: add desktop ambient theme
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
