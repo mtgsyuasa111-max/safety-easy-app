@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v33'; // v33: Fix startup jobs list loading and default home area filter to all
+const CACHE_NAME = 'safety-easy-pro-v34'; // v34: Optimize modal successful exit delay to 150ms
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

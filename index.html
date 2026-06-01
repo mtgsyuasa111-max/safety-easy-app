@@ -530,7 +530,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v16.8.0 Premium PWA Home-Reset-Filter & Startup-Loading-Fix PRO</span>
+              <span>v16.9.0 Premium PWA Immediate-Modal-Exit & Success-Bounce PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -4824,8 +4824,8 @@
 
       showToast("ส่งสำเร็จ!", "รูปภาพและข้อมูลใบงานถูกส่งขึ้น Google Sheet เรียบร้อยแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
 
-      // Wait 1.3 seconds to admire success state, then close with a beautiful shrink scale down and fade out transition
-      await new Promise(resolve => setTimeout(resolve, 1300));
+      // Reset success timeout to trigger close transition instantly
+      await new Promise(resolve => setTimeout(resolve, 150));
 
       btn.classList.remove("bg-emerald-600");
       txt.innerText = "บันทึกข้อมูลและรายงานระบบ";
@@ -4969,8 +4969,8 @@
 
       showToast("ส่งสำเร็จ!", "รูป After + ผลงานแก้ไขถูกส่งขึ้น Google Sheet เรียบร้อยแล้ว", "fa-circle-check", "bg-safety-green shadow-glow-green");
 
-      // Wait 1.3 seconds to admire success state, then close with a beautiful shrink scale down and fade out transition
-      await new Promise(resolve => setTimeout(resolve, 1300));
+      // Reset success timeout to trigger close transition instantly
+      await new Promise(resolve => setTimeout(resolve, 150));
 
       btn.classList.remove("from-emerald-400", "to-emerald-600");
       btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ส่งรายงานผลการแก้ไข</span>`;
