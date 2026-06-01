@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v24'; // v24: add desktop ambient theme
+const CACHE_NAME = 'safety-easy-pro-v25'; // v25: filter supervisor jobs by task type
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

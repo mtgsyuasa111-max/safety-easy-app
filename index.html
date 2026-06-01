@@ -2231,7 +2231,10 @@
       container.innerHTML = "";
 
       // Apply dynamic Area Filters on home menu lists
-      let urgentFiltered = [...jobs].filter(j => j.status === "pending" || j.status === "resolved");
+      let urgentFiltered = [...jobs].filter(j =>
+        (j.status === "pending" || j.status === "resolved") &&
+        j.taskType === currentSupervisorWorkType
+      );
       let doneFiltered   = [...jobs].filter(j => j.status === "approved" && j.taskType === currentSupervisorWorkType);
 
       if (selectedHomeAreaFilter !== "all") {
