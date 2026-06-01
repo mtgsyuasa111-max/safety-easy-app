@@ -530,7 +530,7 @@
           <div class="flex flex-col items-center space-y-1.5 mt-2 w-full">
             <span class="inline-flex items-center space-x-1.5 bg-white/[0.03] border border-white/5 text-slate-400 text-[10px] font-medium px-4 py-2 rounded-full backdrop-blur-md shadow-sm">
               <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>v16.6.0 Premium PWA Supervisor Priority-Grouping & Status-Filter PRO</span>
+              <span>v16.7.0 Premium PWA Sync-Dashboard-Stats & Theme-Polish PRO</span>
               <span class="text-slate-600">•</span>
               <span class="text-emerald-400/90 font-bold flex items-center">
                 <i class="fa-solid fa-bolt-lightning mr-1 text-[8px] animate-pulse"></i> ออฟไลน์สมบูรณ์แบบ
@@ -968,16 +968,20 @@
                   </span>
                 </div>
 
-                <div class="flex-1 space-y-3.5">
+                <div class="flex-1 space-y-2.5">
                   <div class="flex items-center justify-between text-xs">
-                    <span class="font-bold text-slate-400"><i class="fa-solid fa-circle text-emerald-400 mr-2 text-[8px]"></i>ตรวจสำเร็จแล้ว</span>
-                    <span id="dash-chart-done" class="font-extrabold text-white">0</span>
+                    <span class="font-bold text-slate-500 dark:text-slate-400 flex items-center"><i class="fa-solid fa-circle text-emerald-500 dark:text-emerald-400 mr-2 text-[8px]"></i>ตรวจสำเร็จแล้ว</span>
+                    <span id="dash-chart-done" class="font-extrabold text-slate-800 dark:text-white">0</span>
                   </div>
                   <div class="flex items-center justify-between text-xs">
-                    <span class="font-bold text-slate-400"><i class="fa-solid fa-circle text-amber-500 mr-2 text-[8px]"></i>รอแก้ไข/ตรวจสอบ</span>
-                    <span id="dash-chart-pending" class="font-extrabold text-white">0</span>
+                    <span class="font-bold text-slate-500 dark:text-slate-400 flex items-center"><i class="fa-solid fa-circle text-amber-500 dark:text-amber-400 mr-2 text-[8px]"></i>รอตรวจ/รอยืนยัน</span>
+                    <span id="dash-chart-resolved" class="font-extrabold text-slate-800 dark:text-white">0</span>
                   </div>
-                  <div class="h-2 rounded-full bg-slate-950 overflow-hidden border border-white/5">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-500 dark:text-slate-400 flex items-center"><i class="fa-solid fa-circle text-rose-500 dark:text-rose-400 mr-2 text-[8px]"></i>รอช่างแก้ไข</span>
+                    <span id="dash-chart-pending" class="font-extrabold text-slate-800 dark:text-white">0</span>
+                  </div>
+                  <div class="h-2 rounded-full bg-slate-100 dark:bg-slate-950 overflow-hidden border border-slate-200 dark:border-white/5">
                     <div id="dash-bar-done" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green" style="width:0%"></div>
                   </div>
                 </div>
@@ -3132,7 +3136,7 @@
       const s5Btn = document.getElementById("db-type-5s");
       
       [allBtn, safetyBtn, s5Btn].forEach(b => {
-        b.className = "flex-1 text-[10px] font-bold py-2 rounded-lg text-center transition-all text-slate-400 hover:text-white";
+        b.className = "flex-1 text-[10px] font-bold py-2 rounded-lg text-center transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
       });
 
       if (type === "safety") {
@@ -3187,15 +3191,33 @@
 
       const totalCount = filtered.length;
       const doneCount = filtered.filter(j => j.status === "approved").length;
-      const pendingCount = totalCount - doneCount;
+      const resolvedCount = filtered.filter(j => j.status === "resolved").length;
+      const pendingCount = filtered.filter(j => j.status === "pending").length;
       const percent = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
 
-      // Render Donut Chart
+      // Render Donut Chart & Counters
       document.getElementById("dash-done-percent").innerText = `${percent}%`;
       document.getElementById("dash-chart-done").innerText = doneCount;
+      document.getElementById("dash-chart-resolved").innerText = resolvedCount;
       document.getElementById("dash-chart-pending").innerText = pendingCount;
       document.getElementById("dash-bar-done").style.width = `${percent}%`;
-      document.getElementById("dash-donut").style.setProperty("--done", `${percent * 3.6}deg`);
+
+      // Premium Conic Gradient Donut representing all 3 statuses proportionally
+      const donutEl = document.getElementById("dash-donut");
+      if (totalCount === 0) {
+        donutEl.style.background = `conic-gradient(#cbd5e1 0deg 360deg)`;
+      } else {
+        const degDone = (doneCount / totalCount) * 360;
+        const degResolved = (resolvedCount / totalCount) * 360;
+        const approvedEnd = degDone;
+        const resolvedEnd = degDone + degResolved;
+        
+        donutEl.style.background = `conic-gradient(
+          #10b981 0deg ${approvedEnd}deg,
+          #f59e0b ${approvedEnd}deg ${resolvedEnd}deg,
+          #f43f5e ${resolvedEnd}deg 360deg
+        )`;
+      }
 
       // Area wise progress list
       const areaListContainer = document.getElementById("dash-area-list");
@@ -3210,19 +3232,19 @@
         const areaPending = areaJobs.length - areaDone;
 
         const row = document.createElement("div");
-        row.className = "bg-slate-900 border border-white/5 rounded-2xl p-3 shadow-md flex flex-col justify-between";
+        row.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-3 shadow-md flex flex-col justify-between transition-colors duration-200";
         row.innerHTML = `
           <div class="flex justify-between items-start text-xs">
             <div>
-              <div class="font-extrabold text-slate-200">${areaName}</div>
-              <div class="text-[9px] text-slate-500 font-semibold mt-0.5">ผู้ดูแล: ${owner}</div>
+              <div class="font-extrabold text-slate-800 dark:text-slate-200">${areaName}</div>
+              <div class="text-[9px] text-slate-500 dark:text-slate-400 font-semibold mt-0.5">ผู้ดูแล: ${owner}</div>
             </div>
             <div class="text-right">
-              <div class="font-extrabold ${areaPending > 0 ? 'text-amber-400' : 'text-emerald-400'}">${areaPending} งานค้าง</div>
-              <div class="text-[9px] text-slate-500 mt-0.5">${areaDone}/${areaJobs.length} สำเร็จ</div>
+              <div class="font-extrabold ${areaPending > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}">${areaPending} งานค้าง</div>
+              <div class="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5">${areaDone}/${areaJobs.length} สำเร็จ</div>
             </div>
           </div>
-          <div class="h-1.5 bg-slate-950 rounded-full overflow-hidden mt-2.5 border border-white/5">
+          <div class="h-1.5 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden mt-2.5 border border-slate-200 dark:border-white/5">
             <div class="h-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green" style="width:${areaProgress}%"></div>
           </div>
         `;

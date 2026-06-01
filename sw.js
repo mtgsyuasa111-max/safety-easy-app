@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v31'; // v31: Supervisor home pending-resolved split and interactive status filter
+const CACHE_NAME = 'safety-easy-pro-v32'; // v32: Synchronize analytics dashboard statuses and styles
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
