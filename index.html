@@ -2431,7 +2431,9 @@
         });
         
         // Remove normal classes
-        el.classList.remove(cards[key].normalClass);
+        cards[key].normalClass.split(' ').forEach(cls => {
+          if (cls) el.classList.remove(cls);
+        });
 
         if (key === status) {
           // Add active classes
@@ -2439,8 +2441,10 @@
             if (cls) el.classList.add(cls);
           });
         } else {
-          // Add normal class
-          el.classList.add(cards[key].normalClass);
+          // Add normal classes
+          cards[key].normalClass.split(' ').forEach(cls => {
+            if (cls) el.classList.add(cls);
+          });
         }
       });
 

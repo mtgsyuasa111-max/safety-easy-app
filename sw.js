@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v42'; // v42: Keep splash hidden after login
+const CACHE_NAME = 'safety-easy-pro-v43'; // v43: Fix supervisor stats card class tokens
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
