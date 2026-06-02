@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v41'; // v41: HEIC conversion and sharper photos
+const CACHE_NAME = 'safety-easy-pro-v42'; // v42: Keep splash hidden after login
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

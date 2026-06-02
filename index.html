@@ -5599,8 +5599,11 @@
         localStorage.removeItem("safety_easy_remembered_token");
       }
       
-      // Fallback: If no auto-login, show splash screen as normal
-      document.getElementById("screen-splash").classList.remove("hidden");
+      // A manual login may finish while the initial user refresh is still pending.
+      // Do not reveal the splash again after the active home screen is already open.
+      if (!currentUser) {
+        document.getElementById("screen-splash").classList.remove("hidden");
+      }
     };
   </script>
 </body>
