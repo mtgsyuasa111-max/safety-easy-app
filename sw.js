@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-easy-pro-v40'; // v40: Restrict reviews and refresh Sheet data faster
+const CACHE_NAME = 'safety-easy-pro-v41'; // v41: HEIC conversion and sharper photos
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

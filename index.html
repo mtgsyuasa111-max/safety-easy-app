@@ -4401,9 +4401,21 @@
       // Show loading toast
       showToast("กำลังโหลดรูป", `ประมวลผลรูป ${file.name || ''} (ขนาด ${(file.size/1024).toFixed(0)} KB)...`, "fa-spinner fa-spin", "bg-slate-700");
 
+      let uploadFile = file;
+      if (isHeifFile(file)) {
+        try {
+          showToast("กำลังแปลงรูป HEIC", "กำลังแปลงรูปจากคลังมือถือเป็น JPEG กรุณารอสักครู่...", "fa-spinner fa-spin", "bg-slate-700");
+          uploadFile = await convertHeifToJpeg(file);
+        } catch (error) {
+          console.error("[Photo] HEIC conversion failed:", error);
+          showToast("แปลงรูป HEIC ไม่สำเร็จ", "ไม่สามารถแปลงรูปนี้ได้ กรุณาลองเลือกรูปอื่นหรือถ่ายรูปใหม่", "fa-triangle-exclamation", "bg-rose-700");
+          return;
+        }
+      }
+
       // Step 1: Try canvas compression (works for JPEG/PNG/WebP)
       try {
-        const compressed = await compressImageFile(file);
+        const compressed = await compressImageFile(uploadFile);
         applyPreviewPhoto(target, compressed);
         showToast("บีบอัดภาพสำเร็จ", `ภาพ ${(dataUrlBytes(compressed)/1024).toFixed(0)} KB พร้อมอัปโหลด`, "fa-image", "bg-safety-green shadow-glow-green");
         return;
@@ -4415,7 +4427,7 @@
       // Step 2: FileReader fallback for formats accepted by the Drive backend.
       try {
         const supportedTypes = ["image/jpeg", "image/png", "image/webp"];
-        if (!supportedTypes.includes(file.type.toLowerCase())) {
+        if (!supportedTypes.includes(uploadFile.type.toLowerCase())) {
           showCustomAlert(
             "รูปแบบไฟล์ไม่รองรับ",
             "รูปจากมือถือเป็น HEIC หรือรูปแบบที่ระบบยังส่งขึ้น Google Drive ไม่ได้ กรุณาเลือก JPG, PNG, WEBP หรือใช้ภาพแคปหน้าจอแทน",
@@ -4424,8 +4436,8 @@
           return;
         }
 
-        const fileInMB = file.size / 1024 / 1024;
-        if (file.size > 2.5 * 1024 * 1024) {
+        const fileInMB = uploadFile.size / 1024 / 1024;
+        if (uploadFile.size > 2.5 * 1024 * 1024) {
           showToast("ไฟล์รูปภาพใหญ่เกินไป", `รูปภาพดิบมีขนาด ${fileInMB.toFixed(1)}MB ใหญ่เกิน 2.5MB และไม่สามารถบีบอัดได้ กรุณาลดความละเอียด/แคปหน้าจอก่อนอัปโหลด`, "fa-triangle-exclamation", "bg-rose-700");
           return;
         }
@@ -4434,10 +4446,10 @@
           const reader = new FileReader();
           reader.onload = (e) => resolve(e.target.result);
           reader.onerror = (e) => reject(e);
-          reader.readAsDataURL(file);
+          reader.readAsDataURL(uploadFile);
         });
         applyPreviewPhoto(target, dataUrl);
-        showToast("เพิ่มรูปสำเร็จ", `รูป ${(file.size/1024).toFixed(0)} KB พร้อมใช้งาน`, "fa-check", "bg-safety-green");
+        showToast("เพิ่มรูปสำเร็จ", `รูป ${(uploadFile.size/1024).toFixed(0)} KB พร้อมใช้งาน`, "fa-check", "bg-safety-green");
         return;
       } catch (e2) {
         console.warn('[Photo] FileReader also failed:', e2);
@@ -4445,6 +4457,60 @@
 
       // A blob URL can be previewed locally but cannot be uploaded by Apps Script.
       showToast("รูปไม่รองรับ", `ไม่สามารถโหลดรูปได้ (นามสกุล: ${file.name}) ลองเปลี่ยนเป็น JPG/PNG`, "fa-times-circle", "bg-rose-700");
+    }
+
+    function isHeifFile(file) {
+      const type = String(file?.type || "").toLowerCase();
+      const name = String(file?.name || "").toLowerCase();
+      return type === "image/heic" ||
+        type === "image/heif" ||
+        type === "image/heic-sequence" ||
+        type === "image/heif-sequence" ||
+        /\.(heic|heif)$/i.test(name);
+    }
+
+    const HEIC_CONVERTER_URL = "https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js";
+    let heicConverterPromise = null;
+
+    function loadHeicConverter() {
+      if (typeof window.heic2any === "function") return Promise.resolve(window.heic2any);
+      if (heicConverterPromise) return heicConverterPromise;
+
+      heicConverterPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = HEIC_CONVERTER_URL;
+        script.async = true;
+        script.onload = () => {
+          if (typeof window.heic2any === "function") {
+            resolve(window.heic2any);
+          } else {
+            reject(new Error("HEIC converter did not initialize"));
+          }
+        };
+        script.onerror = () => reject(new Error("Unable to load HEIC converter"));
+        document.head.appendChild(script);
+      }).catch((error) => {
+        heicConverterPromise = null;
+        throw error;
+      });
+
+      return heicConverterPromise;
+    }
+
+    async function convertHeifToJpeg(file) {
+      const heic2any = await loadHeicConverter();
+      const converted = await heic2any({
+        blob: file,
+        toType: "image/jpeg",
+        quality: 0.92
+      });
+      const jpegBlob = Array.isArray(converted) ? converted[0] : converted;
+      if (!jpegBlob) throw new Error("HEIC converter returned no image");
+      const baseName = String(file.name || "photo").replace(/\.(heic|heif)$/i, "");
+      return new File([jpegBlob], `${baseName}.jpg`, {
+        type: "image/jpeg",
+        lastModified: Date.now()
+      });
     }
 
     function applyPreviewPhoto(target, dataUrl) {
@@ -4462,7 +4528,7 @@
       }
     }
 
-    function compressImageFile(file, maxSize = 480, quality = 0.50) {
+    function compressImageFile(file, maxSize = 1600, quality = 0.82) {
       return new Promise((resolve, reject) => {
         const img = new Image();
         const url = URL.createObjectURL(file);
