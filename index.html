@@ -999,7 +999,7 @@
                 </div>
                 <div>
                   <label class="block text-[10px] text-slate-500 dark:text-slate-400 font-bold mb-1 uppercase tracking-wider">พื้นที่</label>
-                  <select id="dash-area-filter" onchange="renderWebDashboard()" class="glass-input w-full rounded-xl p-2.5 text-xs font-bold focus:outline-none transition-all">
+                  <select id="dash-area-filter" onchange="handleDashboardAreaSelect()" class="glass-input w-full rounded-xl p-2.5 text-xs font-bold focus:outline-none transition-all">
                     <option value="all">ทุกพื้นที่</option>
                   </select>
                 </div>
@@ -1013,7 +1013,7 @@
                     <i class="fa-solid fa-rotate-right mr-1"></i> รีเฟรช
                   </button>
                 </div>
-                <div id="dash-area-list" class="space-y-3">
+                <div id="dash-area-list" class="space-y-2">
                   <!-- Area lists -->
                 </div>
               </div>
@@ -1021,6 +1021,32 @@
 
             <!-- Right Column: Before/After Safety Tickets Grid (7 columns span) -->
             <div class="lg:col-span-7 space-y-6">
+              <!-- Selected Area Bar Summary -->
+              <div id="dash-area-summary-card" class="glass-card rounded-3xl p-4 border border-emerald-500/15 shadow-lg">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div>
+                    <div class="text-[9px] text-emerald-400 font-extrabold uppercase tracking-[0.2em]">AREA SNAPSHOT</div>
+                    <h3 id="dash-selected-area-title" class="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">ทุกพื้นที่</h3>
+                    <p id="dash-selected-area-owner" class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-0.5">สรุปงานตามพื้นที่ที่เลือก</p>
+                  </div>
+                  <span id="dash-selected-area-open" class="text-[10px] bg-amber-500/10 text-amber-400 font-extrabold px-2.5 py-1 rounded-xl border border-amber-500/20">0 งานค้าง</span>
+                </div>
+                <div class="space-y-2.5">
+                  <div>
+                    <div class="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1"><span><i class="fa-solid fa-circle text-emerald-400 text-[7px] mr-1"></i>สำเร็จ</span><span id="dash-selected-done-count">0</span></div>
+                    <div class="h-2 rounded-full bg-slate-100 dark:bg-slate-950 overflow-hidden border border-slate-200 dark:border-white/5"><div id="dash-selected-done-bar" class="h-full bg-gradient-to-r from-emerald-500 to-safety-green" style="width:0%"></div></div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1"><span><i class="fa-solid fa-circle text-amber-400 text-[7px] mr-1"></i>รอตรวจ</span><span id="dash-selected-resolved-count">0</span></div>
+                    <div class="h-2 rounded-full bg-slate-100 dark:bg-slate-950 overflow-hidden border border-slate-200 dark:border-white/5"><div id="dash-selected-resolved-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-500" style="width:0%"></div></div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1"><span><i class="fa-solid fa-circle text-rose-400 text-[7px] mr-1"></i>รอแก้ไข</span><span id="dash-selected-pending-count">0</span></div>
+                    <div class="h-2 rounded-full bg-slate-100 dark:bg-slate-950 overflow-hidden border border-slate-200 dark:border-white/5"><div id="dash-selected-pending-bar" class="h-full bg-gradient-to-r from-rose-500 to-red-500" style="width:0%"></div></div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Job List with Before/After Photos -->
               <div>
                 <div class="flex justify-between items-center mb-3">
@@ -1794,6 +1820,7 @@
     let currentSupervisorWorkType = "safety";
     let currentEmployeeWorkFilter = "safety";
     let currentDashboardType = "all";
+    let selectedDashboardAreaFilter = "all";
     let currentAdminTab = "users";
     let lastSheetError = "";
     let authToken = sessionStorage.getItem("safety_easy_auth_token") || "";
@@ -3210,7 +3237,7 @@
       
       if (!areaFilter || !monthFilter || !dayFilter) return;
 
-      const currentArea = areaFilter.value || "all";
+      const currentArea = selectedDashboardAreaFilter || areaFilter.value || "all";
       areaFilter.innerHTML = `<option value="all">ทุกพื้นที่</option>`;
 
       const areas = new Set(Object.keys(AREA_REPRESENTATIVES));
@@ -3221,32 +3248,71 @@
         opt.textContent = area;
         areaFilter.appendChild(opt);
       });
-      areaFilter.value = currentArea;
+      areaFilter.value = [...areaFilter.options].some(opt => opt.value === currentArea) ? currentArea : "all";
+      selectedDashboardAreaFilter = areaFilter.value;
 
       // Leave monthFilter empty by default so all months are shown on first load
+    }
+
+    function handleDashboardAreaSelect() {
+      selectedDashboardAreaFilter = document.getElementById("dash-area-filter")?.value || "all";
+      renderWebDashboard();
+    }
+
+    function setDashboardAreaFilter(areaName) {
+      selectedDashboardAreaFilter = areaName || "all";
+      const areaFilter = document.getElementById("dash-area-filter");
+      if (areaFilter) areaFilter.value = selectedDashboardAreaFilter;
+      renderWebDashboard();
+    }
+
+    function renderDashboardAreaSummary(areaName, areaJobs, owner) {
+      const total = areaJobs.length;
+      const done = areaJobs.filter(j => j.status === "approved").length;
+      const resolved = areaJobs.filter(j => j.status === "resolved").length;
+      const pending = areaJobs.filter(j => j.status === "pending").length;
+      const open = pending + resolved;
+      const pct = count => total ? Math.round((count / total) * 100) : 0;
+      const title = document.getElementById("dash-selected-area-title");
+      const ownerEl = document.getElementById("dash-selected-area-owner");
+      const openEl = document.getElementById("dash-selected-area-open");
+      if (!title || !ownerEl || !openEl) return;
+      title.textContent = areaName === "all" ? "ทุกพื้นที่" : `พื้นที่ ${areaName}`;
+      ownerEl.textContent = areaName === "all" ? "สรุปรวมทุกพื้นที่ตามตัวกรองปัจจุบัน" : `ผู้ดูแล: ${owner || "-"}`;
+      openEl.textContent = `${open} งานค้าง`;
+      openEl.className = `text-[10px] font-extrabold px-2.5 py-1 rounded-xl border ${open > 0 ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"}`;
+      document.getElementById("dash-selected-done-count").textContent = `${done}/${total}`;
+      document.getElementById("dash-selected-resolved-count").textContent = `${resolved}/${total}`;
+      document.getElementById("dash-selected-pending-count").textContent = `${pending}/${total}`;
+      document.getElementById("dash-selected-done-bar").style.width = `${pct(done)}%`;
+      document.getElementById("dash-selected-resolved-bar").style.width = `${pct(resolved)}%`;
+      document.getElementById("dash-selected-pending-bar").style.width = `${pct(pending)}%`;
     }
 
     function renderWebDashboard() {
       populateDashboardFilters();
       const month = document.getElementById("dash-month-filter").value;
       const day = document.getElementById("dash-day-filter").value;
-      const area = document.getElementById("dash-area-filter").value;
+      const area = selectedDashboardAreaFilter || document.getElementById("dash-area-filter").value || "all";
 
-      // Filter jobs based on type selected, month and area
-      const filtered = jobs.filter(job => {
+      // Filter jobs based on type selected and date first; area click only drives the right-side drilldown.
+      const baseFiltered = jobs.filter(job => {
         const matchType = currentDashboardType === "all" || job.taskType === currentDashboardType;
         const matchMonth = !month || String(job.createdAt || "").slice(0, 7) === month;
         const matchDay = !day || String(job.createdAt || "").slice(0, 10) === day;
-        const matchArea = area === "all" || job.area === area;
 
-        return matchType && matchMonth && matchDay && matchArea;
+        return matchType && matchMonth && matchDay;
       });
+      const filtered = baseFiltered.filter(job => area === "all" || job.area === area);
 
       const totalCount = filtered.length;
       const doneCount = filtered.filter(j => j.status === "approved").length;
       const resolvedCount = filtered.filter(j => j.status === "resolved").length;
       const pendingCount = filtered.filter(j => j.status === "pending").length;
       const percent = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
+      const selectedAreaJobs = area === "all" ? filtered : filtered.filter(j => j.area === area);
+      const selectedAreaOwner = area === "all" ? "" : (AREA_REPRESENTATIVES[area] || "");
+      renderDashboardAreaSummary(area, selectedAreaJobs, selectedAreaOwner);
 
       // Render Donut Chart & Counters
       document.getElementById("dash-done-percent").innerText = `${percent}%`;
@@ -3277,17 +3343,18 @@
       areaListContainer.innerHTML = "";
 
       Object.entries(AREA_REPRESENTATIVES).forEach(([areaName, owner]) => {
-        if (area !== "all" && area !== areaName) return;
-
-        const areaJobs = filtered.filter(j => j.area === areaName);
+        const areaJobs = baseFiltered.filter(j => j.area === areaName);
         const areaDone = areaJobs.filter(j => j.status === "approved").length;
         const areaProgress = areaJobs.length ? Math.round((areaDone / areaJobs.length) * 100) : 0;
         const areaPending = areaJobs.length - areaDone;
 
-        const row = document.createElement("div");
-        row.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-3 shadow-md flex flex-col justify-between transition-colors duration-200";
+        const isSelectedArea = area === areaName;
+        const row = document.createElement("button");
+        row.type = "button";
+        row.onclick = () => setDashboardAreaFilter(areaName);
+        row.className = `w-full text-left bg-white dark:bg-slate-900 border ${isSelectedArea ? "border-emerald-500/60 ring-1 ring-emerald-500/30" : "border-slate-200 dark:border-white/5"} rounded-xl p-2.5 shadow-md flex flex-col justify-between transition-all duration-200 hover:border-emerald-500/40 hover:-translate-y-0.5`;
         row.innerHTML = `
-          <div class="flex justify-between items-start text-xs">
+          <div class="flex justify-between items-start text-[11px]">
             <div>
               <div class="font-extrabold text-slate-800 dark:text-slate-200">${areaName}</div>
               <div class="text-[9px] text-slate-500 dark:text-slate-400 font-semibold mt-0.5">ผู้ดูแล: ${owner}</div>
@@ -3297,7 +3364,7 @@
               <div class="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5">${areaDone}/${areaJobs.length} สำเร็จ</div>
             </div>
           </div>
-          <div class="h-1.5 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden mt-2.5 border border-slate-200 dark:border-white/5">
+          <div class="h-1 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden mt-2 border border-slate-200 dark:border-white/5">
             <div class="h-full bg-gradient-to-r from-emerald-500 to-safety-green shadow-glow-green" style="width:${areaProgress}%"></div>
           </div>
         `;
@@ -3310,8 +3377,10 @@
       const countBadge = document.getElementById("dash-job-count-badge");
       recentListContainer.innerHTML = "";
 
-      const allJobsSorted = [...filtered].reverse();
-      countBadge.textContent = `${allJobsSorted.length} งาน`;
+      const allJobsSorted = [...selectedAreaJobs]
+        .filter(job => job.status === "pending" || job.status === "resolved")
+        .reverse();
+      countBadge.textContent = `${allJobsSorted.length} งานค้าง`;
 
       if (allJobsSorted.length === 0) {
         recentListContainer.innerHTML = `
