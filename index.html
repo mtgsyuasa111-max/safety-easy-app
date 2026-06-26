@@ -772,9 +772,8 @@
               <label class="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center">
                 <i class="fa-solid fa-filter text-safety-green mr-1.5 text-[8px]"></i>แยกตามกลุ่มพื้นที่ตรวจ (คลิกเพื่อเลือกทันที)
               </label>
-              <div id="sp-area-chips-container" class="flex flex-wrap gap-1.5 pb-0.5">
-                <!-- Populated dynamically in JavaScript -->
-              </div>
+              <select id="sp-area-select" onchange="handleAreaDropdownChange('supervisor')" class="glass-input w-full rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-safety-green/40 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10 cursor-pointer">
+              </select>
             </div>
 
             <div id="sp-jobs-list" class="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0 xl:grid-cols-3">
@@ -871,9 +870,8 @@
               <label class="block text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center">
                 <i class="fa-solid fa-filter text-safety-green mr-1.5 text-[8px]"></i>แยกตามกลุ่มพื้นที่ตรวจ (คลิกเพื่อเลือกทันที)
               </label>
-              <div id="sb-area-chips-container" class="flex flex-wrap gap-1.5 pb-0.5">
-                <!-- Populated dynamically in JavaScript -->
-              </div>
+              <select id="sb-area-select" onchange="handleAreaDropdownChange('subordinate')" class="glass-input w-full rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-safety-green/40 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10 cursor-pointer">
+              </select>
             </div>
 
             <div id="sb-jobs-list" class="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0 xl:grid-cols-3">
@@ -5505,42 +5503,45 @@
     let selectedHomeAreaFilter = "all";
     
     function renderAreaFilterChips() {
-      const spContainer = document.getElementById("sp-area-chips-container");
-      const sbContainer = document.getElementById("sb-area-chips-container");
-      if (!spContainer && !sbContainer) return;
-      
+      const spSelect = document.getElementById("sp-area-select");
+      const sbSelect = document.getElementById("sb-area-select");
+      if (!spSelect && !sbSelect) return;
+
       // Include all known representative areas + any areas from jobs
       const repAreas = Object.keys(AREA_REPRESENTATIVES || {});
       const jobAreas = jobs.map(j => j.area).filter(Boolean);
       const uniqueAreas = ["all", ...new Set([...repAreas, ...jobAreas])].sort();
-      
-      const renderChips = (container, userRole) => {
-        if (!container) return;
-        container.innerHTML = "";
-        
+
+      const populateSelect = (sel) => {
+        if (!sel) return;
+        sel.innerHTML = "";
         uniqueAreas.forEach(area => {
-          const btn = document.createElement("button");
-          btn.className = `flex-shrink-0 px-3 py-1 rounded-full text-[9px] font-black border transition-all duration-150 active:scale-95 hover:scale-105 ${
-            selectedHomeAreaFilter === area
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-transparent shadow-sm'
-              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/5 hover:bg-slate-100 dark:hover:bg-slate-800 shadow-sm'
-          }`;
-          btn.onclick = () => {
-            selectedHomeAreaFilter = area;
-            renderAreaFilterChips();
-            if (userRole === "supervisor") {
-              renderSupervisorJobs();
-            } else {
-              renderSubordinateJobs();
-            }
-          };
-          btn.textContent = area === "all" ? "ทั้งหมด" : `พื้นที่ ${area}`;
-          container.appendChild(btn);
+          const opt = document.createElement("option");
+          opt.value = area;
+          opt.textContent = area === "all" ? "ทุกพื้นที่" : `พื้นที่ ${area}`;
+          if (area === selectedHomeAreaFilter) opt.selected = true;
+          sel.appendChild(opt);
         });
       };
-      
-      renderChips(spContainer, "supervisor");
-      renderChips(sbContainer, "subordinate");
+
+      populateSelect(spSelect);
+      populateSelect(sbSelect);
+    }
+
+    function handleAreaDropdownChange(userRole) {
+      const selId = userRole === "supervisor" ? "sp-area-select" : "sb-area-select";
+      const sel = document.getElementById(selId);
+      if (!sel) return;
+      selectedHomeAreaFilter = sel.value;
+      // Sync the other dropdown
+      const otherId = userRole === "supervisor" ? "sb-area-select" : "sp-area-select";
+      const other = document.getElementById(otherId);
+      if (other) other.value = selectedHomeAreaFilter;
+      if (userRole === "supervisor") {
+        renderSupervisorJobs();
+      } else {
+        renderSubordinateJobs();
+      }
     }
 
     // ==========================================
